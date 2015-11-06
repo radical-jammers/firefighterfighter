@@ -34,6 +34,11 @@ class World extends FlxState
 	 */
 	override public function update():Void
 	{
+		if (GamePad.checkButton(GamePad.Start))
+		{
+			openSubState(new PauseMenu());
+		}
+
 		super.update();
 	}	
 }
