@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="40" tilewidth="8" tileheight="8" nextobjectid="15">
+ <tileset firstgid="1" name="tileset" tilewidth="8" tileheight="8" tilecount="64">
+  <image source="../tilesets/tiles0.png" trans="ff00ff" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="65" name="Details" tilewidth="96" tileheight="32" tilecount="2">
+  <tile id="0">
+   <image width="96" height="24" source="../tilesets/detail/grass-patch.png"/>
+  </tile>
+  <tile id="1">
+   <image width="72" height="32" source="../tilesets/detail/tombs-0.png"/>
+  </tile>
+ </tileset>
+ <objectgroup name="Entities">
+  <object id="5" type="exit" x="0" y="48" width="8" height="80">
+   <properties>
+    <property name="direction" value="left"/>
+    <property name="name" value="TOP-L"/>
+   </properties>
+  </object>
+  <object id="7" type="exit" x="232" y="200" width="8" height="80">
+   <properties>
+    <property name="direction" value="right"/>
+    <property name="name" value="BOT-R"/>
+   </properties>
+  </object>
+  <object id="8" type="backdrop" gid="66" x="8" y="135" width="72" height="32">
+   <properties>
+    <property name="scrollX" value="0.5"/>
+   </properties>
+  </object>
+  <object id="9" type="decoration" gid="66" x="112" y="287" width="72" height="32"/>
+  <object id="10" type="backdrop" gid="65" x="136" y="136" width="96" height="24">
+   <properties>
+    <property name="scrollX" value="0.75"/>
+   </properties>
+  </object>
+  <object id="11" type="exit" x="232" y="48" width="8" height="80">
+   <properties>
+    <property name="direction" value="right"/>
+    <property name="name" value="TOP-R"/>
+   </properties>
+  </object>
+  <object id="12" type="exit" x="0" y="200" width="8" height="80">
+   <properties>
+    <property name="direction" value="left"/>
+    <property name="name" value="BOT-L"/>
+   </properties>
+  </object>
+  <object id="13" type="solid" x="0" y="128" width="240" height="16"/>
+  <object id="14" type="solid" x="0" y="280" width="240" height="16"/>
+ </objectgroup>
+</map>
