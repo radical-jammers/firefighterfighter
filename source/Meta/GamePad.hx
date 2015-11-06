@@ -92,23 +92,23 @@ class GamePad
 			button.y = -100;
 			button.scale.set(0, 0);
 		#else
-		if (!small)
-		{
-			button.scale.x = 0.5;
-			button.scale.y = 0.5;
-			button.width *= 0.5;
-			button.height *= 0.5;
-			button.updateHitbox();
-			button.y += 17;
-		}
-		else
-		{
-			button.scale.x = 0.3;
-			button.scale.y = 0.3;
-			button.width *= 0.3;
-			button.height *= 0.3;
-			button.updateHitbox();
-		}
+			if (!small)
+			{
+				button.scale.x = 0.5;
+				button.scale.y = 0.5;
+				button.width *= 0.5;
+				button.height *= 0.5;
+				button.updateHitbox();
+				button.y += 17;
+			}
+			else
+			{
+				button.scale.x = 0.3;
+				button.scale.y = 0.3;
+				button.width *= 0.3;
+				button.height *= 0.3;
+				button.updateHitbox();
+			}
 		#end
 	}
 	
