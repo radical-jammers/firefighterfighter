@@ -23,7 +23,7 @@ class TiledLevel extends TiledMap
 	public var foregroundTiles : FlxGroup;
 	public var backgroundTiles : FlxGroup;
 	public var collidableTileLayers : Array<FlxTilemap>;
-	
+
 	public var meltingsPerSecond : Float;
 
 	public function new(tiledLevel : Dynamic)
@@ -38,7 +38,7 @@ class TiledLevel extends TiledMap
 		FlxG.camera.setBounds(0, 0, fullWidth, fullHeight, true);
 
 		/* Read config info */
-		
+
 		/* Read tile info */
 		for (tileLayer in layers)
 		{
@@ -49,7 +49,7 @@ class TiledLevel extends TiledMap
 			// Locate the tileset
 			var tileset : TiledTileSet = null;
 			for (ts in tilesets) {
-				if (ts.name == tilesetName) 
+				if (ts.name == tilesetName)
 				{
 					tileset = ts;
 					break;
@@ -67,14 +67,14 @@ class TiledLevel extends TiledMap
 			tilemap.widthInTiles = width;
 			tilemap.heightInTiles = height;
 			tilemap.loadMap(tileLayer.tileArray, processedPath, tileset.tileWidth, tileset.tileHeight, 0, 1, 1, 1);
-			
+
 			tilemap.ignoreDrawDebug = true;
-			
+
 			if (tileLayer.properties.contains("overlay"))
 			{
 				overlayTiles.add(tilemap);
 			}
-			else if (tileLayer.properties.contains("solid")) 
+			else if (tileLayer.properties.contains("solid"))
 			{
 				collidableTileLayers.push(tilemap);
 			}
@@ -110,12 +110,12 @@ class TiledLevel extends TiledMap
 			y -= o.height;
 		}
 
-		switch (o.type.toLowerCase()) 
+		switch (o.type.toLowerCase())
 		{
 
 			case "start":
 				// addPlayer(x, y, world);
-		
+
 			/** Elements **/
 
 			case "solid":
@@ -123,13 +123,13 @@ class TiledLevel extends TiledMap
 				solid.immovable = true;
 				world.solids.add(solid);
 
-				
+
 			case "teleport":
 				var target = o.custom.get("target");
-				
+
 				var teleport : Teleport = new Teleport(x, y, world, o.width, o.height, target);
 				world.teleports.add(teleport);
-				
+
 			/** Enemies **/
 			case "spread":
 				var delay : Int = null;
@@ -138,27 +138,27 @@ class TiledLevel extends TiledMap
 					delay = Std.parseInt(o.custom.get("delay"));
 
 				var fire : GroupSpreadingFire = new GroupSpreadingFire(x, y, world, delay);
-				world.enemies.add(fire);
-			case "walker": 
+				world.addEnemy(fire);
+			case "walker":
 				var walker : EnemyWalker = new EnemyWalker(x, y, world);
-				world.enemies.add(walker);
+				world.addEnemy(walker);
 		}
 	}
-	
+
 	function getImageSource(gid : Int) : TiledImage
 	{
 		var image : TiledImage = imageCollection.get(gid);
 		image.imagePath = "assets/tilesets/detail/" + image.sourceImage;
 		return image;
 	}
-	
+
 	/*public function initEnemy(e : Enemy, o : TiledObject) : Void
 	{
 		var variation : Int = getVariation(o);
 
 		e.init(variation);
 	}*/
-	
+
 	public function getVariation(o : TiledObject) : Int
 	{
 		var worldTypeStr : String = o.custom.get("variation");
@@ -179,7 +179,7 @@ class TiledLevel extends TiledMap
 	{
 		if (collidableTileLayers != null)
 		{
-			for (map in collidableTileLayers) 
+			for (map in collidableTileLayers)
 			{
 				// Remember: Collide the map with the objects, not the other way around!
 				return FlxG.overlap(map, obj, notifyCallback, processCallback != null ? processCallback : FlxObject.separate);
@@ -188,17 +188,17 @@ class TiledLevel extends TiledMap
 
 		return false;
 	}
-	
+
 	private function buildPath(tileset : TiledTileSet, ?spritesCase : Bool  = false) : String
 	{
 		var imagePath = new Path(tileset.imageSource);
-		var processedPath = (spritesCase ? spritesPath : tilesetPath) + 
+		var processedPath = (spritesCase ? spritesPath : tilesetPath) +
 			imagePath.file + "." + imagePath.ext;
 
 		return processedPath;
 	}
 
-	public function destroy() 
+	public function destroy()
 	{
 		backgroundTiles.destroy();
 		foregroundTiles.destroy();

@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -33,7 +34,8 @@ class World extends GameState
 
 	// stage status variables
 	public var remainingTime: Int = STAGE_DURATION;
-	public var heatLevel: Int = 10;
+	public var originalHeat: Int;
+	public var currentHeat: Int;
 
 	public var teleporting : Bool;
 
@@ -84,6 +86,12 @@ class World extends GameState
 
 		// Start the fading catharsis
 		fadeToRed();
+
+		// Check if it's too hot or not
+		currentHeat = 0;
+		originalHeat = 0;
+		for (enemy in enemies)
+			addHeat(enemy);
 	}
 
 	override public function destroy():Void
@@ -147,6 +155,33 @@ class World extends GameState
 		});
 	}
 
+	public function addEnemy(enemy: Enemy): Void
+	{
+		enemies.add(enemy);
+		addHeat(enemy);
+	}
+
+	// Calculates global temperature after adding a new enemy
+	public function addHeat(obj: FlxBasic): Void
+	{
+		if (Std.is(obj, FlxGroup))
+		{
+			var enemies: FlxGroup = cast(obj, FlxGroup);
+			for (enemy in enemies)
+				addHeat(enemy);
+		} else
+		{
+			var enemy: Enemy = cast(obj, Enemy);
+			currentHeat += enemy.heat;
+			originalHeat = Std.int(Math.max(originalHeat, currentHeat));
+		}
+	}
+
+	public function removeHeat(enemy: Enemy): Void
+	{
+		currentHeat -= enemy.heat;
+	}
+
 	function handleDebugRoutines()
 	{
 		var mousePos : FlxPoint = FlxG.mouse.getWorldPosition();
@@ -159,7 +194,7 @@ class World extends GameState
 
 		if (FlxG.keys.justPressed.ONE)
 		{
-			enemies.add(new EnemyWalker(mousePos.x, mousePos.y, this));
+			addEnemy(new EnemyWalker(mousePos.x, mousePos.y, this));
 		}
 
 		if (FlxG.mouse.justPressed)

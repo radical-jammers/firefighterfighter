@@ -10,11 +10,14 @@ class Hud extends FlxTypedGroup<FlxSprite> {
     public var world: World;
 
     public static inline var MAX_BOTTLES: Int = 5;
+    public static inline var HEAT_THRESHOLD: Int = 20;
 
     private var clock: FlxSprite;
     private var firstFigure: FlxSprite;
     private var lastFigure: FlxSprite;
     private var background: FlxSprite;
+
+    private var heat: FlxSprite;
 
     private var bottlesP1: Array<FlxSprite>;
     private var bottlesP2: Array<FlxSprite>;
@@ -26,10 +29,29 @@ class Hud extends FlxTypedGroup<FlxSprite> {
         this.world = world;
         super();
 
+        initSprites();
+        loadSprites();
+        loadAnimations();
+        addSprites();
+
+        for (sprite in this)
+            sprite.scrollFactor.set();
+    }
+
+    private function initSprites(): Void
+    {
         bottlesP1 = new Array<FlxSprite>();
         emptyBottlesP1 = new Array<FlxSprite>();
         bottlesP2 = new Array<FlxSprite>();
+        heat = new FlxSprite(FlxG.width - 80, FlxG.height - 16);
+        clock = new FlxSprite(96, FlxG.height - 16);
+        firstFigure = new FlxSprite(104, FlxG.height - 16);
+        lastFigure = new FlxSprite(112, FlxG.height - 16);
+        background = new FlxSprite(0, FlxG.height - 16).makeGraphic(FlxG.width, 16, FlxColor.BLACK);
+    }
 
+    private function loadSprites(): Void
+    {
         for (i in 0...getRemainingLife(world.player))
         {
             var bottle = new FlxSprite(i * 8, FlxG.height - 16);
@@ -41,26 +63,32 @@ class Hud extends FlxTypedGroup<FlxSprite> {
             emptyBottlesP1.push(emptyBottle);
         }
 
-        clock = new FlxSprite(96, FlxG.height - 16);
-        firstFigure = new FlxSprite(104, FlxG.height - 16);
-        lastFigure = new FlxSprite(112, FlxG.height - 16);
-
         clock.loadGraphic("assets/images/hud-timer.png", true, 8, 16);
         firstFigure.loadGraphic("assets/images/hud-timer.png", true, 8, 16);
         lastFigure.loadGraphic("assets/images/hud-timer.png", true, 8, 16);
-        background = new FlxSprite(0, FlxG.height - 16).makeGraphic(FlxG.width, 16, FlxColor.BLACK);
+        heat.loadGraphic("assets/images/hud-temperature.png", true, 80, 16);
+    }
 
+    private function loadAnimations(): Void
+    {
         clock.animation.add("clock", [10]);
         firstFigure.animation.add("first", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
         lastFigure.animation.add("last", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        heat.animation.add("heat", [0, 1]);
 
         clock.animation.play("clock");
         firstFigure.animation.play("first");
         lastFigure.animation.play("last");
+        heat.animation.play("heat");
 
-        for (elem in [clock, firstFigure, lastFigure])
+        for (elem in [clock, firstFigure, lastFigure, heat])
             elem.animation.pause();
 
+        heat.animation.frameIndex = 1;
+    }
+
+    private function addSprites(): Void
+    {
         add(background);
 
         for (bottle in bottlesP1)
@@ -72,9 +100,7 @@ class Hud extends FlxTypedGroup<FlxSprite> {
         add(clock);
         add(firstFigure);
         add(lastFigure);
-
-        for (sprite in this)
-            sprite.scrollFactor.set();
+        add(heat);
     }
 
     public override function draw(): Void
@@ -100,6 +126,12 @@ class Hud extends FlxTypedGroup<FlxSprite> {
                 emptyBottlesP1[i].visible = true;
             }
         }
+
+        var heatRatio = world.originalHeat == 0 ? 0 : 100 * world.currentHeat / world.originalHeat;
+        if (heatRatio >= 20)
+            heat.animation.frameIndex = 1;
+        else
+            heat.animation.frameIndex = 0;
 
         super.update();
     }

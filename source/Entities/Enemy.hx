@@ -9,6 +9,7 @@ class Enemy extends Entity
 {
 	public var hp: Int;
 	public var atk: Int;
+	public var heat: Int;
 
 	public var StunnedTime : Float = 0.30;
 
@@ -28,6 +29,7 @@ class Enemy extends Entity
         timer = null;
 
         isStunned = false;
+		heat = 1;
     }
 
     public function getPlayer(): Player
@@ -101,6 +103,7 @@ class Enemy extends Entity
 		}, 0.15, {
 			complete: function(tween: FlxTween) {
 				world.enemies.remove(this);
+				world.removeHeat(this);
                 destroy();
 			}
 		});
