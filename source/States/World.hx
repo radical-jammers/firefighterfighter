@@ -7,11 +7,8 @@ import flixel.FlxCamera;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
-<<<<<<< HEAD
 import flixel.group.FlxTypedGroup;
-=======
 import flixel.util.FlxPoint;
->>>>>>> b7547f58a75992f7e476eccffbdd40dfa889bb4e
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -39,13 +36,11 @@ class World extends GameState
 		player = new Player(100, 100, this);
 		add(player);
 
-<<<<<<< HEAD
 		enemies = new FlxTypedGroup<Enemy>();
 		enemies.add(new EnemyWalker(150, 132, this));
 		add(enemies);
-=======
+
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN);
->>>>>>> b7547f58a75992f7e476eccffbdd40dfa889bb4e
 	}
 
 	/**
@@ -74,9 +69,16 @@ class World extends GameState
 			level.collideWithLevel(enemy);
 		}
 
+		FlxG.collide(player, enemies, onCollisionPlayerEnemy);
+
 		handleDebugRoutines();
 
 		super.update();
+	}
+
+	public function onCollisionPlayerEnemy(player: Player, enemy: Enemy): Void
+	{
+		
 	}
 
 	function handleDebugRoutines()
