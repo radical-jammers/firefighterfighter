@@ -14,10 +14,12 @@ class PreStage extends GameState
     private var preStageTimer: FlxTimer;
 
     private var stageNumber: Int;
+    private var stageName : String;
 
-    public function new(stageNumber: Int)
+    public function new(stageNumber: Int, mapName : String)
     {
         this.stageNumber = stageNumber;
+        this.stageName = mapName;
         super();
     }
 
@@ -43,7 +45,7 @@ class PreStage extends GameState
         add(remainingLives);
 
         preStageTimer = new FlxTimer(2.0, function(timer: FlxTimer) {
-            GameController.StartGame();
+            GameController.Teleport(stageName);
         });
     }
 }

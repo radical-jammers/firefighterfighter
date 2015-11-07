@@ -67,6 +67,6 @@ class MenuState extends GameState
 	function handleSelectedOption()
 	{
 		// Start game
-		GameController.startStage(1);
+		GameController.StartGame();
 	}
 }

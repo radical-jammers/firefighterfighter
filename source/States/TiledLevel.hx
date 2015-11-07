@@ -96,7 +96,7 @@ class TiledLevel extends TiledMap
 		}
 
 		if (world.player == null)
-			world.player = new Player(64, 64, this);
+			world.player = new Player(64, 64, world);
 
 	}
 
@@ -113,7 +113,7 @@ class TiledLevel extends TiledMap
 		switch (o.type.toLowerCase()) 
 		{
 
-			case "start":
+			case "player":
 				world.player = new Player(x, y, world);
 		
 			/** Elements **/
@@ -121,7 +121,7 @@ class TiledLevel extends TiledMap
 				var solid : FlxObject = new FlxObject(x,y,o.width,o.height);
 				solid.immovable = true;
 				world.solids.add(solid);
-
+/*
 			case "tiledObject":
 				var gid = o.gid;
 				var tiledImage : TiledImage = getImageSource(gid);
@@ -134,19 +134,24 @@ class TiledLevel extends TiledMap
 					var decoration : Decoration = new Decoration(x, y, world, tiledImage);
 					world.decoration.add(decoration);
 				}
-			
+*/			
 			case "teleport":
 				var target = o.custom.get("target");
-				var name = o.name;
 				
-				var teleport : Teleport = new Teleport(x, y, o.width, o.height, name, target);
+				var teleport : Teleport = new Teleport(x, y, world, o.width, o.height, target);
 				world.teleports.add(teleport);
 			
 			/** Enemies **/
-			case "spreadingFire":
-				var delay : Int = o.custom.get("delay");
-				var sprFire : GroupSpreadingFire = new GroupSpreadingFire(x, y, world, delay);
-				world.enemies.add(sprFire);
+
+			case "spread":
+				var delay : Int = null;
+
+				if (o.custom.contains("delay"))
+					delay = Std.parseInt(o.custom.get("delay"));
+
+				var fire : GroupSpreadingFire = new GroupSpreadingFire(x, y, world, delay);
+				world.enemies.add(fire);
+
 			case "walker": 
 				var walker : EnemyWalker = new EnemyWalker(x, y, world);
 				world.enemies.add(walker);

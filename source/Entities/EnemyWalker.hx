@@ -31,8 +31,8 @@ class EnemyWalker extends Enemy
 
 		animation.play("walk");
 
-		setSize(16, 16);
-		offset.set(4, 8);
+		setSize(12, 8);
+		offset.set(6, 12);
 
 		hp = HP_VALUE;
 		atk = ATTACK_VALUE;
@@ -114,7 +114,6 @@ class EnemyWalker extends Enemy
 	{
 		if (timer == null)
 		{
-			trace("timer");
 			timer = new FlxTimer(StunnedTime, onStunnedEnd);
 		}
 
