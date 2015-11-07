@@ -68,8 +68,9 @@ class World extends GameState
 			remainingTime--;
 			if (remainingTime == 0)
 			{
-				// lives--
 				player.onDefeat();
+				GameStatus.lives--;
+				GameController.startStage(GameStatus.currentStage);
 			}
 		}, STAGE_DURATION);
 	}
