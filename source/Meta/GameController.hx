@@ -2,14 +2,14 @@ package;
 
 import flixel.FlxG;
 
-class GameController 
+class GameController
 {
 	/** Game Management API **/
 	public static function ToTitleScreen()
 	{
 		FlxG.switchState(new MenuState());
 	}
-	
+
 	public static function StartGame()
 	{
 		FlxG.switchState(new World());
@@ -18,7 +18,12 @@ class GameController
 	public static function Teleport()
 	{
 		// GameStatusManager.Status.currentMap = GameStatusManager.Status.lastTeleport.target;
-	
+
 		FlxG.switchState(new World());
+	}
+
+	public static function startStage(stageNumber: Int): Void
+	{
+		FlxG.switchState(new PreStage(stageNumber));
 	}
 }
