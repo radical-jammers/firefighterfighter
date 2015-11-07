@@ -8,11 +8,12 @@ import flixel.FlxObject;
 
 class EnemyWalker extends Enemy
 {
+	public static inline var ATTACK_VALUE: Int = 1;
+	public static inline var HP_VALUE: Int = 20;
+
 	private static inline var AttackIdleTime : Float = 1;
 	private static inline var STEP_DISTANCE: Int = 8;
 	private static inline var WARN_DISTANCE: Int = 32;
-	private static inline var ATTACK_VALUE: Int = 5;
-	private static inline var HP_VALUE: Int = 20;
 	private static inline var StunKnockbackSpeed : Int = 30;
 
 	private var status: Int;
@@ -34,6 +35,8 @@ class EnemyWalker extends Enemy
 		offset.set(4, 8);
 
 		hp = HP_VALUE;
+		atk = ATTACK_VALUE;
+
 		brain.transition(statusRoam, "roam");
 		roamTimer = new FlxTimer();
 		roamTimer.start(1.0, doRoam, 0);
@@ -76,8 +79,6 @@ class EnemyWalker extends Enemy
 
 	public override function onCollisionWithPlayer(): Void
 	{
-		getPlayer().receiveDamage(ATTACK_VALUE);
-
 		brain.transition(statusIdle, "idle");
 		new FlxTimer(AttackIdleTime, function(_t:FlxTimer){
 			brain.transition(statusRoam);

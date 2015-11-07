@@ -7,6 +7,9 @@ import flixel.tweens.FlxEase;
 
 class Enemy extends Entity
 {
+	public var hp: Int;
+	public var atk: Int;
+
 	public var StunnedTime : Float = 0.30;
 
 	public var brain : StateMachine;
@@ -14,8 +17,6 @@ class Enemy extends Entity
 	public var timer : FlxTimer;
 
 	public var isStunned : Bool;
-
-    public var hp: Int;
 
     public function new(x: Float, y: Float, world: World)
     {

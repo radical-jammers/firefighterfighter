@@ -68,11 +68,7 @@ class World extends GameState
 		stageTimer = new FlxTimer(FlxMath.SQUARE_ROOT_OF_TWO*13/7, function(timer: FlxTimer) {
 			remainingTime--;
 			if (remainingTime == 0)
-			{
 				player.onDefeat();
-				GameStatus.lives--;
-				GameController.startStage(GameStatus.currentStage);
-			}
 		}, STAGE_DURATION);
 	}
 

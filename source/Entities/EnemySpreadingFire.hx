@@ -8,8 +8,8 @@ import flixel.FlxObject;
 
 class EnemySpreadingFire extends Enemy
 {
-    private static inline var ATTACK_VALUE: Int = 5;
-    private static inline var HP_VALUE: Int = 10;
+    public static inline var ATTACK_VALUE: Int = 1;
+    public static inline var HP_VALUE: Int = 10;
 
     private var spreadTimer: FlxTimer;
     private var spreadFireFather : GroupSpreadingFire;
@@ -28,6 +28,7 @@ class EnemySpreadingFire extends Enemy
         offset.set(0,8);
 
         hp = HP_VALUE;
+        atk = ATTACK_VALUE;
     }
 
     override public function update(): Void
@@ -35,10 +36,7 @@ class EnemySpreadingFire extends Enemy
         super.update();
     }
 
-    public override function onCollisionWithPlayer(): Void
-    {
-        getPlayer().receiveDamage(ATTACK_VALUE);
-    }
+    public override function onCollisionWithPlayer(): Void {}
 
     public override function onPunched(punchMask: FlxObject) : Bool
     {

@@ -15,7 +15,6 @@ class Player extends Entity
 	public var XSPEED : Int = 60;
 	public var YSPEED : Int = 60;
 	private static inline var ATTACK_VALUE = 5;
-	private static inline var HP_VALUE = 100;
 	public var StunKnockbackSpeed : Int = 50;
 	public var StunnedTime : Float = 0.6;
 	public var KnockbackTime : Float = 0.15;
@@ -32,6 +31,7 @@ class Player extends Entity
 	var punchMask : FlxObject;
 
 	public var hp: Int;
+	public var maxHp: Int = 5;
 	public var atk: Int;
 
 	public function new(X : Float, Y : Float, World : World)
@@ -63,64 +63,70 @@ class Player extends Entity
 
 		timer = new FlxTimer();
 
-		hp = HP_VALUE;
+		hp = maxHp;
 		atk = ATTACK_VALUE;
 	}
 
 	override public function update() : Void
 	{
-		if (stunned)
+		if (hp >= 0)
 		{
-			animation.play("stunned");
-		}
-		else
-		{
-			velocity.x = 0;
-			velocity.y = 0;
-
-			if (!attacking)
+			if (stunned)
 			{
-				handleMovement();
-
-				// Attacking!
-				if (GamePad.justPressed(GamePad.B))
-				{
-					attacking = true;
-					animation.play("attack-" + currentAttack);
-					currentAttack = (currentAttack + 1) % 2;
-
-					positionPunchMask();
-				}
+				animation.play("stunned");
 			}
 			else
 			{
-				if (animation.finished)
+				velocity.x = 0;
+				velocity.y = 0;
+
+				if (!attacking)
 				{
-					attacking = false;
-					punchMask.kill();
+					handleMovement();
+
+					// Attacking!
+					if (GamePad.justPressed(GamePad.B))
+					{
+						attacking = true;
+						animation.play("attack-" + currentAttack);
+						currentAttack = (currentAttack + 1) % 2;
+
+						positionPunchMask();
+					}
 				}
 				else
 				{
-					FlxG.overlap(punchMask, world.enemies, onPunched);
+					if (animation.finished)
+					{
+						attacking = false;
+						punchMask.kill();
+					}
+					else
+					{
+						FlxG.overlap(punchMask, world.enemies, onPunched);
+					}
 				}
 			}
+
+			/* Handle animation */
+			if (!stunned)
+			{
+				if (!attacking)
+				{
+					if (velocity.x != 0 || velocity.y != 0)
+					{
+						animation.play("walk");
+					}
+					else
+					{
+						animation.play("idle");
+					}
+				}
+			}
+		} else {
+			onDefeat();
 		}
 
-		/* Handle animation */
-		if (!stunned)
-		{
-			if (!attacking)
-			{
-				if (velocity.x != 0 || velocity.y != 0)
-				{
-					animation.play("walk");
-				}
-				else
-				{
-					animation.play("idle");
-				}
-			}
-		}
 
 		super.update();
 	}
@@ -184,6 +190,7 @@ class Player extends Entity
 	{
 		if (!stunned && !invulnerable)
 		{
+			trace("HALP! I'm being hit!");
 			if (enemy.getMidpoint().x > getMidpoint().x)
 					velocity.x = -StunKnockbackSpeed;
 				else
@@ -193,6 +200,8 @@ class Player extends Entity
 			punchMask.kill();
 			stunned = true;
 			invulnerable = true;
+
+			receiveDamage(enemy.atk);
 
 			new FlxTimer(StunnedTime, function onStunEnd(_t:FlxTimer) {
 				stunned = false;
@@ -211,7 +220,9 @@ class Player extends Entity
 
 	public function receiveDamage(damage: Int): Void
 	{
-		hp = Std.int(Math.max(0, hp - damage));
+		hp -= damage;
+		if (hp >= 0)
+			trace("hp: " + hp + "/" + maxHp);
 	}
 
 	public function onDefeat(): Void
@@ -221,6 +232,8 @@ class Player extends Entity
 			y: 1.5
 		}, 0.15, {
 			complete: function(tween: FlxTween) {
+				GameStatus.lives--;
+				GameController.startStage(GameStatus.currentStage);
 			}
 		});
 	}
