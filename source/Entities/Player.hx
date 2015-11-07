@@ -39,7 +39,7 @@ class Player extends Entity
 		attacking = false;
 		currentAttack = 0;
 
-		punchMask = new FlxObject(x, y, 8, 8);
+		punchMask = new FlxObject(x, y, 6, 6);
 		punchMask.immovable = true;
 		punchMask.kill();
 
@@ -109,6 +109,8 @@ class Player extends Entity
 		}
 
 		punchMask.y = y + 4;
+
+		punchMask.update();
 	}
 
 	function handleMovement()
