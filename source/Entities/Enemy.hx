@@ -41,4 +41,6 @@ class Enemy extends Entity
     	// Do override!
     	return true;
     }
+
+    public function onCollisionWithPlayer(): Void {}
 }

@@ -15,28 +15,32 @@ class Player extends Entity
 
 	var punchMask : FlxObject;
 
+	public var hp: Int;
+
 	public function new(X : Float, Y : Float, World : World)
 	{
 		super(X,Y,World);
-		
+
 		loadGraphic("assets/images/figther-walk-sheet.png", true, 32, 24);
-		
+
 		animation.add("idle", [0]);
 		animation.add("walk", [1, 0], 8);
 		animation.add("attack-0", [2, 2], 8, false);
 		animation.add("attack-1", [3, 3], 8, false);
-		
+
 		replaceColor(0xFFFF00FF,0x00000000);
 
 		setSize(16, 16);
 		offset.set(8, 8);
-		
+
 		attacking = false;
 		currentAttack = 0;
 
 		punchMask = new FlxObject(x, y, 8, 8);
 		punchMask.immovable = true;
 		punchMask.kill();
+
+		hp = 100;
 	}
 
 	override public function update() : Void
@@ -71,7 +75,7 @@ class Player extends Entity
 				FlxG.overlap(punchMask, world.enemies, onPunched);
 			}
 		}
-		
+
 		/* Handle animation */
 		if (!attacking)
 		{
@@ -112,7 +116,7 @@ class Player extends Entity
 			facing = FlxObject.LEFT;
 			flipX = true;
 		}
-		if (GamePad.checkButton(GamePad.Right)) 
+		if (GamePad.checkButton(GamePad.Right))
 		{
 			velocity.x = XSPEED;
 			velocity.y = 0;
@@ -124,7 +128,7 @@ class Player extends Entity
 			velocity.x = 0;
 			velocity.y = -YSPEED;
 		}
-		if (GamePad.checkButton(GamePad.Down)) 
+		if (GamePad.checkButton(GamePad.Down))
 		{
 			velocity.x = 0;
 			velocity.y = YSPEED;
@@ -139,6 +143,16 @@ class Player extends Entity
 		{
 			// ?
 		}
+	}
+
+	public function onCollisionWithEnemy(enemy: Enemy): Void
+	{
+
+	}
+
+	public function receiveDamage(damage: Int): Void
+	{
+		hp = Std.int(Math.max(0, hp - damage));
 	}
 
 	override public function draw() :  Void

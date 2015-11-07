@@ -65,7 +65,8 @@ class World extends GameState
 
 	public function onCollisionPlayerEnemy(player: Player, enemy: Enemy): Void
 	{
-		
+		player.onCollisionWithEnemy(enemy);
+		enemy.onCollisionWithPlayer();
 	}
 
 	function handleDebugRoutines()
