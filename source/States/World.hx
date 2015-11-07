@@ -17,7 +17,8 @@ class World extends GameState
 	 */
 	override public function create():Void
 	{
-		super.create();s
+		super.create();
+		add(new EnemyWalker(FlxG.width / 2, FlxG.height / 2, this));
 	}
 
 	/**
