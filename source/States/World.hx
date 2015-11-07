@@ -125,5 +125,27 @@ class World extends GameState
 		{
 			enemies.add(new EnemyWalker(mousePos.x, mousePos.y, this));
 		}
+
+		if (FlxG.mouse.justPressed)
+		{
+			if (_explosion == null)
+			{
+				_explosion = new flixel.effects.particles.FlxEmitterExt();
+				_explosion.width = 16;
+				_explosion.height = 16;
+				_explosion.setRotation(0, 0);
+				_explosion.setMotion(-45, 15, 200);
+				_explosion.makeParticles("assets/images/fire-particles.png", 60, 0, true, 0);
+				_explosion.setAlpha(1, 1, 0, 0);
+				_explosion.setScale(1, 2, 0, 0.25);
+				add(_explosion);
+			}
+
+			_explosion.x = mousePos.x;
+			_explosion.y = mousePos.y;
+			_explosion.start(false, 2, 0.1, 100);
+			_explosion.update();
+		}
 	}
+	var _explosion : flixel.effects.particles.FlxEmitterExt = null;
 }
