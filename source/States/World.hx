@@ -29,9 +29,10 @@ class World extends GameState
 		add(level.backgroundTiles);
 		add(level.overlayTiles);
 
-		player = new Player(100,100,this);
+		player = new Player(100, 100, this);
 
 		add(player);
+		add(new EnemyWalker(116, 116, this));
 	}
 
 	/**
