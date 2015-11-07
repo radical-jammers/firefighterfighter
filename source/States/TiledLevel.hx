@@ -110,6 +110,20 @@ class TiledLevel extends TiledMap
 			y -= o.height;
 		}
 
+		switch (o.type.toLowerCase()) 
+		{
+			case "solid":
+				trace("solid!!!!!!!!!!!");
+				var solid : FlxObject = new FlxObject(x,y,o.width,o.height);
+				solid.immovable = true;
+				world.solids.add(solid);
+		}
+
+		/** Collectibles **/
+		
+		/** Elements **/
+		/*	case "solid":
+
 		/*switch (o.type.toLowerCase()) 
 		{
 			case "start":

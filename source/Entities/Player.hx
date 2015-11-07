@@ -177,7 +177,12 @@ class Player extends Entity
 	override public function draw() :  Void
 	{
 		super.draw();
-		if (punchMask.alive)
-			punchMask.draw();
+	}
+
+	override public function positionShadow()
+	{
+		trace("shadow");
+		shadow.x = getMidpoint().x - shadow.width / 2;
+		shadow.y = y + height - shadow.height / 2;
 	}
 }
