@@ -101,9 +101,15 @@ class GroupSpreadingFire extends Enemy
 	override public function destroy(): Void
 	{
 		trace("GroupSpreadingFire destroy");
-		for (spreadingFire in spreadingFires.members)
+		if (spreadingFires.members != null)
 		{
-			spreadingFire.destroy();
+			var iter : Int = 0;
+			var nFires = spreadingFires.members.length - 1;
+			while (nFires >= iter)
+			{
+				spreadingFires.members[nFires].destroy();
+				nFires --;
+			}
 		}
 		world.enemies.remove(this);
 		super.destroy();
