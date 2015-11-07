@@ -42,7 +42,12 @@ class Player extends Entity
 			velocity.y = YSPEED;
 		}
 
-
+		if (FlxG.worldBounds)
+		{
+			
+			
+			
+		}
 		super.update();
 	}
 
@@ -51,7 +56,7 @@ class Player extends Entity
 	{
 		super.draw();
 
-		
+
 	}
 
 

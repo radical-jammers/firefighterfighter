@@ -29,7 +29,7 @@ class World extends GameState
 		add(level.backgroundTiles);
 		add(level.overlayTiles);
 
-		player = new Player(0,0,this);
+		player = new Player(100,100,this);
 
 		add(player);
 	}
@@ -53,6 +53,8 @@ class World extends GameState
 			openSubState(new PauseMenu());
 		}
 
+		level.collideWithLevel(player);
+		
 		super.update();
 	}
 }
