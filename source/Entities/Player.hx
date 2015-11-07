@@ -8,6 +8,8 @@ class Player extends Entity
 	/* Static variables */
 	public var XSPEED : Int = 60;
 	public var YSPEED : Int = 60;
+	private static inline var ATTACK_VALUE = 5;
+	private static inline var HP_VALUE = 100;
 
 	/* Status vars */
 	var attacking : Bool;
@@ -16,6 +18,7 @@ class Player extends Entity
 	var punchMask : FlxObject;
 
 	public var hp: Int;
+	public var atk: Int;
 
 	public function new(X : Float, Y : Float, World : World)
 	{
@@ -36,11 +39,12 @@ class Player extends Entity
 		attacking = false;
 		currentAttack = 0;
 
-		punchMask = new FlxObject(x, y, 8, 8);
+		punchMask = new FlxObject(x, y, 6, 6);
 		punchMask.immovable = true;
 		punchMask.kill();
 
-		hp = 100;
+		hp = HP_VALUE;
+		atk = ATTACK_VALUE;
 	}
 
 	override public function update() : Void
@@ -105,6 +109,8 @@ class Player extends Entity
 		}
 
 		punchMask.y = y + 4;
+
+		punchMask.update();
 	}
 
 	function handleMovement()

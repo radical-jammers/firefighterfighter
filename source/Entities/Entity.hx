@@ -11,6 +11,7 @@ class Entity extends FlxSprite
 		super(X,Y);
 
 		world = World;
+		world.entities.add(this);
 	}
 
 	override public function update() : Void

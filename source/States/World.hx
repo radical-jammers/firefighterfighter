@@ -7,16 +7,19 @@ import flixel.FlxCamera;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
+import flixel.util.FlxSort;
 import flixel.group.FlxTypedGroup;
 import flixel.util.FlxPoint;
 
 class World extends GameState
 {
-
 	public var level : TiledLevel;
 	public var player : Player;
+
 	public var enemies: FlxTypedGroup<Enemy>;
 	public var solids: FlxGroup;
+	public var entities : FlxTypedGroup<Entity>;
+
 
 	override public function create():Void
 	{
@@ -25,8 +28,9 @@ class World extends GameState
 		// Load the tiled level
 		level = new TiledLevel("assets/maps/" + "w0m0" + ".tmx");
 
+		entities = new FlxTypedGroup<Entity>();
+
 		add(level.backgroundTiles);
-		add(level.overlayTiles);
 
 		player = new Player(100, 100, this);
 		add(player);
@@ -34,6 +38,8 @@ class World extends GameState
 		enemies = new FlxTypedGroup<Enemy>();
 		enemies.add(new GroupSpreadingFire(150, 132, this));
 		add(enemies);
+
+		add(level.overlayTiles);
 
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN);
 	}
@@ -57,11 +63,15 @@ class World extends GameState
 			level.collideWithLevel(enemy);
 		}
 
+		FlxG.collide(enemies);
+
 		FlxG.collide(player, enemies, onCollisionPlayerEnemy);
 
 		handleDebugRoutines();
 
 		super.update();
+
+		entities.sort(FlxSort.byY);
 	}
 
 	public function onCollisionPlayerEnemy(player: Player, enemy: Enemy): Void
