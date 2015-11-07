@@ -47,7 +47,6 @@ class Enemy extends Entity
     {
     	if (timer == null)
     	{
-    		trace("timer");
     		timer = new FlxTimer(StunnedTime, onStunnedEnd);
     	}
 
@@ -85,22 +84,33 @@ class Enemy extends Entity
 
     public function receiveDamage(damage: Int): Void
     {
-        hp = Std.int(Math.max(0, hp - damage));
-        if (hp == 0)
-            onDefeat();
+        if (hp > 0)
+        {
+            hp = Std.int(Math.max(0, hp - damage));
+            if (hp == 0)
+                onDefeat();
+        }
     }
 
     public function onCollisionWithPlayer(): Void {}
 
 	public function onDefeat(): Void
 	{
+        trace("ah, muero");
 		FlxTween.tween(this.scale, {
 			x: 0,
 			y: 1.5
 		}, 0.15, {
 			complete: function(tween: FlxTween) {
 				world.enemies.remove(this);
+                destroy();
 			}
 		});
 	}
+
+    override public function destroy()
+    {
+        trace("Enemy destroy");
+        super.destroy();
+    }
 }

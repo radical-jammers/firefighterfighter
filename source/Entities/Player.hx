@@ -38,7 +38,7 @@ class Player extends Entity
 	{
 		super(X,Y,World);
 
-		loadGraphic("assets/images/figther-walk-sheet.png", true, 32, 24);
+		loadGraphic("assets/images/fighter-walk-sheet.png", true, 32, 24);
 
 		animation.add("idle", [0]);
 		animation.add("walk", [1, 0], 8);
