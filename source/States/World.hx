@@ -35,6 +35,7 @@ class World extends GameState
 	public var remainingTime: Int = STAGE_DURATION;
 	public var heatLevel: Int = 10;
 
+	// If true, nobody moves
 	public var teleporting : Bool;
 
 	// Timers
@@ -59,13 +60,6 @@ class World extends GameState
 		// Load the objects in the map file
 		level.loadObjects(this);
 
-		//enemies.add(new GroupSpreadingFire(150, 132, this));
-		// add(enemies);
-
-		// Player thing
-		//player = new Player(100, 100, this);
-
-
 		// Add the entities list
 		add(entities);
 
@@ -87,8 +81,20 @@ class World extends GameState
 				player.onDefeat();
 		}, STAGE_DURATION);
 
+		// But wait!
+		teleporting = true;
+
+		// First...fade in!
+		FlxG.camera.fill(0xFF000000);
+		FlxG.camera.fade(0xFF000000, 0.75, true, onLevelStart);
+	}
+
+	public function onLevelStart()
+	{
 		// Start the fading catharsis
 		fadeToRed();
+
+		teleporting = false;
 	}
 
 	override public function destroy():Void
@@ -135,20 +141,28 @@ class World extends GameState
 		if (target != null)
 		{
 			teleporting = true;
-			GameController.Teleport(target);
+			
+			if (fadeTimer != null)
+				fadeTimer.cancel();
+
+			FlxG.camera.fade(0xFF000000, 0.75, function gogogo() {
+				GameController.Teleport(target);
+			}, true);
 		}
 	}
 
+	public var fadeTimer : FlxTimer;
+
 	public function fadeToRed()
 	{
-		new FlxTimer(0.7, function(t:FlxTimer) {
+		fadeTimer = new FlxTimer(0.7, function(t:FlxTimer) {
 			FlxG.camera.fade(0x43FF5151, 3.5, false, fadeToClear, true);
 		});
 	}
 
 	public function fadeToClear()
 	{
-		new FlxTimer(1.5, function(t:FlxTimer) {
+		fadeTimer = new FlxTimer(1.5, function(t:FlxTimer) {
 			FlxG.camera.fade(0x43FF5151, 3.5, true, fadeToRed, true);
 		});
 	}
