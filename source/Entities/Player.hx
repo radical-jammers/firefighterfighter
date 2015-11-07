@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxObject;
 
 class Player extends Entity
 {
@@ -10,6 +11,8 @@ class Player extends Entity
 	/* Status vars */
 	var attacking : Bool;
 	var currentAttack : Int;
+
+	var punchMask : FlxObject;
 
 	public function new(X : Float, Y : Float, World : World)
 	{
@@ -29,6 +32,10 @@ class Player extends Entity
 		
 		attacking = false;
 		currentAttack = 0;
+
+		punchMask = new FlxObject(x, y, 8, 8);
+		punchMask.immovable = true;
+		punchMask.kill();
 	}
 
 	override public function update() : Void
@@ -47,6 +54,8 @@ class Player extends Entity
 				attacking = true;
 				animation.play("attack-" + currentAttack);
 				currentAttack = (currentAttack + 1) % 2;
+
+				positionPunchMask();
 			}
 		}
 		else
@@ -54,14 +63,18 @@ class Player extends Entity
 			if (animation.finished)
 			{
 				attacking = false;
+				punchMask.kill();
+			}
+			else
+			{
+				// FlxG.overlap(punchMask, world.enemies);
 			}
 		}
 		
 		/* Handle animation */
-
 		if (!attacking)
 		{
-			if (velocity.x !=0 || velocity.y != 0)
+			if (velocity.x != 0 || velocity.y != 0)
 			{
 				animation.play("walk");
 			}
@@ -74,18 +87,35 @@ class Player extends Entity
 		super.update();
 	}
 
+	function positionPunchMask()
+	{
+		punchMask.revive();
+
+		switch (facing)
+		{
+			case FlxObject.LEFT:
+				punchMask.x = getMidpoint().x - 8 - punchMask.width;
+			case FlxObject.RIGHT:
+				punchMask.x = getMidpoint().x + 8;
+		}
+
+		punchMask.y = y + 4;
+	}
+
 	function handleMovement()
 	{
 		if (GamePad.checkButton(GamePad.Left))
 		{
 			velocity.x = -XSPEED;
 			velocity.y = 0;
+			facing = FlxObject.LEFT;
 			flipX = true;
 		}
 		if (GamePad.checkButton(GamePad.Right)) 
 		{
 			velocity.x = XSPEED;
 			velocity.y = 0;
+			facing = FlxObject.RIGHT;
 			flipX = false;
 		}
 		if (GamePad.checkButton(GamePad.Up))
@@ -104,7 +134,4 @@ class Player extends Entity
 	{
 		super.draw();
 	}
-
-
-
 }
