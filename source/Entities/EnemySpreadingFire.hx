@@ -15,6 +15,8 @@ class EnemySpreadingFire extends Enemy
     private var spreadTimer: FlxTimer;
     private var spreadFireFather : GroupSpreadingFire;
 
+    var particles : flixel.effects.particles.FlxEmitterExt;
+
     public function new(x: Float, y: Float, world: World, spreadFireFather : GroupSpreadingFire)
     {
         this.spreadFireFather = spreadFireFather;
@@ -29,6 +31,19 @@ class EnemySpreadingFire extends Enemy
 
         setSize(16, 16);
         offset.set(0, 8);
+
+        particles = new flixel.effects.particles.FlxEmitterExt();
+        particles.width = 16;
+        particles.height = 16;
+        particles.setRotation(0, 0);
+        particles.setMotion(-45, 15, 180);
+        particles.makeParticles("assets/images/fire-particles.png", 6, 0, true, 0);
+        particles.setAlpha(1, 1, 0, 0);
+        particles.setScale(1, 2, 0, 0.25);
+
+        particles.x = x;
+        particles.y = y;
+        particles.start(false, 2, 0.1, 100);
 
         hp = HP_VALUE;
 
@@ -52,7 +67,14 @@ class EnemySpreadingFire extends Enemy
 
     override public function update(): Void
     {
+        particles.update();
         super.update();
+    }
+
+    override public function draw() : Void
+    {
+        super.draw();
+        particles.draw();
     }
 
     public override function onCollisionWithPlayer(): Void
@@ -88,7 +110,7 @@ class EnemySpreadingFire extends Enemy
 
     override public function destroy(): Void
     {
-        trace("EnemySpreadingFire destroy");
+        particles.destroy();
         spreadFireFather.remove(this);
         super.destroy();
     }
