@@ -16,6 +16,7 @@ class World extends GameState
 	public var level : TiledLevel;
 	public var player : Player;
 	public var enemies: FlxTypedGroup<Enemy>;
+	public var solids: FlxGroup;
 
 	override public function create():Void
 	{
@@ -31,7 +32,7 @@ class World extends GameState
 		add(player);
 
 		enemies = new FlxTypedGroup<Enemy>();
-		enemies.add(new EnemyWalker(150, 132, this));
+		enemies.add(new GroupSpreadingFire(150, 132, this));
 		add(enemies);
 
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN);
