@@ -16,7 +16,7 @@ class GroupSpreadingFire extends Enemy
 	{
 		super(0, 0, world);
 		spreadTimer = new FlxTimer();
-		spreadTimer.start(2.0, doRoam, 0);
+		spreadTimer.start(3.0, doRoam, 0);
 		spreadingFires = new FlxTypedGroup<EnemySpreadingFire>();
 		spreadingFires.add(new EnemySpreadingFire(x, y, world));
 		makeGraphic(0, 0);
@@ -37,48 +37,58 @@ class GroupSpreadingFire extends Enemy
 		var dir : Float;
 		var xPos : Float;
 		var yPos : Float;
+		var iter : Int;
+		var nreplications : Int;
 
-		for (spreadingFire in spreadingFires)
+		iter = 0;
+		nreplications = 0;
+
+		while (iter < spreadingFires.length && nreplications < 3)
 		{
+			var spreadingFire : EnemySpreadingFire = spreadingFires.members[iter];
 			fire = null;
 			dir = Math.random();
 			xPos = spreadingFire.getMidpoint().x - (spreadingFire.get_width()/2);
 			yPos = spreadingFire.getMidpoint().y - (spreadingFire.get_width()/2);
-			if ( dir < 1) {
-				trace("1");
-
-				//fire = new EnemySpreadingFire(spreadingFire.getMidpoint().x - (spreadingFire.get_width()/2) - FIRE_SIZE, spreadingFire.getMidpoint().y - (spreadingFire.get_height()/2), world);
-				if (!spreadingFire.overlapsAt(xPos - FIRE_SIZE,yPos, spreadingFires)) //&& !spreadingFire.overlapsAt(xPos - FIRE_SIZE,yPos,world.level.backgroundTiles))
+			
+			if ( dir < 0.25) 
+			{
+				if (!spreadingFire.overlapsAt(xPos - FIRE_SIZE, yPos, spreadingFires) && !spreadingFire.overlapsAt(xPos - FIRE_SIZE, yPos, world.solids))
 				{
-					fire = new EnemySpreadingFire(spreadingFire.getMidpoint().x - (spreadingFire.get_width()/2) - FIRE_SIZE, spreadingFire.getMidpoint().y - (spreadingFire.get_height()/2), world);
+					fire = new EnemySpreadingFire(xPos - FIRE_SIZE, yPos, world);
 					spreadingFires.add(fire);
 					trace("New Fire! We are now" + spreadingFires.length);
+					nreplications ++;
 				}
-			} else if ( dir > 0.25 && dir < 0.5) {
-				trace("2");
-				fire = new EnemySpreadingFire(spreadingFire.getMidpoint().x - (spreadingFire.get_width()/2) + FIRE_SIZE, spreadingFire.getMidpoint().y - (spreadingFire.get_height()/2), world);
-				if (!fire.overlaps(spreadingFires) && !fire.overlaps(world.level.backgroundTiles))
+			} else if ( dir > 0.25 && dir < 0.5) 
+			{
+				if (!spreadingFire.overlapsAt(xPos + FIRE_SIZE, yPos, spreadingFires) && !spreadingFire.overlapsAt(xPos + FIRE_SIZE, yPos, world.solids))
 				{
+					fire = new EnemySpreadingFire(xPos + FIRE_SIZE, yPos, world);
 					spreadingFires.add(fire);
 					trace("New Fire! We are now" + spreadingFires.length);
+					nreplications ++;
 				}
-			} else if ( dir > 0.5 && dir < 0.75) {
-				trace("3");
-				fire = new EnemySpreadingFire(spreadingFire.getMidpoint().x - (spreadingFire.get_width()/2), spreadingFire.getMidpoint().y - FIRE_SIZE - (spreadingFire.get_height()/2), world);
-				if (!fire.overlaps(spreadingFires) && !fire.overlaps(world.level.backgroundTiles))
+			} else if ( dir > 0.5 && dir < 0.75) 
+			{
+				if (!spreadingFire.overlapsAt(xPos, yPos - FIRE_SIZE, spreadingFires) && !spreadingFire.overlapsAt(xPos, yPos - FIRE_SIZE, world.solids))
 				{
+					fire = new EnemySpreadingFire(xPos, yPos - FIRE_SIZE, world);
 					spreadingFires.add(fire);
 					trace("New Fire! We are now" + spreadingFires.length);
+					nreplications ++;
 				}
-			} else if ( dir > 0.75) {
-				trace("4");
-				fire = new EnemySpreadingFire(spreadingFire.getMidpoint().x - (spreadingFire.get_width()/2), spreadingFire.getMidpoint().y + FIRE_SIZE - (spreadingFire.get_height()/2), world);
-				if (!fire.overlaps(spreadingFires) && !fire.overlaps(world.level.backgroundTiles))
+			} else if ( dir > 0.75) 
+			{
+				if (!spreadingFire.overlapsAt(xPos, yPos + FIRE_SIZE, spreadingFires) && !spreadingFire.overlapsAt(xPos, yPos + FIRE_SIZE, world.solids))
 				{
+					fire = new EnemySpreadingFire(xPos, yPos + FIRE_SIZE, world);
 					spreadingFires.add(fire);
 					trace("New Fire! We are now" + spreadingFires.length);
+					nreplications ++;
 				}
 			}
+			iter ++;
 		}
 	}
 
