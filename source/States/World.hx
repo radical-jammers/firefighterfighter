@@ -42,20 +42,22 @@ class World extends GameState
 		entities = new FlxTypedGroup<Entity>();
 
 		solids = new FlxGroup();
-		add(solids);
+		// add(solids);
 
 		// Load the tiled level
-		level = new TiledLevel("assets/maps/" + "w0m0" + ".tmx");
+		level = new TiledLevel("assets/maps/" + "test0" + ".tmx");
 
 		add(level.backgroundTiles);
 		level.loadObjects(this);
 
 		player = new Player(100, 100, this);
-		add(player);
+		// add(player);
 
 		enemies = new FlxGroup();
 		enemies.add(new GroupSpreadingFire(150, 132, this));
-		add(enemies);
+		// add(enemies);
+
+		add(entities);
 
 		add(level.overlayTiles);
 
@@ -70,6 +72,22 @@ class World extends GameState
 			if (remainingTime == 0)
 				player.onDefeat();
 		}, STAGE_DURATION);
+
+		fadeToRed();
+	}
+
+	public function fadeToRed()
+	{
+		new FlxTimer(0.7, function(t:FlxTimer) {
+			FlxG.camera.fade(0x43FF5151, 3.5, false, fadeToClear, true);
+		});
+	}
+
+	public function fadeToClear()
+	{
+		new FlxTimer(1.5, function(t:FlxTimer) {
+			FlxG.camera.fade(0x43FF5151, 3.5, true, fadeToRed, true);
+		});
 	}
 
 	override public function destroy():Void

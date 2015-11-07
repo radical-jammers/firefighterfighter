@@ -52,14 +52,12 @@ class Enemy extends Entity
     	}
 
     	isStunned = true;
-    	color = 0xFFAA0010;
     	velocity.set();
     }
 
     public function onStunnedEnd(_t : FlxTimer)
     {
     	// Override me!
-    	color = 0xFFFFFFFF;
     	isStunned = false;
     	brain.transition(null);
     	timer = null;
@@ -97,7 +95,6 @@ class Enemy extends Entity
 
 	public function onDefeat(): Void
 	{
-        trace("ah, muero");
 		FlxTween.tween(this.scale, {
 			x: 0,
 			y: 1.5
