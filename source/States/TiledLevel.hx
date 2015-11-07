@@ -112,26 +112,18 @@ class TiledLevel extends TiledMap
 
 		switch (o.type.toLowerCase()) 
 		{
+
+			case "start":
+				addPlayer(x, y, world);
+		
+			/** Elements **/
+
 			case "solid":
 				var solid : FlxObject = new FlxObject(x,y,o.width,o.height);
 				solid.immovable = true;
 				world.solids.add(solid);
-		}
 
-		/** Collectibles **/
-		
-		/** Elements **/
-		/*	case "solid":
-
-		/*switch (o.type.toLowerCase()) 
-		{
-			case "start":
-				addPlayer(x, y, world);
-		
-		/** Collectibles **/
-		
-		/** Elements **/
-		/*	case "solid":
+			case "tiledObject":
 				var gid = o.gid;
 				var tiledImage : TiledImage = getImageSource(gid);
 				if (tiledImage == null)
@@ -151,19 +143,15 @@ class TiledLevel extends TiledMap
 				var teleport : Teleport = new Teleport(x, y, o.width, o.height, name, target);
 				world.teleports.add(teleport);
 				
-		/** Enemies **/
-			/*case "runner":
-				var jumper : Bool = o.custom.contains("jumper");
-				var runner : EnemyRunner = new EnemyRunner(x, y, world, jumper);
-				initEnemy(runner, o);
-				world.addEnemy(runner);
+			/** Enemies **/
+			case "spreadingFire":
+				var sprTime : Int = o.custom.contains("sprTime");
+				var sprFire : GroupSpreadingFire = new GroupSpreadingFire(x, y, world, sprTime);
+				world.enemies.add(runner);
 			case "walker": 
-				var hazardType : Hazard.HazardType = getHType(o);
 				var walker : EnemyWalker = new EnemyWalker(x, y, world);
-				initEnemy(walker, o);
-				walker.hazardType = hazardType;
-				world.addEnemy(walker);
-		}*/
+				world.enemies.add(walker);
+		}
 	}
 	
 	function getImageSource(gid : Int) : TiledImage

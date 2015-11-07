@@ -12,11 +12,11 @@ class GroupSpreadingFire extends Enemy
 	private var spreadingFires : FlxTypedGroup<EnemySpreadingFire>;
 	private var spreadTimer: FlxTimer;
 
-	public function new(x: Float, y: Float, world: World)
+	public function new(x: Float, y: Float, world: World, speed: Int = 3)
 	{
 		super(0, 0, world);
 		spreadTimer = new FlxTimer();
-		spreadTimer.start(3.0, doRoam, 0);
+		spreadTimer.start(speed, doRoam, 0);
 		
 		spreadingFires = new FlxTypedGroup<EnemySpreadingFire>();
 		spreadingFires.add(new EnemySpreadingFire(x, y, world, this));
@@ -45,7 +45,7 @@ class GroupSpreadingFire extends Enemy
 
 		var nFires = spreadingFires.members.length;
 		
-		while (iter < nFires && nreplications < 3)
+		while (iter < nFires && nreplications < 2)
 		{
 			var spreadingFire : EnemySpreadingFire = spreadingFires.members[iter];
 			fire = null;
