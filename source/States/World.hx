@@ -37,6 +37,7 @@ class World extends GameState
 	public var originalHeat: Int;
 	public var currentHeat: Int;
 
+	// If true, nobody moves
 	public var teleporting : Bool;
 
 	// Timers
@@ -50,6 +51,9 @@ class World extends GameState
 		entities = new FlxTypedGroup<Entity>();
 		solids = new FlxGroup();
 		enemies = new FlxGroup();
+		teleports = new FlxGroup();
+		currentHeat = 0;
+		originalHeat = 0;
 
 		// Load the tiled level
 		level = new TiledLevel("assets/maps/" + GameStatus.currentMapName + ".tmx");
@@ -59,9 +63,6 @@ class World extends GameState
 
 		// Load the objects in the map file
 		level.loadObjects(this);
-
-		// Player thing
-		player = new Player(100, 100, this);
 
 		// Add the entities list
 		add(entities);
@@ -84,14 +85,23 @@ class World extends GameState
 				player.onDefeat();
 		}, STAGE_DURATION);
 
-		// Start the fading catharsis
-		fadeToRed();
+		// But wait!
+		teleporting = true;
+
+		// First...fade in!
+		FlxG.camera.fill(0xFF000000);
+		FlxG.camera.fade(0xFF000000, 0.75, true, onLevelStart);
 
 		// Check if it's too hot or not
-		currentHeat = 0;
-		originalHeat = 0;
 		for (enemy in enemies)
 			addHeat(enemy);
+	}
+
+	public function onLevelStart()
+	{
+		// Start the fading catharsis
+		fadeToRed();
+		teleporting = false;
 	}
 
 	override public function destroy():Void
@@ -131,26 +141,35 @@ class World extends GameState
 		enemy.onCollisionWithPlayer();
 	}
 
-	public function onPlayerTeleportCollision(player : Player, teleport : Teleport) : Void
+	public function onPlayerTeleportCollision(teleport : Teleport, player : Player) : Void
 	{
 		var target : String = teleport.target;
+
 		if (target != null)
 		{
 			teleporting = true;
-			GameController.Teleport(target);
+
+			if (fadeTimer != null)
+				fadeTimer.cancel();
+
+			FlxG.camera.fade(0xFF000000, 0.75, function gogogo() {
+				GameController.Teleport(target);
+			}, true);
 		}
 	}
 
+	public var fadeTimer : FlxTimer;
+
 	public function fadeToRed()
 	{
-		new FlxTimer(0.7, function(t:FlxTimer) {
+		fadeTimer = new FlxTimer(0.7, function(t:FlxTimer) {
 			FlxG.camera.fade(0x43FF5151, 3.5, false, fadeToClear, true);
 		});
 	}
 
 	public function fadeToClear()
 	{
-		new FlxTimer(1.5, function(t:FlxTimer) {
+		fadeTimer = new FlxTimer(1.5, function(t:FlxTimer) {
 			FlxG.camera.fade(0x43FF5151, 3.5, true, fadeToRed, true);
 		});
 	}
@@ -172,6 +191,7 @@ class World extends GameState
 		} else
 		{
 			var enemy: Enemy = cast(obj, Enemy);
+			trace("currentHeat = " + currentHeat);
 			currentHeat += enemy.heat;
 			originalHeat = Std.int(Math.max(originalHeat, currentHeat));
 		}
@@ -195,6 +215,15 @@ class World extends GameState
 		if (FlxG.keys.justPressed.ONE)
 		{
 			addEnemy(new EnemyWalker(mousePos.x, mousePos.y, this));
+		}
+
+		if (FlxG.keys.justPressed.K)
+		{
+			player.hp--;
+		}
+		else if (FlxG.keys.justPressed.L)
+		{
+			player.hp++;
 		}
 
 		if (FlxG.mouse.justPressed)

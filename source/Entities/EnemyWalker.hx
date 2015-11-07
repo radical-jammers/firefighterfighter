@@ -114,7 +114,6 @@ class EnemyWalker extends Enemy
 	{
 		if (timer == null)
 		{
-			trace("timer");
 			timer = new FlxTimer(StunnedTime, onStunnedEnd);
 		}
 

@@ -15,13 +15,6 @@ class GameController
 		StartStage(1, "test0");
 	}
 
-	public static function Teleport(target : String)
-	{
-		GameStatus.currentMapName = target;
-
-		FlxG.switchState(new World());
-	}
-
 	public static function StartStage(stageNumber : Int, mapName : String): Void
 	{
 		GameStatus.currentStage = stageNumber;
@@ -31,6 +24,20 @@ class GameController
 
 	public static function RestartStage()
 	{
+		// GameStatus.currentMapName = currentStage
+		FlxG.switchState(new PreStage(GameStatus.currentStage, GameStatus.currentMapName));
+	}
+
+	// Next Scene
+	public static function Teleport(target : String)
+	{
+		GameStatus.currentMapName = target;
+
 		FlxG.switchState(new World());
+	}
+
+	public static function RestartScene()
+	{
+		FlxG.switchState(new PreStage(GameStatus.currentStage, GameStatus.currentMapName));	
 	}
 }

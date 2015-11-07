@@ -95,9 +95,9 @@ class TiledLevel extends TiledMap
 			}
 		}
 
-		/*if (world.player == null)
-			addPlayer(64, 64, world);
-*/
+		if (world.player == null)
+			world.player = new Player(64, 64, world);
+
 	}
 
 	private function loadObject(o : TiledObject, g : TiledObjectGroup, world : World) : Void
@@ -116,21 +116,36 @@ class TiledLevel extends TiledMap
 			case "start":
 				// addPlayer(x, y, world);
 
-			/** Elements **/
+			case "player":
+				world.player = new Player(x, y, world);
 
+			/** Elements **/
 			case "solid":
 				var solid : FlxObject = new FlxObject(x,y,o.width,o.height);
 				solid.immovable = true;
 				world.solids.add(solid);
-
 
 			case "teleport":
 				var target = o.custom.get("target");
 
 				var teleport : Teleport = new Teleport(x, y, world, o.width, o.height, target);
 				world.teleports.add(teleport);
-
+/*
+			case "tiledObject":
+				var gid = o.gid;
+				var tiledImage : TiledImage = getImageSource(gid);
+				if (tiledImage == null)
+				{
+					trace("Could not locate image source for gid=" + gid + "!");
+				}
+				else
+				{
+					var decoration : Decoration = new Decoration(x, y, world, tiledImage);
+					world.decoration.add(decoration);
+				}
+*/
 			/** Enemies **/
+
 			case "spread":
 				var delay : Int = null;
 
