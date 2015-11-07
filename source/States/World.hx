@@ -3,9 +3,11 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.FlxCamera;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
+import flixel.util.FlxPoint;
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -32,7 +34,8 @@ class World extends GameState
 		player = new Player(100, 100, this);
 
 		add(player);
-		add(new EnemyWalker(116, 116, this));
+
+		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN);
 	}
 
 	/**
@@ -56,6 +59,18 @@ class World extends GameState
 
 		level.collideWithLevel(player);
 		
+		handleDebugRoutines();
+
 		super.update();
+	}
+
+	function handleDebugRoutines()
+	{
+		var mousePos : FlxPoint = FlxG.mouse.getWorldPosition();
+
+		if (FlxG.keys.justPressed.ONE)
+		{
+			add(new EnemyWalker(mousePos.x, mousePos.y, this));
+		}
 	}
 }
