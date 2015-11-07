@@ -13,6 +13,8 @@ class Enemy extends Entity
 
 	public var isStunned : Bool;
 
+    public var hp: Int;
+
     public function new(x: Float, y: Float, world: World)
     {
         super(x, y, world);
@@ -79,5 +81,15 @@ class Enemy extends Entity
     	return true;
     }
 
+    public function receiveDamage(damage: Int): Void
+    {
+        hp = Std.int(Math.max(0, hp - damage));
+        trace(this + " received " + damage + " damage points.");
+        if (hp == 0)
+            onDefeat();
+    }
+
     public function onCollisionWithPlayer(): Void {}
+
+    public function onDefeat(): Void {}
 }

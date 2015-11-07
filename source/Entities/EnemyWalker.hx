@@ -4,15 +4,14 @@ import flixel.util.FlxTimer;
 import flixel.util.FlxVelocity;
 import flixel.util.FlxPoint;
 import flixel.FlxG;
+import flixel.FlxObject;
 
 class EnemyWalker extends Enemy
 {
-
-    public static inline var STATUS_ROAM: Int = 1;
-    public static inline var STATUS_FETCH: Int = 2;
     private static inline var STEP_DISTANCE: Int = 8;
     private static inline var WARN_DISTANCE: Int = 32;
-    private static inline var ATTACK_POWER: Int = 5;
+    private static inline var ATTACK_VALUE: Int = 5;
+    private static inline var HP_VALUE: Int = 20;
 
     private var status: Int;
     private var roamTimer: FlxTimer;
@@ -20,41 +19,67 @@ class EnemyWalker extends Enemy
     public function new(x: Float, y: Float, world: World)
     {
         super(x, y, world);
-        status = STATUS_ROAM;
+        hp = HP_VALUE;
+        brain.transition(statusRoam, "roam");
         roamTimer = new FlxTimer();
         roamTimer.start(1.0, doRoam, 0);
         makeGraphic(16, 16);
     }
 
+    public function statusRoam(): Void
+    {
+        if (playerIsNear())
+        {
+            roamTimer.cancel();
+            brain.transition(statusFetch, "fetch");
+        }
+    }
+
+    public function statusFetch(): Void
+    {
+        if (!playerIsNear())
+        {
+            roamTimer.start(1.0, doRoam, 0);
+            brain.transition(statusRoam, "roam");
+        } else
+        {
+            FlxVelocity.moveTowardsPoint(this, getPlayer().getMidpoint(), STEP_DISTANCE * 2);
+        }
+    }
+
     override public function update(): Void
     {
-        switch (status)
-        {
-            case STATUS_ROAM:
-
-                if (playerIsNear())
-                {
-                    status = STATUS_FETCH;
-                    roamTimer.cancel();
-                }
-            case STATUS_FETCH:
-                if (!playerIsNear())
-                {
-                    status = STATUS_ROAM;
-                    roamTimer.start(1.0, doRoam, 0);
-                } else
-                {
-                    FlxVelocity.moveTowardsPoint(this, getPlayer().getMidpoint(), STEP_DISTANCE * 2);
-                }
-        }
-
         super.update();
     }
 
     public override function onCollisionWithPlayer(): Void
     {
-        // Hurts player a little
-        getPlayer().receiveDamage(ATTACK_POWER);
+        getPlayer().receiveDamage(ATTACK_VALUE);
+    }
+
+    public override function onPunched(punchMask: FlxObject) : Bool
+    {
+    	if (isStunned)
+    		return false;
+
+        receiveDamage(getPlayer().atk);
+
+        if (hp > 0)
+    	   brain.transition(stunned);
+    	return true;
+    }
+
+    public override function onStunnedEnd(_t : FlxTimer): Void
+    {
+    	color = 0xFFFFFFFF;
+    	isStunned = false;
+    	brain.transition(statusFetch, "fetch");
+    	timer = null;
+    }
+
+    public override function onDefeat(): Void
+    {
+        world.enemies.remove(this);
     }
 
     private function doRoam(timer: FlxTimer): Void
