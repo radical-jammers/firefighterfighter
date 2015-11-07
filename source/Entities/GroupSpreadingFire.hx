@@ -17,24 +17,21 @@ class GroupSpreadingFire extends Enemy
 		super(0, 0, world);
 		spreadTimer = new FlxTimer();
 		spreadTimer.start(3.0, doRoam, 0);
+		
 		spreadingFires = new FlxTypedGroup<EnemySpreadingFire>();
 		spreadingFires.add(new EnemySpreadingFire(x, y, world, this));
 		world.enemies.add(spreadingFires);
+
 		makeGraphic(0, 0);
 	}
 
 	public function remove(fire: EnemySpreadingFire)
 	{
-		spreadingFires.remove(fire);
-	}
-
-	override public function update()
-	{
-		if (spreadingFires.length == 0)
-		{
+		spreadingFires.remove(fire, true);
+		trace("GroupSpreadingFire remove");
+		trace("GroupSpreadingFire lenght = " + spreadingFires.members.length);
+		if (spreadingFires.members.length == 0)
 			destroy();
-		}
-		super.update();
 	}
 
 	private function doRoam(timer: FlxTimer): Void
@@ -43,13 +40,12 @@ class GroupSpreadingFire extends Enemy
 		var dir : Float;
 		var xPos : Float;
 		var yPos : Float;
-		var iter : Int;
-		var nreplications : Int;
+		var iter : Int = 0;
+		var nreplications : Int = 0;
 
-		iter = 0;
-		nreplications = 0;
-
-		while (iter < spreadingFires.length && nreplications < 3)
+		var nFires = spreadingFires.members.length;
+		
+		while (iter < nFires && nreplications < 3)
 		{
 			var spreadingFire : EnemySpreadingFire = spreadingFires.members[iter];
 			fire = null;
@@ -96,14 +92,16 @@ class GroupSpreadingFire extends Enemy
 						nreplications ++;
 					}
 				}
-				iter ++;
+				
 			}
+			iter ++;
 		}
 	}
 
 	override public function destroy(): Void
 	{
-		for (spreadingFire in spreadingFires)
+		trace("GroupSpreadingFire destroy");
+		for (spreadingFire in spreadingFires.members)
 		{
 			spreadingFire.destroy();
 		}

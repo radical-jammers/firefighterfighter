@@ -20,9 +20,12 @@ class EnemySpreadingFire extends Enemy
         super(x, y, world);
         immovable = true;
 
-        //Animation needed
-        makeGraphic(16, 16);
+        loadGraphic("assets/images/spreadingfire-sheet.png", true, 16, 24);
+        animation.add("still",[0,1], 4);
+        animation.play("still");
+
         setSize(16, 16);
+        offset.set(0,8);
 
         hp = HP_VALUE;
     }
