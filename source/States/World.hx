@@ -82,15 +82,15 @@ class World extends GameState
 
 	public function fadeToRed()
 	{
-		new FlxTimer(1, function(t:FlxTimer) {
-			FlxG.camera.fade(0x43FF5151, 5, false, fadeToClear, true);
+		new FlxTimer(0.7, function(t:FlxTimer) {
+			FlxG.camera.fade(0x43FF5151, 3.5, false, fadeToClear, true);
 		});
 	}
 
 	public function fadeToClear()
 	{
-		new FlxTimer(1, function(t:FlxTimer) {
-			FlxG.camera.fade(0x43FF5151, 5, true, fadeToRed, true);
+		new FlxTimer(1.5, function(t:FlxTimer) {
+			FlxG.camera.fade(0x43FF5151, 3.5, true, fadeToRed, true);
 		});
 	}
 

@@ -40,7 +40,7 @@ class EnemySpreadingFire extends Enemy
 
         particles.x = x;
         particles.y = y;
-        particles.start(false, 2, 0.1, 100);
+        particles.start(false, 2, 0.1, 0);
 
         hp = HP_VALUE;
     }
