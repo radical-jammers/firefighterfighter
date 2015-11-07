@@ -59,8 +59,12 @@ class World extends GameState
 		// Load the objects in the map file
 		level.loadObjects(this);
 
+		//enemies.add(new GroupSpreadingFire(150, 132, this));
+		// add(enemies);
+
 		// Player thing
-		player = new Player(100, 100, this);
+		//player = new Player(100, 100, this);
+
 
 		// Add the entities list
 		add(entities);

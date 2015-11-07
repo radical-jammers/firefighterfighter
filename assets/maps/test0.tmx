@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="13" tilewidth="16" tileheight="16" nextobjectid="11">
- <tileset firstgid="1" name="tileset" tilewidth="16" tileheight="16">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="13" tilewidth="16" tileheight="16" nextobjectid="13">
+ <tileset firstgid="1" name="tileset" tilewidth="16" tileheight="16" tilecount="256">
   <image source="../tilesets/tileset.png" trans="ff00ff" width="256" height="256"/>
  </tileset>
  <layer name="Tilemap" width="20" height="13">
@@ -20,11 +20,7 @@
   </data>
  </layer>
  <objectgroup name="Entities">
-  <object id="1" type="solid" x="32" y="80" width="288" height="16">
-   <properties>
-    <property name="speed" value="5"/>
-   </properties>
-  </object>
+  <object id="1" type="solid" x="32" y="80" width="288" height="16"/>
   <object id="2" type="solid" x="0" y="80" width="32" height="48"/>
   <object id="3" type="solid" x="0" y="160" width="32" height="48"/>
   <object id="4" type="solid" x="0" y="192" width="320" height="24"/>
@@ -36,6 +32,24 @@
    <properties>
     <property name="target" value="test1"/>
    </properties>
+  </object>
+  <object id="13" type="player" x="16" y="144">
+   <ellipse/>
+  </object>
+  <object id="14" type="walker" x="80" y="112" width="16" height="16">
+   <ellipse/>
+  </object>
+  <object id="15" type="walker" x="192" y="112">
+   <ellipse/>
+  </object>
+  <object id="16" type="walker" x="224" y="144">
+   <ellipse/>
+  </object>
+  <object id="11" type="walker" x="304" y="112">
+   <ellipse/>
+  </object>
+  <object id="12" type="walker" x="304" y="176">
+   <ellipse/>
   </object>
  </objectgroup>
 </map>
