@@ -100,7 +100,13 @@ class Enemy extends Entity
 		}, 0.15, {
 			complete: function(tween: FlxTween) {
 				world.enemies.remove(this);
+                destroy();
 			}
 		});
 	}
+
+    override public function destroy()
+    {
+        super.destroy();
+    }
 }
