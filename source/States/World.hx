@@ -9,6 +9,7 @@ import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 import flixel.util.FlxSort;
 import flixel.group.FlxTypedGroup;
+import flixel.group.FlxGroup;
 import flixel.util.FlxPoint;
 
 class World extends GameState
@@ -25,12 +26,16 @@ class World extends GameState
 	{
 		super.create();
 
+		entities = new FlxTypedGroup<Entity>();
+
+		solids = new FlxGroup();
+		add(solids);
+
 		// Load the tiled level
 		level = new TiledLevel("assets/maps/" + "w0m0" + ".tmx");
 
-		entities = new FlxTypedGroup<Entity>();
-
 		add(level.backgroundTiles);
+		level.loadObjects(this);
 
 		player = new Player(100, 100, this);
 		add(player);
