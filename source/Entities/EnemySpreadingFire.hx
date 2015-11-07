@@ -57,7 +57,7 @@ class EnemySpreadingFire extends Enemy
         });
 
         FlxTween.tween(this, {
-            y : y - 8
+            y : this.y - 8
         }, 0.5, {
             complete: function(tween: FlxTween) {
                 solid = true;
