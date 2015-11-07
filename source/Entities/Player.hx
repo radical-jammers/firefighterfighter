@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxObject;
 
 class Player extends Entity
@@ -67,7 +68,7 @@ class Player extends Entity
 			}
 			else
 			{
-				// FlxG.overlap(punchMask, world.enemies);
+				FlxG.overlap(punchMask, world.enemies, onPunched);
 			}
 		}
 		
@@ -130,8 +131,20 @@ class Player extends Entity
 		}
 	}
 
+	function onPunched(punch : FlxObject, enemy : Enemy)
+	{
+		FlxObject.separate(this, enemy);
+		var success : Bool = enemy.onPunched(punch);
+		if (success)
+		{
+			// ?
+		}
+	}
+
 	override public function draw() :  Void
 	{
 		super.draw();
+		if (punchMask.alive)
+			punchMask.draw();
 	}
 }
