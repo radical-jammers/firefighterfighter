@@ -2,6 +2,8 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxObject;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
 
 class Player extends Entity
 {
@@ -159,6 +161,17 @@ class Player extends Entity
 	public function receiveDamage(damage: Int): Void
 	{
 		hp = Std.int(Math.max(0, hp - damage));
+	}
+
+	public function onDefeat(): Void
+	{
+		FlxTween.tween(this.scale, {
+			x: 0,
+			y: 1.5
+		}, 0.15, {
+			complete: function(tween: FlxTween) {
+			}
+		});
 	}
 
 	override public function draw() :  Void

@@ -8,20 +8,31 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 import flixel.util.FlxSort;
-import flixel.group.FlxTypedGroup;
 import flixel.util.FlxPoint;
+import flixel.group.FlxGroup;
+import flixel.group.FlxTypedGroup;
+import flixel.util.FlxTimer;
+
+import ui.Hud;
 
 class World extends GameState
 {
 	public var level : TiledLevel;
 	public var player : Player;
-	public var enemies : FlxTypedGroup<Enemy>;
 
+	public var enemies: FlxTypedGroup<Enemy>;
+	public var solids: FlxGroup;
 	public var entities : FlxTypedGroup<Entity>;
+	public var hud: Hud;
+
+	public static inline var STAGE_DURATION = 60;
 
 	// stage status variables
-	public var remainingTime: Int = 60;
+	public var remainingTime: Int = STAGE_DURATION;
 	public var heatLevel: Int = 10;
+
+	// Timers
+	public var stageTimer: FlxTimer;
 
 	override public function create():Void
 	{
@@ -38,12 +49,24 @@ class World extends GameState
 		add(player);
 
 		enemies = new FlxTypedGroup<Enemy>();
-		enemies.add(new EnemyWalker(150, 132, this));
+		enemies.add(new GroupSpreadingFire(150, 132, this));
 		add(enemies);
 
 		add(level.overlayTiles);
 
+		hud = new Hud(this);
+		add(hud);
+
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN);
+
+		stageTimer = new FlxTimer(1.0, function(timer: FlxTimer) {
+			remainingTime--;
+			if (remainingTime == 0)
+			{
+				// lives--
+				player.onDefeat();
+			}
+		}, STAGE_DURATION);
 	}
 
 	override public function destroy():Void
