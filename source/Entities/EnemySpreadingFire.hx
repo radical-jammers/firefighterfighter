@@ -29,8 +29,8 @@ class EnemySpreadingFire extends Enemy
         animation.add("still",[0,1], 4);
         animation.play("still");
 
-        setSize(16, 16);
-        offset.set(0, 8);
+        setSize(12, 12);
+        offset.set(2, 10);
 
         particles = new flixel.effects.particles.FlxEmitterExt();
         particles.width = 16;

@@ -48,8 +48,8 @@ class Player extends Entity
 
 		replaceColor(0xFFFF00FF,0x00000000);
 
-		setSize(16, 16);
-		offset.set(8, 8);
+		setSize(12, 12);
+		offset.set(10, 10);
 
 		attacking = false;
 		currentAttack = 0;
@@ -57,7 +57,7 @@ class Player extends Entity
 		stunned = false;
 		invulnerable = false;
 
-		punchMask = new FlxObject(x, y, 6, 6);
+		punchMask = new FlxObject(x, y, 8, 10);
 		punchMask.immovable = true;
 		punchMask.kill();
 
@@ -143,7 +143,7 @@ class Player extends Entity
 				punchMask.x = getMidpoint().x + 8;
 		}
 
-		punchMask.y = y + 4;
+		punchMask.y = y + 2;
 
 		punchMask.update();
 	}
