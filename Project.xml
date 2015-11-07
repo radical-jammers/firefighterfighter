@@ -34,6 +34,7 @@
 	<classpath name="source/Text" />
 	<classpath name="source/Entities" />
 	<classpath name="source/utils" />
+	<classpath name="source/Entities" />
 	<assets path="assets" />
 
 	<!--------------------------------LIBRARIES------------------------------------->

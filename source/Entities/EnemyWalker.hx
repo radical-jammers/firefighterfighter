@@ -4,12 +4,13 @@ import flixel.util.FlxTimer;
 import flixel.util.FlxVelocity;
 import flixel.util.FlxPoint;
 
-class EnemyWalker extends Entity
+class EnemyWalker extends Enemy
 {
 
     public static inline var STATUS_ROAM: Int = 1;
     public static inline var STATUS_FETCH: Int = 2;
     private static inline var STEP_DISTANCE: Int = 8;
+    private static inline var WARN_DISTANCE: Int = 32;
 
     private var status: Int;
     private var roamTimer: FlxTimer;
@@ -27,6 +28,12 @@ class EnemyWalker extends Entity
         switch (status)
         {
             case STATUS_ROAM:
+                var playerPos: FlxPoint = getPlayer().getMidpoint();
+                if (Math.abs(x - playerPos.x) <= WARN_DISTANCE && Math.abs(y - playerPos.y) <= WARN_DISTANCE)
+                {
+                    status = STATUS_FETCH;
+                    roamTimer.cancel();
+                }
             case STATUS_FETCH:
         }
 
@@ -39,17 +46,7 @@ class EnemyWalker extends Entity
             var angle: Float = Math.random() * 2 * Math.PI;
             var deltaX: Float = STEP_DISTANCE * Math.cos(angle);
             var deltaY: Float = STEP_DISTANCE * Math.sin(angle);
-
-            trace("angle = " + angle);
-            trace("deltaX = " + deltaX);
-            trace("deltaY = " + deltaY);
-
             var dest: FlxPoint = new FlxPoint(this.getMidpoint().x + deltaX, this.getMidpoint().y + deltaY);
-
-            trace("midpoint = " + this.getMidpoint());
-            trace("newX = " + dest.x);
-            trace("newY = " + dest.y);
-
             FlxVelocity.moveTowardsPoint(this, dest, STEP_DISTANCE);
         } else {
             velocity.x = 0;

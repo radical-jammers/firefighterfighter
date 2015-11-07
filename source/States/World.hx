@@ -12,13 +12,27 @@ import flixel.util.FlxMath;
  */
 class World extends GameState
 {
+
+	public var level : TiledLevel;
+	public var player : Player;
+
 	/**
 	 * Function that is called up when to state is created to set it up.
 	 */
 	override public function create():Void
 	{
 		super.create();
-		add(new EnemyWalker(FlxG.width / 2, FlxG.height / 2, this));
+
+		// Load the tiled level
+		level = new TiledLevel("assets/maps/" + "w0m0" + ".tmx");
+
+		add(level.backgroundTiles);
+		add(level.overlayTiles);
+
+		player = new Player(100, 100, this);
+
+		add(player);
+		add(new EnemyWalker(116, 116, this));
 	}
 
 	/**
