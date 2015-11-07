@@ -26,7 +26,7 @@ class World extends GameState
 	public var entities : FlxTypedGroup<Entity>;
 	public var hud: Hud;
 
-	public static inline var STAGE_DURATION = 60;
+	public static inline var STAGE_DURATION = 99;
 
 	// stage status variables
 	public var remainingTime: Int = STAGE_DURATION;
@@ -65,7 +65,7 @@ class World extends GameState
 		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight + 16);
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN);
 
-		stageTimer = new FlxTimer(1.0, function(timer: FlxTimer) {
+		stageTimer = new FlxTimer(FlxMath.SQUARE_ROOT_OF_TWO*13/7, function(timer: FlxTimer) {
 			remainingTime--;
 			if (remainingTime == 0)
 			{
