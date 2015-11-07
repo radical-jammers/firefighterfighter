@@ -8,10 +8,12 @@ import flixel.FlxObject;
 
 class EnemyWalker extends Enemy
 {
+	private static inline var AttackIdleTime : Float = 1;
 	private static inline var STEP_DISTANCE: Int = 8;
 	private static inline var WARN_DISTANCE: Int = 32;
 	private static inline var ATTACK_VALUE: Int = 5;
 	private static inline var HP_VALUE: Int = 20;
+	private static inline var StunKnockbackSpeed : Int = 30;
 
 	private var status: Int;
 	private var roamTimer: FlxTimer;
@@ -35,6 +37,13 @@ class EnemyWalker extends Enemy
 		brain.transition(statusRoam, "roam");
 		roamTimer = new FlxTimer();
 		roamTimer.start(1.0, doRoam, 0);
+	}
+
+	public function statusIdle() : Void
+	{
+		// lalala
+		animation.play("walk");
+		velocity.set();
 	}
 
 	public function statusRoam(): Void
@@ -68,6 +77,11 @@ class EnemyWalker extends Enemy
 	public override function onCollisionWithPlayer(): Void
 	{
 		getPlayer().receiveDamage(ATTACK_VALUE);
+
+		brain.transition(statusIdle, "idle");
+		new FlxTimer(AttackIdleTime, function(_t:FlxTimer){
+			brain.transition(statusRoam);
+		});
 	}
 
 	public override function onPunched(punchMask: FlxObject) : Bool
@@ -84,6 +98,11 @@ class EnemyWalker extends Enemy
 
 		if (hp > 0)
 		{
+			/*if (punchMask.getMidpoint().x > getMidpoint().x)
+					velocity.x = -StunKnockbackSpeed;
+				else
+					velocity.x = StunKnockbackSpeed;*/
+
 			brain.transition(stunned);
 			isStunned = true;
 		}
@@ -97,6 +116,8 @@ class EnemyWalker extends Enemy
 			trace("timer");
 			timer = new FlxTimer(StunnedTime, onStunnedEnd);
 		}
+
+		roamTimer.cancel();
 
 		isStunned = true;
 		velocity.set();

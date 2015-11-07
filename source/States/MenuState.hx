@@ -3,6 +3,7 @@ package;
 import flash.system.System;
 
 import flixel.FlxG;
+import flixel.FlxCamera;
 import flixel.group.FlxGroup;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -27,6 +28,9 @@ class MenuState extends GameState
 	override public function create():Void
 	{
 		super.create();
+
+		/*var zoom  = FlxG.camera.zoom;
+		FlxG.cameras.reset(new FlxCamera(Std.int((FlxG.width / 2 - 80) * zoom), 0, 160, 160, 0));*/
 
 		add(PixelText.New(FlxG.width / 2 - 48, 2 * FlxG.height / 3, "Press Start"));
 

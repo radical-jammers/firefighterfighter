@@ -41,7 +41,8 @@ class World extends GameState
 		add(enemies);
 
 		add(level.overlayTiles);
-
+		
+		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight + 16);
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN);
 	}
 
@@ -84,6 +85,12 @@ class World extends GameState
 	function handleDebugRoutines()
 	{
 		var mousePos : FlxPoint = FlxG.mouse.getWorldPosition();
+
+		if (FlxG.keys.justPressed.T)
+		{
+			player.x = mousePos.x;
+			player.y = mousePos.y;
+		}
 
 		if (FlxG.keys.justPressed.ONE)
 		{
