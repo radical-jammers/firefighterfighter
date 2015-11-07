@@ -25,6 +25,8 @@ class Entity extends FlxSprite
 	override public function destroy() : Void
 	{
 		world.entities.remove(this);
+		shadow.destroy();
+		shadow = null;
 		super.destroy();
 	}
 

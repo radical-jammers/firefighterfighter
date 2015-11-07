@@ -21,7 +21,7 @@ class World extends GameState
 	public var level : TiledLevel;
 	public var player : Player;
 
-	public var enemies: FlxTypedGroup<Enemy>;
+	public var enemies: FlxGroup;
 	public var solids: FlxGroup;
 	public var entities : FlxTypedGroup<Entity>;
 	public var hud: Hud;
@@ -53,7 +53,7 @@ class World extends GameState
 		player = new Player(100, 100, this);
 		add(player);
 
-		enemies = new FlxTypedGroup<Enemy>();
+		enemies = new FlxGroup();
 		enemies.add(new GroupSpreadingFire(150, 132, this));
 		add(enemies);
 
@@ -62,6 +62,7 @@ class World extends GameState
 		hud = new Hud(this);
 		add(hud);
 
+		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight + 16);
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN);
 
 		stageTimer = new FlxTimer(1.0, function(timer: FlxTimer) {
@@ -87,12 +88,17 @@ class World extends GameState
 			openSubState(new PauseMenu());
 		}
 
-		level.collideWithLevel(player);
+		//level.collideWithLevel(player);
 
-		for (enemy in enemies)
+		/*for (enemy in enemies)
 		{
 			level.collideWithLevel(enemy);
-		}
+		}*/
+
+		//resolveGroupWorldCollision(enemies);
+		FlxG.collide(solids,enemies);
+
+		FlxG.collide(solids,player);
 
 		FlxG.collide(enemies);
 
@@ -111,9 +117,30 @@ class World extends GameState
 		enemy.onCollisionWithPlayer();
 	}
 
+	/*function resolveGroupWorldCollision(group : FlxGroup) : Void
+	{
+		for (element in group)
+		{
+			if (Std.is(element, FlxGroup))
+			{
+				resolveGroupWorldCollision(cast(element, FlxGroup));
+			}
+			else
+			{
+				level.collideWithLevel(cast element);
+			}
+		}
+	}*/
+
 	function handleDebugRoutines()
 	{
 		var mousePos : FlxPoint = FlxG.mouse.getWorldPosition();
+
+		if (FlxG.keys.justPressed.T)
+		{
+			player.x = mousePos.x;
+			player.y = mousePos.y;
+		}
 
 		if (FlxG.keys.justPressed.ONE)
 		{
