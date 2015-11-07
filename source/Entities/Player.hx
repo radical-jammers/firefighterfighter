@@ -233,7 +233,7 @@ class Player extends Entity
 		}, 0.15, {
 			complete: function(tween: FlxTween) {
 				GameStatus.lives--;
-				GameController.startStage(GameStatus.currentStage);
+				GameController.RestartStage();
 			}
 		});
 	}

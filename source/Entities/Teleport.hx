@@ -4,7 +4,7 @@ class Teleport extends Entity
 {
 	public var target : String;
 
-	public function new(X : Float, Y : Float, World : World, Width : Int, Height : Float, Target : String)
+	public function new(X : Float, Y : Float, World : World, Width : Int, Height : Int, Target : String)
 	{
 		super(X, Y, World);
 

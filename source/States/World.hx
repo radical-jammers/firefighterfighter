@@ -50,7 +50,7 @@ class World extends GameState
 		enemies = new FlxGroup();
 
 		// Load the tiled level
-		level = new TiledLevel("assets/maps/" + "test0" + ".tmx");
+		level = new TiledLevel("assets/maps/" + GameStatus.currentMapName + ".tmx");
 
 		// Add the tiles to the game
 		add(level.backgroundTiles);

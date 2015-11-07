@@ -114,7 +114,7 @@ class TiledLevel extends TiledMap
 		{
 
 			case "start":
-				addPlayer(x, y, world);
+				// addPlayer(x, y, world);
 		
 			/** Elements **/
 
@@ -123,31 +123,22 @@ class TiledLevel extends TiledMap
 				solid.immovable = true;
 				world.solids.add(solid);
 
-			case "tiledObject":
-				var gid = o.gid;
-				var tiledImage : TiledImage = getImageSource(gid);
-				if (tiledImage == null)
-				{
-					trace("Could not locate image source for gid=" + gid + "!");
-				}
-				else
-				{
-					var decoration : Decoration = new Decoration(x, y, world, tiledImage);
-					world.decoration.add(decoration);
-				}
 				
 			case "teleport":
 				var target = o.custom.get("target");
-				var name = o.name;
 				
-				var teleport : Teleport = new Teleport(x, y, o.width, o.height, name, target);
+				var teleport : Teleport = new Teleport(x, y, world, o.width, o.height, target);
 				world.teleports.add(teleport);
 				
 			/** Enemies **/
-			case "spreadingFire":
-				var sprTime : Int = o.custom.contains("sprTime");
-				var sprFire : GroupSpreadingFire = new GroupSpreadingFire(x, y, world, sprTime);
-				world.enemies.add(runner);
+			case "spread":
+				var delay : Int = null;
+
+				if (o.custom.contains("delay"))
+					delay = Std.parseInt(o.custom.get("delay"));
+
+				var fire : GroupSpreadingFire = new GroupSpreadingFire(x, y, world, delay);
+				world.enemies.add(fire);
 			case "walker": 
 				var walker : EnemyWalker = new EnemyWalker(x, y, world);
 				world.enemies.add(walker);
