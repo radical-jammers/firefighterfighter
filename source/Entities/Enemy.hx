@@ -84,7 +84,6 @@ class Enemy extends Entity
     public function receiveDamage(damage: Int): Void
     {
         hp = Std.int(Math.max(0, hp - damage));
-        trace(this + " received " + damage + " damage points.");
         if (hp == 0)
             onDefeat();
     }

@@ -65,7 +65,11 @@ class EnemyWalker extends Enemy
         receiveDamage(getPlayer().atk);
 
         if (hp > 0)
-    	   brain.transition(stunned);
+        {
+            brain.transition(stunned);
+            isStunned = true;
+        }
+
     	return true;
     }
 
