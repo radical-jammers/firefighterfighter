@@ -96,7 +96,6 @@ class Enemy extends Entity
 
 	public function onDefeat(): Void
 	{
-        trace("ah, muero");
 		FlxTween.tween(this.scale, {
 			x: 0,
 			y: 1.5

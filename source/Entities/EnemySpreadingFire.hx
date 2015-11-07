@@ -3,6 +3,7 @@ package;
 import flixel.util.FlxTimer;
 import flixel.util.FlxVelocity;
 import flixel.util.FlxPoint;
+import flixel.tweens.FlxTween;
 import flixel.FlxG;
 import flixel.FlxObject;
 
@@ -17,17 +18,36 @@ class EnemySpreadingFire extends Enemy
     public function new(x: Float, y: Float, world: World, spreadFireFather : GroupSpreadingFire)
     {
         this.spreadFireFather = spreadFireFather;
-        super(x, y, world);
+        super(x, y + 8, world);
         immovable = true;
-
+        solid = false;
+        
+        this.scale = new FlxPoint(0,0);
         loadGraphic("assets/images/spreadingfire-sheet.png", true, 16, 24);
         animation.add("still",[0,1], 4);
         animation.play("still");
 
         setSize(16, 16);
-        offset.set(0,8);
+        offset.set(0, 8);
 
         hp = HP_VALUE;
+
+        FlxTween.tween(this.scale, {
+            x: 1,
+            y: 1
+        }, 0.5, {
+            complete: function(tween: FlxTween) {
+                solid = true;
+            }
+        });
+
+        FlxTween.tween(this, {
+            y : y - 8
+        }, 0.5, {
+            complete: function(tween: FlxTween) {
+                solid = true;
+            }
+        });
     }
 
     override public function update(): Void
