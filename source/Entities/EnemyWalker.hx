@@ -32,7 +32,7 @@ class EnemyWalker extends Enemy
 		animation.play("walk");
 
 		setSize(12, 8);
-		offset.set(6, 12);
+		offset.set(6, 14);
 
 		hp = HP_VALUE;
 		atk = ATTACK_VALUE;

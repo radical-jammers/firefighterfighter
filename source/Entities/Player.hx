@@ -16,7 +16,7 @@ class Player extends Entity
 	public var YSPEED : Int = 60;
 	private static inline var ATTACK_VALUE = 5;
 	public var StunKnockbackSpeed : Int = 50;
-	public var StunnedTime : Float = 0.6;
+	public var StunnedTime : Float = 0.3;
 	public var KnockbackTime : Float = 0.15;
 	public var InvulnerabilityTime : Float = 1;
 
@@ -153,26 +153,33 @@ class Player extends Entity
 		if (GamePad.checkButton(GamePad.Left))
 		{
 			velocity.x = -XSPEED;
-			velocity.y = 0;
+			//velocity.y = 0;
 			facing = FlxObject.LEFT;
 			flipX = true;
 		}
 		if (GamePad.checkButton(GamePad.Right))
 		{
 			velocity.x = XSPEED;
-			velocity.y = 0;
+			//velocity.y = 0;
 			facing = FlxObject.RIGHT;
 			flipX = false;
 		}
 		if (GamePad.checkButton(GamePad.Up))
 		{
-			velocity.x = 0;
+			//velocity.x = 0;
 			velocity.y = -YSPEED;
 		}
 		if (GamePad.checkButton(GamePad.Down))
 		{
-			velocity.x = 0;
+			//velocity.x = 0;
 			velocity.y = YSPEED;
+		}
+
+		if (velocity.x != 0 && velocity.y != 0)
+		{
+			var sin45: Float = 0.707;
+			velocity.x *= sin45;
+			velocity.y *= sin45;
 		}
 	}
 
