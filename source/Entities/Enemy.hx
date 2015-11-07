@@ -2,6 +2,8 @@ package;
 
 import flixel.FlxObject;
 import flixel.util.FlxTimer;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
 
 class Enemy extends Entity
 {
@@ -84,12 +86,21 @@ class Enemy extends Entity
     public function receiveDamage(damage: Int): Void
     {
         hp = Std.int(Math.max(0, hp - damage));
-        trace(this + " received " + damage + " damage points.");
         if (hp == 0)
             onDefeat();
     }
 
     public function onCollisionWithPlayer(): Void {}
 
-    public function onDefeat(): Void {}
+	public function onDefeat(): Void
+	{
+		FlxTween.tween(this.scale, {
+			x: 0,
+			y: 1.5
+		}, 0.15, {
+			complete: function(tween: FlxTween) {
+				world.enemies.remove(this);
+			}
+		});
+	}
 }

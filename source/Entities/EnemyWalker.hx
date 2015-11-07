@@ -83,7 +83,10 @@ class EnemyWalker extends Enemy
 			flipX = false;
 
 		if (hp > 0)
-		   brain.transition(stunned);
+		{
+			brain.transition(stunned);
+			isStunned = true;
+		}
 		return true;
 	}
 
@@ -106,11 +109,6 @@ class EnemyWalker extends Enemy
 		isStunned = false;
 		brain.transition(statusFetch, "fetch");
 		timer = null;
-	}
-
-	public override function onDefeat(): Void
-	{
-		world.enemies.remove(this);
 	}
 
 	private function doRoam(timer: FlxTimer): Void

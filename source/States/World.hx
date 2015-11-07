@@ -15,9 +15,11 @@ class World extends GameState
 {
 	public var level : TiledLevel;
 	public var player : Player;
-	public var enemies : FlxTypedGroup<Enemy>;
 
+	public var enemies: FlxTypedGroup<Enemy>;
+	public var solids: FlxGroup;
 	public var entities : FlxTypedGroup<Entity>;
+
 
 	override public function create():Void
 	{
@@ -34,7 +36,7 @@ class World extends GameState
 		add(player);
 
 		enemies = new FlxTypedGroup<Enemy>();
-		enemies.add(new EnemyWalker(150, 132, this));
+		enemies.add(new GroupSpreadingFire(150, 132, this));
 		add(enemies);
 
 		add(level.overlayTiles);
