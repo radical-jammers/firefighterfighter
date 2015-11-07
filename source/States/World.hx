@@ -48,6 +48,7 @@ class World extends GameState
 		entities = new FlxTypedGroup<Entity>();
 		solids = new FlxGroup();
 		enemies = new FlxGroup();
+		teleports = new FlxGroup();
 
 		// Load the tiled level
 		level = new TiledLevel("assets/maps/" + GameStatus.currentMapName + ".tmx");
@@ -123,9 +124,10 @@ class World extends GameState
 		enemy.onCollisionWithPlayer();
 	}
 
-	public function onPlayerTeleportCollision(player : Player, teleport : Teleport) : Void
+	public function onPlayerTeleportCollision(teleport : Teleport, player : Player) : Void
 	{
 		var target : String = teleport.target;
+		
 		if (target != null)
 		{
 			teleporting = true;
@@ -161,6 +163,15 @@ class World extends GameState
 		{
 			enemies.add(new EnemyWalker(mousePos.x, mousePos.y, this));
 		}
+
+		if (FlxG.keys.justPressed.K)
+		{
+			player.hp--;
+		}
+		else if (FlxG.keys.justPressed.L)
+		{
+			player.hp++;
+		}	
 
 		if (FlxG.mouse.justPressed)
 		{

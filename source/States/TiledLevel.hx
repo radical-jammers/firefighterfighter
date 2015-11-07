@@ -125,7 +125,7 @@ class TiledLevel extends TiledMap
 
 				
 			case "teleport":
-				var target = o.custom.get("target");
+				var target : String = o.custom.get("target");
 				
 				var teleport : Teleport = new Teleport(x, y, world, o.width, o.height, target);
 				world.teleports.add(teleport);
