@@ -23,6 +23,9 @@ class World extends GameState
 
 	public var enemies: FlxGroup;
 	public var solids: FlxGroup;
+
+	public var teleports : FlxGroup;
+
 	public var entities : FlxTypedGroup<Entity>;
 	public var hud: Hud;
 
@@ -32,6 +35,8 @@ class World extends GameState
 	public var remainingTime: Int = STAGE_DURATION;
 	public var heatLevel: Int = 10;
 
+	public var teleporting : Bool;
+
 	// Timers
 	public var stageTimer: FlxTimer;
 
@@ -39,41 +44,93 @@ class World extends GameState
 	{
 		super.create();
 
+		// Prepare the groups
 		entities = new FlxTypedGroup<Entity>();
-
 		solids = new FlxGroup();
-		// add(solids);
+		enemies = new FlxGroup();
 
 		// Load the tiled level
 		level = new TiledLevel("assets/maps/" + "test0" + ".tmx");
 
+		// Add the tiles to the game
 		add(level.backgroundTiles);
+
+		// Load the objects in the map file
 		level.loadObjects(this);
 
+		// Player thing
 		player = new Player(100, 100, this);
-		// add(player);
 
-		enemies = new FlxGroup();
-		enemies.add(new GroupSpreadingFire(150, 132, this));
-		// add(enemies);
-
+		// Add the entities list
 		add(entities);
 
+		// Add the overlay tiles
 		add(level.overlayTiles);
 
+		// Prepare the HUD
 		hud = new Hud(this);
 		add(hud);
 
+		// Setup camera bounds, and follow player
 		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight + 16);
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN);
 
+		// Setup stage timer
 		stageTimer = new FlxTimer(FlxMath.SQUARE_ROOT_OF_TWO*13/7, function(timer: FlxTimer) {
 			remainingTime--;
 			if (remainingTime == 0)
 				player.onDefeat();
 		}, STAGE_DURATION);
 
+		// Start the fading catharsis
 		fadeToRed();
+	}
+
+	override public function destroy():Void
+	{
+		super.destroy();
+	}
+
+	override public function update():Void
+	{
+		if (!teleporting)
+		{
+			if (GamePad.checkButton(GamePad.Start))
+			{
+				openSubState(new PauseMenu());
+			}
+
+			FlxG.collide(solids,enemies);
+			FlxG.collide(solids,player);
+
+			FlxG.collide(enemies);
+
+			FlxG.overlap(teleports, player, onPlayerTeleportCollision);
+
+			FlxG.collide(player, enemies, onCollisionPlayerEnemy);
+
+			handleDebugRoutines();
+
+			super.update();
+
+			entities.sort(FlxSort.byY);
+		}
+	}
+
+	public function onCollisionPlayerEnemy(player: Player, enemy: Enemy): Void
+	{
+		player.onCollisionWithEnemy(enemy);
+		enemy.onCollisionWithPlayer();
+	}
+
+	public function onPlayerTeleportCollision(player : Player, teleport : Teleport) : Void
+	{
+		var target : String = teleport.target;
+		if (target != null)
+		{
+			teleporting = true;
+			GameController.Teleport(target);
+		}
 	}
 
 	public function fadeToRed()
@@ -89,62 +146,6 @@ class World extends GameState
 			FlxG.camera.fade(0x43FF5151, 3.5, true, fadeToRed, true);
 		});
 	}
-
-	override public function destroy():Void
-	{
-		super.destroy();
-	}
-
-	override public function update():Void
-	{
-		if (GamePad.checkButton(GamePad.Start))
-		{
-			openSubState(new PauseMenu());
-		}
-
-		//level.collideWithLevel(player);
-
-		/*for (enemy in enemies)
-		{
-			level.collideWithLevel(enemy);
-		}*/
-
-		//resolveGroupWorldCollision(enemies);
-		FlxG.collide(solids,enemies);
-
-		FlxG.collide(solids,player);
-
-		FlxG.collide(enemies);
-
-		FlxG.collide(player, enemies, onCollisionPlayerEnemy);
-
-		handleDebugRoutines();
-
-		super.update();
-
-		entities.sort(FlxSort.byY);
-	}
-
-	public function onCollisionPlayerEnemy(player: Player, enemy: Enemy): Void
-	{
-		player.onCollisionWithEnemy(enemy);
-		enemy.onCollisionWithPlayer();
-	}
-
-	/*function resolveGroupWorldCollision(group : FlxGroup) : Void
-	{
-		for (element in group)
-		{
-			if (Std.is(element, FlxGroup))
-			{
-				resolveGroupWorldCollision(cast(element, FlxGroup));
-			}
-			else
-			{
-				level.collideWithLevel(cast element);
-			}
-		}
-	}*/
 
 	function handleDebugRoutines()
 	{

@@ -15,11 +15,11 @@ class GameController
 		FlxG.switchState(new World());
 	}
 
-	public static function Teleport()
+	public static function Teleport(target : String)
 	{
-		// GameStatusManager.Status.currentMap = GameStatusManager.Status.lastTeleport.target;
+		GameStatus.currentMapName = target;
 
-		FlxG.switchState(new World());
+		FlxG.switchState(new World(target));
 	}
 
 	public static function startStage(stageNumber: Int): Void
