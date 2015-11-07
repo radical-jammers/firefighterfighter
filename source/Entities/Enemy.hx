@@ -1,10 +1,17 @@
 package;
 
 import flixel.FlxObject;
+import flixel.util.FlxTimer;
 
 class Enemy extends Entity
 {
+	public var StunnedTime : Float = 0.30;
+
 	public var brain : StateMachine;
+
+	public var timer : FlxTimer;
+
+	public var isStunned : Bool;
 
     public function new(x: Float, y: Float, world: World)
     {
@@ -13,6 +20,9 @@ class Enemy extends Entity
         this.world = world;
 
         brain = new StateMachine(null, onStateChange);
+        timer = null;
+
+        isStunned = false;
     }
 
     public function getPlayer(): Player
@@ -28,6 +38,29 @@ class Enemy extends Entity
     	super.update();
     }
 
+    // Override me!
+    public function stunned()
+    {
+    	if (timer == null)
+    	{
+    		trace("timer");
+    		timer = new FlxTimer(StunnedTime, onStunnedEnd);
+    	}
+
+    	isStunned = true;
+    	color = 0xFFAA0010;
+    	velocity.set();
+    }
+
+    public function onStunnedEnd(_t : FlxTimer)
+    {
+    	// Override me!
+    	color = 0xFFFFFFFF;
+    	isStunned = false;
+    	brain.transition(null);
+    	timer = null;
+    }
+
     public function onStateChange(nextState : String)
     {
     	// Override me!
@@ -39,6 +72,10 @@ class Enemy extends Entity
     public function onPunched(punchMask : FlxObject) : Bool
     {
     	// Do override!
+    	if (isStunned)
+    		return false;
+
+    	brain.transition(stunned);
     	return true;
     }
 
