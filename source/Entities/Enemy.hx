@@ -12,4 +12,6 @@ class Enemy extends Entity
     {
         return world.player;
     }
+
+    public function onCollisionWithPlayer(): Void {}
 }

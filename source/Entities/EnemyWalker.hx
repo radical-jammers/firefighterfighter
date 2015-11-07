@@ -12,6 +12,7 @@ class EnemyWalker extends Enemy
     public static inline var STATUS_FETCH: Int = 2;
     private static inline var STEP_DISTANCE: Int = 8;
     private static inline var WARN_DISTANCE: Int = 32;
+    private static inline var ATTACK_POWER: Int = 5;
 
     private var status: Int;
     private var roamTimer: FlxTimer;
@@ -50,14 +51,10 @@ class EnemyWalker extends Enemy
         super.update();
     }
 
-    public function collideWithPlayer(): Void
+    public override function onCollisionWithPlayer(): Void
     {
-        FlxG.collide(this, getPlayer(), onCollisionWithPlayer);
-    }
-
-    private function onCollisionWithPlayer(self: Dynamic, player: Dynamic): Void
-    {
-        // Hurts player
+        // Hurts player a little
+        getPlayer().receiveDamage(ATTACK_POWER);
     }
 
     private function doRoam(timer: FlxTimer): Void
