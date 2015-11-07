@@ -3,6 +3,7 @@ package;
 import flixel.util.FlxTimer;
 import flixel.util.FlxVelocity;
 import flixel.util.FlxPoint;
+import flixel.FlxG;
 
 class EnemyWalker extends Enemy
 {
@@ -19,7 +20,8 @@ class EnemyWalker extends Enemy
     {
         super(x, y, world);
         status = STATUS_ROAM;
-        roamTimer = new FlxTimer(1.0, doRoam, 0);
+        roamTimer = new FlxTimer();
+        roamTimer.start(1.0, doRoam, 0);
         makeGraphic(16, 16);
     }
 
@@ -28,16 +30,34 @@ class EnemyWalker extends Enemy
         switch (status)
         {
             case STATUS_ROAM:
-                var playerPos: FlxPoint = getPlayer().getMidpoint();
-                if (Math.abs(x - playerPos.x) <= WARN_DISTANCE && Math.abs(y - playerPos.y) <= WARN_DISTANCE)
+
+                if (playerIsNear())
                 {
                     status = STATUS_FETCH;
                     roamTimer.cancel();
                 }
             case STATUS_FETCH:
+                if (!playerIsNear())
+                {
+                    status = STATUS_ROAM;
+                    roamTimer.start(1.0, doRoam, 0);
+                } else
+                {
+                    FlxVelocity.moveTowardsPoint(this, getPlayer().getMidpoint(), STEP_DISTANCE * 2);
+                }
         }
 
         super.update();
+    }
+
+    public function collideWithPlayer(): Void
+    {
+        FlxG.collide(this, getPlayer(), onCollisionWithPlayer);
+    }
+
+    private function onCollisionWithPlayer(self: Dynamic, player: Dynamic): Void
+    {
+        // Hurts player
     }
 
     private function doRoam(timer: FlxTimer): Void
@@ -52,5 +72,11 @@ class EnemyWalker extends Enemy
             velocity.x = 0;
             velocity.y = 0;
         }
+    }
+
+    private function playerIsNear(): Bool
+    {
+        var playerPos: FlxPoint = getPlayer().getMidpoint();
+        return Math.abs(x - playerPos.x) <= WARN_DISTANCE && Math.abs(y - playerPos.y) <= WARN_DISTANCE;
     }
 }

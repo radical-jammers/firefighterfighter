@@ -6,6 +6,7 @@ import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
+import flixel.group.FlxTypedGroup;
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -15,6 +16,7 @@ class World extends GameState
 
 	public var level : TiledLevel;
 	public var player : Player;
+	public var enemies: FlxTypedGroup<Enemy>;
 
 	/**
 	 * Function that is called up when to state is created to set it up.
@@ -30,9 +32,11 @@ class World extends GameState
 		add(level.overlayTiles);
 
 		player = new Player(100, 100, this);
-
 		add(player);
-		add(new EnemyWalker(116, 116, this));
+
+		enemies = new FlxTypedGroup<Enemy>();
+		enemies.add(new EnemyWalker(150, 132, this));
+		add(enemies);
 	}
 
 	/**
@@ -55,7 +59,17 @@ class World extends GameState
 		}
 
 		level.collideWithLevel(player);
-		
+
+		for (enemy in enemies)
+		{
+			level.collideWithLevel(enemy);
+		}
+
+		/*FlxG.collide(player, enemies, onPlayerEnemyCollision)
+		{
+
+		}*/
+
 		super.update();
 	}
 }
