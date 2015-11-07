@@ -58,11 +58,16 @@ class EnemySpreadingFire extends Enemy
     }
 
 
+    override public function onDefeat(): Void
+    {
+        super.onDefeat();
+    }
+
     override public function destroy(): Void
     {
+        trace("EnemySpreadingFire destroy");
         spreadFireFather.remove(this);
         super.destroy();
     }
-
 
 }
