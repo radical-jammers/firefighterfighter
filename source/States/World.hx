@@ -19,6 +19,10 @@ class World extends GameState
 
 	public var entities : FlxTypedGroup<Entity>;
 
+	// stage status variables
+	public var remainingTime: Int = 60;
+	public var heatLevel: Int = 10;
+
 	override public function create():Void
 	{
 		super.create();
