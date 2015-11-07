@@ -50,7 +50,7 @@ class World extends GameState
 		add(level.backgroundTiles);
 		level.loadObjects(this);
 
-		player = new Player(100, 100, this);
+		
 		// add(player);
 
 		enemies = new FlxGroup();

@@ -95,9 +95,9 @@ class TiledLevel extends TiledMap
 			}
 		}
 
-		/*if (world.player == null)
-			addPlayer(64, 64, world);
-*/
+		if (world.player == null)
+			world.player = new Player(64, 64, this);
+
 	}
 
 	private function loadObject(o : TiledObject, g : TiledObjectGroup, world : World) : Void
@@ -114,10 +114,9 @@ class TiledLevel extends TiledMap
 		{
 
 			case "start":
-				addPlayer(x, y, world);
+				world.player = new Player(x, y, world);
 		
 			/** Elements **/
-
 			case "solid":
 				var solid : FlxObject = new FlxObject(x,y,o.width,o.height);
 				solid.immovable = true;
@@ -135,19 +134,19 @@ class TiledLevel extends TiledMap
 					var decoration : Decoration = new Decoration(x, y, world, tiledImage);
 					world.decoration.add(decoration);
 				}
-				
+			
 			case "teleport":
 				var target = o.custom.get("target");
 				var name = o.name;
 				
 				var teleport : Teleport = new Teleport(x, y, o.width, o.height, name, target);
 				world.teleports.add(teleport);
-				
+			
 			/** Enemies **/
 			case "spreadingFire":
-				var sprTime : Int = o.custom.contains("sprTime");
-				var sprFire : GroupSpreadingFire = new GroupSpreadingFire(x, y, world, sprTime);
-				world.enemies.add(runner);
+				var delay : Int = o.custom.get("delay");
+				var sprFire : GroupSpreadingFire = new GroupSpreadingFire(x, y, world, delay);
+				world.enemies.add(sprFire);
 			case "walker": 
 				var walker : EnemyWalker = new EnemyWalker(x, y, world);
 				world.enemies.add(walker);
