@@ -58,8 +58,6 @@ class World extends GameState
 		teleports = new FlxGroup();
 		effects = new FlxGroup();
 
-		enemies.add(new EnemyBoxer(FlxG.width / 2, FlxG.height / 2, this));
-
 		currentHeat = 0;
 		originalHeat = 0;
 
