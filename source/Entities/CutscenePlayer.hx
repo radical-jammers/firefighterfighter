@@ -37,9 +37,9 @@ class CutscenePlayer extends Entity
 
 		loadGraphic("assets/images/fighter-walk-sheet.png", true, 32, 24);
 
-		animation.add("idle", [0]);
-		animation.add("run", [1, 0], 8);
-		animation.add("jump", [1]);
+		animation.add("idle", [5]);
+		animation.add("run", [6, 5], 8);
+		animation.add("jump", [6]);
 
 		replaceColor(0xFFFF00FF,0x00000000);
 
@@ -53,7 +53,7 @@ class CutscenePlayer extends Entity
 
 		maxVelocity.set(200, 200);
 
-		exitThreshold = world.level.fullWidth * 0.75;
+		exitThreshold = world.level.fullWidth * 0.6;
 
 		brain.transition(idle, "idle1");
 	}
