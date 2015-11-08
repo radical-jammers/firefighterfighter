@@ -36,6 +36,7 @@ class EnemyWalker extends Enemy
 
 		hp = HP_VALUE;
 		atk = ATTACK_VALUE;
+		heat = 1;
 
 		brain.transition(statusRoam, "roam");
 		roamTimer = new FlxTimer();
