@@ -30,6 +30,9 @@ class Hostage extends Entity
 		}
 
 		brain = new StateMachine(null, onStateChange);
+		brain.transition(anim, "anim");
+
+		immovable = true;
 	}
 
 	override public function update()
@@ -49,7 +52,7 @@ class Hostage extends Entity
 					brain.transition(anim, "anim");
 				});
 			case "anim":
-				animation.play("idle");
+				animation.play("anim");
 		}
 	}
 
