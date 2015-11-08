@@ -14,8 +14,8 @@ class Player extends Entity
 	/* Static variables */
 	public var XSPEED : Int = 60;
 	public var YSPEED : Int = 60;
-	private static inline var ATTACK_VALUE = 5;
-	private static inline var MAX_HP_VALUE = 5;
+	public static inline var ATTACK_VALUE = 5;
+	public static inline var MAX_HP_VALUE = 5;
 	public var StunKnockbackSpeed : Int = 50;
 	public var StunnedTime : Float = 0.3;
 	public var KnockbackTime : Float = 0.15;
@@ -255,8 +255,15 @@ class Player extends Entity
 		}, 0.15, {
 			complete: function(tween: FlxTween) {
 				GameStatus.lives--;
-				GameStatus.currentHp = MAX_HP_VALUE;
-				GameController.RestartStage();
+				if (GameStatus.lives < 0)
+				{
+					GameController.GameOver();
+				}
+				else
+				{
+					GameStatus.currentHp = MAX_HP_VALUE;
+					GameController.RestartStage();
+				}
 			}
 		});
 	}

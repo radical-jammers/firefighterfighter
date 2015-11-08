@@ -194,6 +194,11 @@ class TiledLevel extends TiledMap
 			case "boxer": 
 				var boxer : EnemyBoxer = new EnemyBoxer(x, y, world);
 				world.addEnemy(boxer);
+
+			case "npc":
+				var npc : EnemyFireNPC = new EnemyFireNPC(x, y, world);
+				world.addEnemy(npc);
+				world.collidableEnemies.add(npc);
 		}
 	}
 

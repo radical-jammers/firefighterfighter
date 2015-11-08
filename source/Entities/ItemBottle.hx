@@ -15,6 +15,6 @@ class ItemBottle extends Item
     public override function onCollect(player: Player): Void
     {
         player.recoverHp(HP_AMOUNT);
-        destroy();
+        super.onCollect(player);
     }
 }

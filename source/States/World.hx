@@ -25,6 +25,7 @@ class World extends GameState
 	public var hostage : Hostage;
 
 	public var enemies: FlxGroup;
+		public var collidableEnemies: FlxGroup;
 	public var solids: FlxGroup;
 	public var items: FlxGroup;
 
@@ -61,11 +62,10 @@ class World extends GameState
 		entities = new FlxTypedGroup<Entity>();
 		solids = new FlxGroup();
 		enemies = new FlxGroup();
+		collidableEnemies = new FlxGroup();
 		items = new FlxGroup();
 		teleports = new FlxGroup();
 		effects = new FlxGroup();
-
-		items.add(new ItemBottle(FlxG.width / 2, FlxG.height / 2, this));
 
 		currentHeat = 0;
 		originalHeat = 0;
@@ -138,6 +138,8 @@ class World extends GameState
 			FlxG.collide(solids,enemies);
 			FlxG.collide(solids,player);
 
+			FlxG.collide(collidableEnemies, enemies, onCollisionEnemyEnemy);
+
 			FlxG.collide(enemies);
 
 			FlxG.overlap(player, hostage, onPlayerHostageCollision);
@@ -173,6 +175,11 @@ class World extends GameState
 
 			effects.update();
 		}
+	}
+
+	public function onCollisionEnemyEnemy(collidableEnemy: EnemyFireNPC, enemy: Enemy): Void
+	{
+		collidableEnemy.onCollisionWithEnemy();
 	}
 
 	public function IsItCoolEnough() : Bool
