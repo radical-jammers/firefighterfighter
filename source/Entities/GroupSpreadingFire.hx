@@ -18,7 +18,7 @@ class GroupSpreadingFire extends Enemy
 		super(0, 0, world);
 		spreadTimer = new FlxTimer();
 		spreadTimer.start(speed, doRoam, 0);
-		
+
 		spreadingFires = new FlxTypedGroup<EnemySpreadingFire>();
 		spreadingFires.add(new EnemySpreadingFire(x, y, world, this));
 		world.enemies.add(spreadingFires);
@@ -50,7 +50,7 @@ class GroupSpreadingFire extends Enemy
 		var nreplications : Int = 0;
 
 		var nFires = spreadingFires.members.length;
-		
+
 		while (iter < nFires && nreplications < 2)
 		{
 			var spreadingFire : EnemySpreadingFire = spreadingFires.members[iter];
@@ -61,7 +61,7 @@ class GroupSpreadingFire extends Enemy
 				xPos = spreadingFire.getMidpoint().x - (spreadingFire.get_width()/2);
 				yPos = spreadingFire.getMidpoint().y - (spreadingFire.get_height()/2);
 
-				if ( dir < 0.25) 
+				if ( dir < 0.25)
 				{
 					if (!spreadingFire.overlapsAt(xPos - FIRE_SIZE, yPos, spreadingFires) && !spreadingFire.overlapsAt(xPos - FIRE_SIZE, yPos, world.solids))
 					{
@@ -69,7 +69,7 @@ class GroupSpreadingFire extends Enemy
 						addFire(fire);
 						nreplications ++;
 					}
-				} else if ( dir > 0.25 && dir < 0.5) 
+				} else if ( dir > 0.25 && dir < 0.5)
 				{
 					if (!spreadingFire.overlapsAt(xPos + FIRE_SIZE, yPos, spreadingFires) && !spreadingFire.overlapsAt(xPos + FIRE_SIZE, yPos, world.solids))
 					{
@@ -77,7 +77,7 @@ class GroupSpreadingFire extends Enemy
 						addFire(fire);
 						nreplications ++;
 					}
-				} else if ( dir > 0.5 && dir < 0.75) 
+				} else if ( dir > 0.5 && dir < 0.75)
 				{
 					if (!spreadingFire.overlapsAt(xPos, yPos - FIRE_SIZE, spreadingFires) && !spreadingFire.overlapsAt(xPos, yPos - FIRE_SIZE, world.solids))
 					{
@@ -85,7 +85,7 @@ class GroupSpreadingFire extends Enemy
 						addFire(fire);
 						nreplications ++;
 					}
-				} else if ( dir > 0.75) 
+				} else if ( dir > 0.75)
 				{
 					if (!spreadingFire.overlapsAt(xPos, yPos + FIRE_SIZE, spreadingFires) && !spreadingFire.overlapsAt(xPos, yPos + FIRE_SIZE, world.solids))
 					{
