@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxBasic;
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.FlxCamera;
@@ -24,6 +25,7 @@ class World extends GameState
 	public var hostage : Hostage;
 
 	public var enemies: FlxGroup;
+		public var collidableEnemies: FlxGroup;
 	public var solids: FlxGroup;
 	public var items: FlxGroup;
 
@@ -59,6 +61,7 @@ class World extends GameState
 		entities = new FlxTypedGroup<Entity>();
 		solids = new FlxGroup();
 		enemies = new FlxGroup();
+		collidableEnemies = new FlxGroup();
 		items = new FlxGroup();
 		teleports = new FlxGroup();
 		effects = new FlxGroup();
@@ -80,6 +83,7 @@ class World extends GameState
 
 		// Add the effect list
 		add(effects);
+		effects.update();
 
 		// Add the overlay tiles
 		add(level.overlayTiles);
@@ -132,6 +136,8 @@ class World extends GameState
 			FlxG.collide(solids,enemies);
 			FlxG.collide(solids,player);
 
+			FlxG.collide(collidableEnemies, enemies, onCollisionEnemyEnemy);
+
 			FlxG.collide(enemies);
 
 			FlxG.overlap(teleports, player, onPlayerTeleportCollision);
@@ -148,8 +154,7 @@ class World extends GameState
 		}
 
 		// Checks if the scene has been cleared
-		heatLevel = originalHeat == 0 ? 0 : Std.int(100 * currentHeat / originalHeat);
-		if (heatLevel <= HEAT_THRESHOLD)
+		if (IsItCoolEnough())
 		{
 			hud.coolEnough = true;
 			if (stageTimer != null)
@@ -158,6 +163,17 @@ class World extends GameState
 				fadeTimer.cancel();
 			FlxG.camera.fill(0x00FFFFFF, false);
 		}
+	}
+
+	public function onCollisionEnemyEnemy(collidableEnemy: EnemyFireNPC, enemy: Enemy): Void
+	{
+		collidableEnemy.onCollisionWithEnemy();
+	}
+
+	public function IsItCoolEnough() : Bool
+	{
+		heatLevel = originalHeat == 0 ? 0 : Std.int(100 * currentHeat / originalHeat);
+		return (heatLevel <= HEAT_THRESHOLD); 
 	}
 
 	public function onCollisionPlayerEnemy(player: Player, enemy: Enemy): Void
@@ -177,14 +193,21 @@ class World extends GameState
 
 		if (target != null)
 		{
-			teleporting = true;
+			if (IsItCoolEnough()) {
+				teleporting = true;
 
-			if (fadeTimer != null)
-				fadeTimer.cancel();
+				if (fadeTimer != null)
+					fadeTimer.cancel();
 
-			FlxG.camera.fade(0xFF000000, 0.75, function gogogo() {
-				GameController.Teleport(target);
-			}, true);
+				FlxG.camera.fade(0xFF000000, 0.75, function gogogo() {
+					GameController.Teleport(target);
+				}, true);
+			} else {
+				hud.notifyExitForbidden();
+				FlxObject.separate(player, teleport);
+				var dir : Int = (player.getMidpoint().x < teleport.getMidpoint().x ? FlxObject.LEFT : FlxObject.RIGHT);
+				player.applyKnockback(dir);
+			}
 		}
 	}
 
@@ -254,6 +277,9 @@ class World extends GameState
 		{
 			GameStatus.currentHp++;
 		}
+
+		if (FlxG.keys.justPressed.F)
+			hud.notifyExitForbidden();
 
 		if (FlxG.keys.justPressed.N)
 		{

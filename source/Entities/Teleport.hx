@@ -13,6 +13,8 @@ class Teleport extends Entity
 		setSize(Width, Height);
 
 		target = Target;
+
+		immovable = true;
 	}
 
 	override public function draw()

@@ -195,18 +195,28 @@ class Player extends Entity
 	{
 		if (!stunned && !invulnerable)
 		{
-			trace("HALP! I'm being hit!");
+			receiveDamage(enemy.atk);
+
+			var dir : Int = FlxObject.RIGHT;
 			if (enemy.getMidpoint().x > getMidpoint().x)
-					velocity.x = -StunKnockbackSpeed;
-				else
-					velocity.x = StunKnockbackSpeed;
+			{
+				dir = FlxObject.RIGHT;
+			}
+
+			applyKnockback(dir);
+		}
+	}
+
+	public function applyKnockback(dir : Int) {
+			if (dir == FlxObject.LEFT)
+				velocity.x = -StunKnockbackSpeed;
+			else
+				velocity.x = StunKnockbackSpeed;
 
 			attacking = false;
 			punchMask.kill();
 			stunned = true;
 			invulnerable = true;
-
-			receiveDamage(enemy.atk);
 
 			new FlxTimer(StunnedTime, function onStunEnd(_t:FlxTimer) {
 				stunned = false;
@@ -220,7 +230,6 @@ class Player extends Entity
 			new FlxTimer(InvulnerabilityTime, function onInvulnerableEnd(_t:FlxTimer) {
 				invulnerable = false;
 			});
-		}
 	}
 
 	public function onCollisionWithItem(item: Item): Void
