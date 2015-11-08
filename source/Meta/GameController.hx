@@ -12,7 +12,7 @@ class GameController
 
 	public static function StartGame()
 	{
-		StartStage(1, "s1s1");
+		StartStage(1, "s1s6");
 	}
 
 	public static function StartStage(stageNumber : Int, mapName : String): Void
