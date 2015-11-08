@@ -30,8 +30,6 @@ class Player extends Entity
 	var timer : FlxTimer;
 	var punchMask : FlxObject;
 
-	public var hp: Int;
-	public var maxHp: Int = 5;
 	public var atk: Int;
 
 	public function new(X : Float, Y : Float, World : World)
@@ -63,13 +61,12 @@ class Player extends Entity
 
 		timer = new FlxTimer();
 
-		hp = maxHp;
 		atk = ATTACK_VALUE;
 	}
 
 	override public function update() : Void
 	{
-		if (hp >= 0)
+		if (GameStatus.currentHp >= 0)
 		{
 			if (stunned)
 			{
@@ -227,9 +224,7 @@ class Player extends Entity
 
 	public function receiveDamage(damage: Int): Void
 	{
-		hp -= damage;
-		if (hp >= 0)
-			trace("hp: " + hp + "/" + maxHp);
+		GameStatus.currentHp -= damage;
 	}
 
 	public function onDefeat(): Void

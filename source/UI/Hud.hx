@@ -53,7 +53,7 @@ class Hud extends FlxTypedGroup<FlxSprite> {
 
     private function loadSprites(): Void
     {
-        for (i in 0...getRemainingLife(world.player))
+        for (i in 0...MAX_BOTTLES)
         {
             var bottle = new FlxSprite(i * 8, FlxG.height - 16);
             var emptyBottle = new FlxSprite(i * 8, FlxG.height - 16);
@@ -115,10 +115,9 @@ class Hud extends FlxTypedGroup<FlxSprite> {
         firstFigure.animation.frameIndex = Std.int(timeFigures.first);
         lastFigure.animation.frameIndex = Std.int(timeFigures.last);
 
-        var remainingLife: Int = getRemainingLife(world.player);
         for (i in 0...MAX_BOTTLES)
         {
-            if (remainingLife > i)
+            if (GameStatus.currentHp > i)
             {
                 bottlesP1[i].visible = true;
                 emptyBottlesP1[i].visible = false;
@@ -148,10 +147,5 @@ class Hud extends FlxTypedGroup<FlxSprite> {
             first: remainingTime / 10,
             last: remainingTime % 10
         }
-    }
-
-    private function getRemainingLife(player: Player): Int
-    {
-        return Std.int(MAX_BOTTLES * player.hp / player.maxHp);
     }
 }

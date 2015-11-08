@@ -81,6 +81,7 @@ class World extends GameState
 
 		// Prepare the HUD
 		hud = new Hud(this);
+		hud.update();
 		add(hud);
 
 		// Setup camera bounds, and follow player
@@ -233,11 +234,11 @@ class World extends GameState
 
 		if (FlxG.keys.justPressed.K)
 		{
-			player.hp--;
+			GameStatus.currentHp--;
 		}
 		else if (FlxG.keys.justPressed.L)
 		{
-			player.hp++;
+			GameStatus.currentHp++;
 		}
 
 		if (FlxG.mouse.justPressed)
