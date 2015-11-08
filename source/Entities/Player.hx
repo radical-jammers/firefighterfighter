@@ -49,7 +49,7 @@ class Player extends Entity
 		replaceColor(0xFFFF00FF,0x00000000);
 
 		setSize(12, 12);
-		offset.set(10, 10);
+		offset.set(10, 12);
 
 		attacking = false;
 		currentAttack = 0;

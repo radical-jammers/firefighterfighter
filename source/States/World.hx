@@ -31,11 +31,13 @@ class World extends GameState
 	public var hud: Hud;
 
 	public static inline var STAGE_DURATION = 99;
+	public static inline var HEAT_THRESHOLD: Int = 20;
 
 	// stage status variables
 	public var remainingTime: Int = STAGE_DURATION;
 	public var originalHeat: Int;
 	public var currentHeat: Int;
+	public var heatLevel: Int;
 
 	// If true, nobody moves
 	public var teleporting : Bool;
@@ -91,10 +93,6 @@ class World extends GameState
 		// First...fade in!
 		FlxG.camera.fill(0xFF000000);
 		FlxG.camera.fade(0xFF000000, 0.75, true, onLevelStart);
-
-		// Check if it's too hot or not
-		for (enemy in enemies)
-			addHeat(enemy);
 	}
 
 	public function onLevelStart()
@@ -132,6 +130,16 @@ class World extends GameState
 			super.update();
 
 			entities.sort(FlxSort.byY);
+		}
+
+		// Checks if the scene has been cleared
+		heatLevel = originalHeat == 0 ? 0 : Std.int(100 * currentHeat / originalHeat);
+		if (heatLevel <= HEAT_THRESHOLD)
+		{
+			hud.coolEnough = true;
+			stageTimer.cancel();
+			fadeTimer.cancel();
+			FlxG.camera.fill(0x00FFFFFF, false);
 		}
 	}
 
@@ -183,9 +191,9 @@ class World extends GameState
 	// Calculates global temperature after adding a new enemy
 	public function addHeat(obj: FlxBasic): Void
 	{
-		if (Std.is(obj, FlxGroup))
+		if (Std.is(obj, FlxTypedGroup))
 		{
-			var enemies: FlxGroup = cast(obj, FlxGroup);
+			var enemies: FlxTypedGroup<Dynamic> = cast(obj, FlxTypedGroup<Dynamic>);
 			for (enemy in enemies)
 				addHeat(enemy);
 		} else

@@ -8,9 +8,9 @@ import flixel.util.FlxPoint;
 
 class Hud extends FlxTypedGroup<FlxSprite> {
     public var world: World;
+    public var coolEnough: Bool;
 
     public static inline var MAX_BOTTLES: Int = 5;
-    public static inline var HEAT_THRESHOLD: Int = 20;
 
     private var clock: FlxSprite;
     private var firstFigure: FlxSprite;
@@ -27,6 +27,7 @@ class Hud extends FlxTypedGroup<FlxSprite> {
     public function new(world: World)
     {
         this.world = world;
+        coolEnough = false;
         super();
 
         initSprites();
@@ -127,11 +128,15 @@ class Hud extends FlxTypedGroup<FlxSprite> {
             }
         }
 
-        var heatRatio = world.originalHeat == 0 ? 0 : 100 * world.currentHeat / world.originalHeat;
-        if (heatRatio >= 20)
+        if (!coolEnough)
             heat.animation.frameIndex = 1;
         else
+        {
             heat.animation.frameIndex = 0;
+            clock.visible = false;
+            firstFigure.visible = false;
+            lastFigure.visible = false;
+        }
 
         super.update();
     }
