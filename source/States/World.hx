@@ -46,7 +46,8 @@ class World extends GameState
 	public var heatLevel: Int;
 
 	// If true, nobody moves
-	public var teleporting : Bool;
+	public var cutsceneing : Bool;
+	public var cutscenePlayer : CutscenePlayer;
 
 	// Timers
 	public var stageTimer: FlxTimer;
@@ -65,8 +66,6 @@ class World extends GameState
 		items = new FlxGroup();
 		teleports = new FlxGroup();
 		effects = new FlxGroup();
-
-		items.add(new ItemBottle(FlxG.width / 2, FlxG.height / 2, this));
 
 		currentHeat = 0;
 		originalHeat = 0;
@@ -107,7 +106,8 @@ class World extends GameState
 		}, STAGE_DURATION);
 
 		// But wait!
-		teleporting = true;
+		cutsceneing = true;
+		cutscenePlayer = null;
 
 		// First...fade in!
 		FlxG.camera.fill(0xFF000000);
@@ -118,7 +118,7 @@ class World extends GameState
 	{
 		// Start the fading catharsis
 		fadeToRed();
-		teleporting = false;
+		cutsceneing = false;
 	}
 
 	override public function destroy():Void
@@ -128,7 +128,7 @@ class World extends GameState
 
 	override public function update():Void
 	{
-		if (!teleporting)
+		if (!cutsceneing)
 		{
 			if (GamePad.checkButton(GamePad.Start))
 			{
@@ -142,6 +142,8 @@ class World extends GameState
 
 			FlxG.collide(enemies);
 
+			FlxG.overlap(player, hostage, onPlayerHostageCollision);
+
 			FlxG.overlap(teleports, player, onPlayerTeleportCollision);
 
 			FlxG.collide(player, enemies, onCollisionPlayerEnemy);
@@ -153,17 +155,25 @@ class World extends GameState
 			super.update();
 
 			entities.sort(FlxSort.byY);
-		}
 
-		// Checks if the scene has been cleared
-		if (IsItCoolEnough())
+			// Checks if the scene has been cleared
+			if (IsItCoolEnough())
+			{
+				hud.coolEnough = true;
+				if (stageTimer != null)
+					stageTimer.cancel();
+				if (fadeTimer != null)
+					fadeTimer.cancel();
+				FlxG.camera.fill(0x00FFFFFF, false);
+			}
+		}
+		else
 		{
-			hud.coolEnough = true;
-			if (stageTimer != null)
-				stageTimer.cancel();
-			if (fadeTimer != null)
-				fadeTimer.cancel();
-			FlxG.camera.fill(0x00FFFFFF, false);
+			// On cutscenes, update just the cutscene player
+			if (cutscenePlayer != null)
+				cutscenePlayer.update();
+
+			effects.update();
 		}
 	}
 
@@ -196,7 +206,7 @@ class World extends GameState
 		if (target != null)
 		{
 			if (IsItCoolEnough()) {
-				teleporting = true;
+				cutsceneing = true;
 
 				if (fadeTimer != null)
 					fadeTimer.cancel();
@@ -211,6 +221,27 @@ class World extends GameState
 				player.applyKnockback(dir);
 			}
 		}
+	}
+
+	public function onPlayerHostageCollision(player : Player, hostage : Hostage)
+	{
+		trace("Cutscene!");
+		cutsceneing = true;
+
+		cutscenePlayer = new CutscenePlayer(player.x, player.y, this, hostage);
+
+		FlxG.camera.target = cutscenePlayer;
+
+		player.destroy();
+		player = null;
+
+		// Bars!
+		var topBar : FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, 32, 0xFF020202);
+		var botBar : FlxSprite = new FlxSprite(0, FlxG.height-32).makeGraphic(FlxG.width, 32, 0xFF020202);
+		topBar.scrollFactor.set();
+		botBar.scrollFactor.set();
+		add(topBar);
+		add(botBar);
 	}
 
 	public var fadeTimer : FlxTimer;

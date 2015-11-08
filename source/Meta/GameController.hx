@@ -4,6 +4,18 @@ import flixel.FlxG;
 
 class GameController
 {
+	public static function GetStageFirstMap(stageNumber : Int) : String 
+	{
+		switch (stageNumber)
+		{
+			case 1:
+				return "s1s1";
+			default:
+				throw "FuCK yOU biAtch";
+		}
+	}
+
+
 	/** Game Management API **/
 	public static function ToTitleScreen()
 	{
@@ -12,20 +24,28 @@ class GameController
 
 	public static function StartGame()
 	{
-		StartStage(1, "s1s1");
+		StartStage(1);
 	}
 
-	public static function StartStage(stageNumber : Int, mapName : String): Void
+	public static function StartStage(stageNumber : Int): Void
 	{
 		GameStatus.currentStage = stageNumber;
+		var mapName : String = GetStageFirstMap(stageNumber);
 
 		FlxG.switchState(new PreStage(stageNumber, mapName));
 	}
 
+	public static function NextStage() 
+	{
+		GameStatus.currentStage++;
+		StartStage(GameStatus.currentStage);
+		// RestartStage();
+	}
+
 	public static function RestartStage()
 	{
-		// GameStatus.currentMapName = currentStage
-		FlxG.switchState(new PreStage(GameStatus.currentStage, GameStatus.currentMapName));
+		// Do something??
+		StartStage(GameStatus.currentStage);
 	}
 
 	// Next Scene
@@ -38,6 +58,11 @@ class GameController
 
 	public static function RestartScene()
 	{
-		FlxG.switchState(new PreStage(GameStatus.currentStage, GameStatus.currentMapName));	
+		FlxG.switchState(new PreStage(GameStatus.currentStage, GameStatus.currentMapName));
+	}
+
+	public static function GameOver(): Void
+	{
+		FlxG.switchState(new GameOver());
 	}
 }
