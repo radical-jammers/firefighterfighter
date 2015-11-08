@@ -144,6 +144,23 @@ class TiledLevel extends TiledMap
 					world.decoration.add(decoration);
 				}
 */
+			/** Effects **/
+			case "firefx":
+		        var particles : flixel.effects.particles.FlxEmitterExt = new flixel.effects.particles.FlxEmitterExt();
+		        particles.width = o.width;
+		        particles.height = o.height;
+		        particles.setRotation(0, 0);
+		        particles.setMotion(-45, 15, 180);
+		        particles.makeParticles("assets/images/fire-particles.png", 6, 0, true, 0);
+		        particles.setAlpha(1, 1, 0, 0);
+		        particles.setScale(1, 2, 0, 0.25);
+
+		        particles.x = x;
+		        particles.y = y;
+		        particles.start(false, 2, 0.1, 0);
+
+		        world.effects.add(particles);
+
 			/** Enemies **/
 
 			case "spread":
