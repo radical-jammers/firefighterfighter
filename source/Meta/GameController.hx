@@ -10,6 +10,8 @@ class GameController
 		{
 			case 1:
 				return "s1s1";
+			case 2:
+				return "s2s1";
 			default:
 				throw "FuCK yOU biAtch";
 		}

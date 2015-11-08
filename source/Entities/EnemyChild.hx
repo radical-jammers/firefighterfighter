@@ -26,7 +26,7 @@ class EnemyChild extends Enemy
 
 		animation.add("idle", [0, 1, 2, 2, 1, 0], 5);
 		animation.add("walk", [3, 3, 0, 4, 5, 6, 7, 7, 6, 5, 4, 0, 3, 3], 18, false);
-		animation.add("stunned", [4, 5], 4);
+		animation.add("stunned", [8, 9], 2);
 
 		animation.play("walk");
 
