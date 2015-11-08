@@ -21,7 +21,7 @@ class GroupSpreadingFire extends Enemy
 		
 		spreadingFires = new FlxTypedGroup<EnemySpreadingFire>();
 		spreadingFires.add(new EnemySpreadingFire(x, y, world, this));
-		world.addEnemy(spreadingFires);
+		world.enemies.add(spreadingFires);
 
 		makeGraphic(0, 0);
 	}
@@ -74,7 +74,7 @@ class GroupSpreadingFire extends Enemy
 					if (!spreadingFire.overlapsAt(xPos + FIRE_SIZE, yPos, spreadingFires) && !spreadingFire.overlapsAt(xPos + FIRE_SIZE, yPos, world.solids))
 					{
 						fire = new EnemySpreadingFire(xPos + FIRE_SIZE, yPos, world, this);
-						addFire.add(fire);
+						addFire(fire);
 						nreplications ++;
 					}
 				} else if ( dir > 0.5 && dir < 0.75) 
@@ -82,7 +82,7 @@ class GroupSpreadingFire extends Enemy
 					if (!spreadingFire.overlapsAt(xPos, yPos - FIRE_SIZE, spreadingFires) && !spreadingFire.overlapsAt(xPos, yPos - FIRE_SIZE, world.solids))
 					{
 						fire = new EnemySpreadingFire(xPos, yPos - FIRE_SIZE, world, this);
-						addFire.add(fire);
+						addFire(fire);
 						nreplications ++;
 					}
 				} else if ( dir > 0.75) 
@@ -90,11 +90,10 @@ class GroupSpreadingFire extends Enemy
 					if (!spreadingFire.overlapsAt(xPos, yPos + FIRE_SIZE, spreadingFires) && !spreadingFire.overlapsAt(xPos, yPos + FIRE_SIZE, world.solids))
 					{
 						fire = new EnemySpreadingFire(xPos, yPos + FIRE_SIZE, world, this);
-						addFire.add(fire);
+						addFire(fire);
 						nreplications ++;
 					}
 				}
-				
 			}
 			iter ++;
 		}

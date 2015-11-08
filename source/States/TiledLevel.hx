@@ -178,6 +178,10 @@ class TiledLevel extends TiledMap
 			case "mother": 
 				var mother : EnemyMother = new EnemyMother(x, y, world);
 				world.addEnemy(mother);
+
+			case "boxer": 
+				var boxer : EnemyBoxer = new EnemyBoxer(x, y, world);
+				world.addEnemy(boxer);
 		}
 	}
 

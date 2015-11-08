@@ -190,9 +190,9 @@ class World extends GameState
 	// Calculates global temperature after adding a new enemy
 	public function addHeat(obj: FlxBasic): Void
 	{
-		if (Std.is(obj, FlxGroup))
+		if (Std.is(obj, FlxTypedGroup))
 		{
-			var enemies: FlxGroup = cast(obj, FlxGroup);
+			var enemies: FlxTypedGroup<Dynamic> = cast(obj, FlxTypedGroup<Dynamic>);
 			for (enemy in enemies)
 				addHeat(enemy);
 		} else
