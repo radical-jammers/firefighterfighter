@@ -29,7 +29,7 @@ class Player extends Entity
 	var invulnerable : Bool;
 
 	var timer : FlxTimer;
-	var punchMask : FlxObject;
+	public var punchMask : FlxObject;
 
 	public var atk: Int;
 
