@@ -1,0 +1,226 @@
+package;
+
+import flixel.FlxBasic;
+import flixel.FlxG;
+import flixel.FlxObject;
+import flixel.util.FlxTimer;
+import flixel.util.FlxVelocity;
+import flixel.util.FlxPoint;
+import flixel.group.FlxTypedGroup;
+
+class EnemyFireNPC extends Enemy
+{
+	public static inline var ATTACK_VALUE: Int = 1;
+	public static inline var HP_VALUE: Int = 5;
+
+	private static inline var AttackIdleTime : Float = 1;
+	private static inline var STEP_DISTANCE: Int = 16;
+	private static inline var FIRE_DISTANCE: Int = 32;
+	private static inline var RUN_DISTANCE: Int = 64;
+	private static inline var StunKnockbackSpeed : Int = 30;
+
+	private var status: Int;
+	private var roamTimer: FlxTimer;
+	private var onFire : Bool = false;
+
+	public function new(x: Float, y: Float, world: World)
+	{
+		super(x, y, world);
+
+		loadGraphic("assets/images/walker-sheet.png", true, 24, 24);
+
+		animation.add("walk", [0, 1, 2, 3, 3, 2, 1, 0], 6);
+		animation.add("run", [0, 1, 2, 3, 3, 2, 1, 0], 8);
+		animation.add("onFire", [0, 1, 2, 3, 3, 2, 1, 0], 14);
+		animation.add("stunned", [4, 5], 4);
+
+		animation.play("walk");
+
+		setSize(12, 8);
+		offset.set(6, 14);
+
+		hp = HP_VALUE;
+		atk = ATTACK_VALUE;
+		heat = 1;
+
+		brain.transition(statusRoam, "roam");
+		roamTimer = new FlxTimer();
+		roamTimer.start(1.0, doRoam, 0);
+	}
+
+	public function statusIdle() : Void
+	{
+		trace("idle");
+		// lalala
+		animation.play("walk");
+		velocity.set();
+	}
+
+	public function statusRoam(): Void
+	{
+		trace("roam");
+		if (fireIsNear(world.enemies) != null)
+		{
+			roamTimer.cancel();
+			brain.transition(statusFetch, "fetch");
+		}
+	}
+
+	public function statusFetch(): Void
+	{	
+		trace("fetch");
+		var fire : Enemy = fireIsNear(world.enemies);
+		if (fire == null)
+		{
+			roamTimer.start(1.0, doRoam, 0);
+			brain.transition(statusRoam, "roam");
+		} else
+		{
+			FlxVelocity.moveTowardsPoint(this, fire.getMidpoint(), STEP_DISTANCE);
+			animation.play("run");
+			handleFacing();
+		}
+	}
+
+	public function statusOnFire(): Void
+	{
+		trace("onFire");
+	}
+
+	override public function update(): Void
+	{
+		super.update();
+	}
+
+	public function onCollisionWithEnemy(): Void
+	{
+		brain.transition(statusIdle, "idle");
+		new FlxTimer(AttackIdleTime/2, function(_t:FlxTimer){
+			brain.transition(statusOnFire, "onFire");
+			roamTimer.start(1.0, doFireRoam, 0);
+		});
+	}
+
+	public override function onCollisionWithPlayer(): Void
+	{
+		brain.transition(statusIdle, "idle");
+		new FlxTimer(AttackIdleTime, function(_t:FlxTimer){
+			brain.transition(statusRoam);
+		});
+	}
+
+	public override function onPunched(punchMask: FlxObject) : Bool
+	{
+		if (isStunned)
+			return false;
+
+		receiveDamage(getPlayer().atk);
+
+		if (punchMask.getMidpoint().x < getMidpoint().x)
+			flipX = true;
+		else
+			flipX = false;
+
+		if (hp > 0)
+		{
+			/*if (punchMask.getMidpoint().x > getMidpoint().x)
+					velocity.x = -StunKnockbackSpeed;
+				else
+					velocity.x = StunKnockbackSpeed;*/
+
+			brain.transition(statusStunned);
+			isStunned = true;
+		}
+		return true;
+	}
+
+	public override function statusStunned(): Void
+	{
+		if (timer == null)
+		{
+			timer = new FlxTimer(StunnedTime, onStunnedEnd);
+		}
+
+		roamTimer.cancel();
+
+		isStunned = true;
+		velocity.set();
+
+		animation.play("stunned");
+	}
+
+	public override function onStunnedEnd(_t : FlxTimer): Void
+	{
+		isStunned = false;
+		brain.transition(statusFetch, "fetch");
+		timer = null;
+	}
+
+	private function doRoam(timer: FlxTimer): Void
+	{
+		if (Math.random() > 0.5) {
+			var angle: Float = Math.random() * 2 * Math.PI;
+			var deltaX: Float = STEP_DISTANCE * Math.cos(angle);
+			var deltaY: Float = STEP_DISTANCE * Math.sin(angle);
+			var dest: FlxPoint = new FlxPoint(this.getMidpoint().x + deltaX, this.getMidpoint().y + deltaY);
+			FlxVelocity.moveTowardsPoint(this, dest, STEP_DISTANCE);
+		} else {
+			velocity.x = 0;
+			velocity.y = 0;
+		}
+
+		animation.play("walk");
+
+		handleFacing();
+	}
+
+
+	private function doFireRoam(timer: FlxTimer): Void
+	{
+		var succesfullTarget : Bool = false;
+		while (!succesfullTarget) {
+			var angle: Float = Math.random() * 2 * Math.PI;
+			var deltaX: Float = RUN_DISTANCE * Math.cos(angle);
+			var deltaY: Float = RUN_DISTANCE * Math.sin(angle);
+			var dest: FlxPoint = new FlxPoint(this.getMidpoint().x + deltaX, this.getMidpoint().y + deltaY);
+			if (!this.overlapsAt(dest.x, dest.y, world.solids))
+			{
+				FlxVelocity.moveTowardsPoint(this, dest, RUN_DISTANCE);
+				succesfullTarget = true;
+			}
+		}
+
+		animation.play("onFire");
+
+		handleFacing();
+	}
+
+	private function handleFacing()
+	{
+		flipX = (velocity.x < 0);
+	}
+
+	private function fireIsNear(obj: FlxBasic): Enemy
+	{
+
+		if (Std.is(obj, Enemy) && cast(obj, Enemy) != this)
+		{
+			var enemy: Enemy = cast(obj, Enemy);
+			var firePos: FlxPoint = enemy.getMidpoint();
+			if (Math.abs(x - firePos.x) <= FIRE_DISTANCE && Math.abs(y - firePos.y) <= FIRE_DISTANCE)
+				return enemy;
+		}else if (Std.is(obj, Enemy)){
+			return null;
+		}else
+		{
+			var enemies: FlxTypedGroup<Dynamic> = cast(obj, FlxTypedGroup<Dynamic>);
+			for (enemy in enemies)
+			{
+				var fire : Enemy = fireIsNear(enemy);
+				if (fire != null)
+					return fire;
+			}
+		}
+		return(null);
+	}
+}

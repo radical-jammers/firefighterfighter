@@ -23,6 +23,7 @@ class World extends GameState
 	public var player : Player;
 
 	public var enemies: FlxGroup;
+		public var collidableEnemies: FlxGroup;
 	public var solids: FlxGroup;
 
 	public var teleports : FlxGroup;
@@ -55,6 +56,7 @@ class World extends GameState
 		entities = new FlxTypedGroup<Entity>();
 		solids = new FlxGroup();
 		enemies = new FlxGroup();
+		collidableEnemies = new FlxGroup();
 		teleports = new FlxGroup();
 		effects = new FlxGroup();
 
@@ -129,6 +131,8 @@ class World extends GameState
 			FlxG.collide(solids,enemies);
 			FlxG.collide(solids,player);
 
+			FlxG.collide(collidableEnemies, enemies, onCollisionEnemyEnemy);
+
 			FlxG.collide(enemies);
 
 			FlxG.overlap(teleports, player, onPlayerTeleportCollision);
@@ -151,6 +155,11 @@ class World extends GameState
 			fadeTimer.cancel();
 			FlxG.camera.fill(0x00FFFFFF, false);
 		}
+	}
+
+	public function onCollisionEnemyEnemy(collidableEnemy: EnemyFireNPC, enemy: Enemy): Void
+	{
+		collidableEnemy.onCollisionWithEnemy();
 	}
 
 	public function onCollisionPlayerEnemy(player: Player, enemy: Enemy): Void
