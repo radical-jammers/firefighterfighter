@@ -191,7 +191,6 @@ class World extends GameState
 		} else
 		{
 			var enemy: Enemy = cast(obj, Enemy);
-			trace("currentHeat = " + currentHeat);
 			currentHeat += enemy.heat;
 			originalHeat = Std.int(Math.max(originalHeat, currentHeat));
 		}
