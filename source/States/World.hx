@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -33,7 +34,8 @@ class World extends GameState
 
 	// stage status variables
 	public var remainingTime: Int = STAGE_DURATION;
-	public var heatLevel: Int = 10;
+	public var originalHeat: Int;
+	public var currentHeat: Int;
 
 	// If true, nobody moves
 	public var teleporting : Bool;
@@ -50,6 +52,8 @@ class World extends GameState
 		solids = new FlxGroup();
 		enemies = new FlxGroup();
 		teleports = new FlxGroup();
+		currentHeat = 0;
+		originalHeat = 0;
 
 		// Load the tiled level
 		level = new TiledLevel("assets/maps/" + GameStatus.currentMapName + ".tmx");
@@ -87,13 +91,16 @@ class World extends GameState
 		// First...fade in!
 		FlxG.camera.fill(0xFF000000);
 		FlxG.camera.fade(0xFF000000, 0.75, true, onLevelStart);
+
+		// Check if it's too hot or not
+		for (enemy in enemies)
+			addHeat(enemy);
 	}
 
 	public function onLevelStart()
 	{
 		// Start the fading catharsis
 		fadeToRed();
-
 		teleporting = false;
 	}
 
@@ -137,11 +144,11 @@ class World extends GameState
 	public function onPlayerTeleportCollision(teleport : Teleport, player : Player) : Void
 	{
 		var target : String = teleport.target;
-		
+
 		if (target != null)
 		{
 			teleporting = true;
-			
+
 			if (fadeTimer != null)
 				fadeTimer.cancel();
 
@@ -167,6 +174,34 @@ class World extends GameState
 		});
 	}
 
+	public function addEnemy(enemy: Enemy): Void
+	{
+		enemies.add(enemy);
+		addHeat(enemy);
+	}
+
+	// Calculates global temperature after adding a new enemy
+	public function addHeat(obj: FlxBasic): Void
+	{
+		if (Std.is(obj, FlxGroup))
+		{
+			var enemies: FlxGroup = cast(obj, FlxGroup);
+			for (enemy in enemies)
+				addHeat(enemy);
+		} else
+		{
+			var enemy: Enemy = cast(obj, Enemy);
+			trace("currentHeat = " + currentHeat);
+			currentHeat += enemy.heat;
+			originalHeat = Std.int(Math.max(originalHeat, currentHeat));
+		}
+	}
+
+	public function removeHeat(enemy: Enemy): Void
+	{
+		currentHeat -= enemy.heat;
+	}
+
 	function handleDebugRoutines()
 	{
 		var mousePos : FlxPoint = FlxG.mouse.getWorldPosition();
@@ -179,7 +214,7 @@ class World extends GameState
 
 		if (FlxG.keys.justPressed.ONE)
 		{
-			enemies.add(new EnemyWalker(mousePos.x, mousePos.y, this));
+			addEnemy(new EnemyWalker(mousePos.x, mousePos.y, this));
 		}
 
 		if (FlxG.keys.justPressed.K)
@@ -189,7 +224,7 @@ class World extends GameState
 		else if (FlxG.keys.justPressed.L)
 		{
 			player.hp++;
-		}	
+		}
 
 		if (FlxG.mouse.justPressed)
 		{
