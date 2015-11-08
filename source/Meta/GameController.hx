@@ -38,6 +38,11 @@ class GameController
 
 	public static function RestartScene()
 	{
-		FlxG.switchState(new PreStage(GameStatus.currentStage, GameStatus.currentMapName));	
+		FlxG.switchState(new PreStage(GameStatus.currentStage, GameStatus.currentMapName));
+	}
+
+	public static function GameOver(): Void
+	{
+		FlxG.switchState(new GameOver());
 	}
 }

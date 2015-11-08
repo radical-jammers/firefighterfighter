@@ -255,8 +255,15 @@ class Player extends Entity
 		}, 0.15, {
 			complete: function(tween: FlxTween) {
 				GameStatus.lives--;
-				GameStatus.currentHp = MAX_HP_VALUE;
-				GameController.RestartStage();
+				if (GameStatus.lives < 0)
+				{
+					GameController.GameOver();
+				}
+				else
+				{
+					GameStatus.currentHp = MAX_HP_VALUE;
+					GameController.RestartStage();
+				}
 			}
 		});
 	}
