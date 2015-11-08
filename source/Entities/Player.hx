@@ -223,9 +223,19 @@ class Player extends Entity
 		}
 	}
 
+	public function onCollisionWithItem(item: Item): Void
+	{
+		item.onCollect(this);
+	}
+
 	public function receiveDamage(damage: Int): Void
 	{
 		GameStatus.currentHp -= damage;
+	}
+
+	public function recoverHp(hpToRecover: Int): Void
+	{
+		GameStatus.currentHp = Std.int(Math.min(MAX_HP_VALUE, GameStatus.currentHp + hpToRecover));
 	}
 
 	public function onDefeat(): Void
