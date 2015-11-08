@@ -11,17 +11,19 @@ import flixel.group.FlxTypedGroup;
 class EnemyFireNPC extends Enemy
 {
 	public static inline var ATTACK_VALUE: Int = 1;
-	public static inline var HP_VALUE: Int = 5;
+	public static inline var HP_VALUE: Int = 20;
 
 	private static inline var AttackIdleTime : Float = 1;
 	private static inline var STEP_DISTANCE: Int = 16;
 	private static inline var FIRE_DISTANCE: Int = 32;
-	private static inline var RUN_DISTANCE: Int = 64;
+	private static var RUN_DISTANCE: Int = 64;
 	private static inline var StunKnockbackSpeed : Int = 30;
 
 	private var status: Int;
 	private var roamTimer: FlxTimer;
 	private var onFire : Bool = false;
+	private var velocityX : Float;
+	private var velocityY : Float;
 
 	public function new(x: Float, y: Float, world: World)
 	{
@@ -50,15 +52,12 @@ class EnemyFireNPC extends Enemy
 
 	public function statusIdle() : Void
 	{
-		trace("idle");
-		// lalala
 		animation.play("walk");
 		velocity.set();
 	}
 
 	public function statusRoam(): Void
 	{
-		trace("roam");
 		if (fireIsNear(world.enemies) != null)
 		{
 			roamTimer.cancel();
@@ -68,7 +67,6 @@ class EnemyFireNPC extends Enemy
 
 	public function statusFetch(): Void
 	{	
-		trace("fetch");
 		var fire : Enemy = fireIsNear(world.enemies);
 		if (fire == null)
 		{
@@ -84,12 +82,94 @@ class EnemyFireNPC extends Enemy
 
 	public function statusOnFire(): Void
 	{
-		trace("onFire");
+		FlxG.collide(this, world.solids, changeWay);
+		FlxG.collide(getPlayer(), this, onCollisionPlayerEnemy);
+		FlxG.overlap(getPlayer().punchMask, this, onCollisionWithPUNCHO);
+	}
+
+	public function changeWay(itsMe : EnemyFireNPC, solid : Entity)
+	{
+		trace("colide!!!!!!!!!");
+		trace("solid.x: " + solid.x);
+		trace("solid.width: " + solid.width);
+		trace("this.x: " + this.x);
+		trace("this.width: " + this.width);
+		trace("solid.y: " + solid.y);
+		trace("solid.height: " + solid.height);
+		trace("this.y: " + this.y);
+		trace("this.height: " + this.height);
+		if ((solid.x + solid.width) <= this.x) //At my left!
+		{
+			trace(this.velocity);
+			this.velocity.set(-velocityX, velocityY);
+			trace(this.velocity);
+			trace("At my left!");
+		}
+
+		if (solid.x <= (this.x + this.width)) //At my right!
+		{
+			trace(this.velocity);
+			this.velocity.set(-velocityX, velocityY);
+			trace(this.velocity);
+			trace("At my right!");
+		}
+
+		if ((solid.y + solid.height) <= this.y) //At my top!
+		{
+			trace(this.velocity);
+			this.velocity.set(velocityX, -velocityY);
+			trace(this.velocity);
+			trace("At my top!");
+		}
+
+		if (solid.y >= (this.y + this.height)) //At my bottom!
+		{
+			trace(this.velocity);
+			this.velocity.set(velocityX, -velocityY);
+			trace(this.velocity);
+			trace("At my bottom!");
+		}
 	}
 
 	override public function update(): Void
 	{
+		velocityX = velocity.x;
+		velocityY = velocity.y;
 		super.update();
+	}
+
+	override public function onStateChange(nextState : String)
+    {
+    	if (nextState == "onFire")
+    	{
+    		onFire = true;
+    		setOnFire();
+    	}
+    }
+
+	private function setOnFire(): Void
+	{
+		trace("setOnFire");
+		//Nos eliminamos de la lista de enemigos y enemigos collidables para autogestionarnos nuestras colisiones
+		world.enemies.remove(this,true);
+		world.collidableEnemies.remove(this,true);
+
+		var succesfullTarget : Bool = false;
+		while (!succesfullTarget) {
+			var angle: Float = Math.random() * 2 * Math.PI;
+			var deltaX: Float = RUN_DISTANCE * Math.cos(angle);
+			var deltaY: Float = RUN_DISTANCE * Math.sin(angle);
+			var dest: FlxPoint = new FlxPoint(this.getMidpoint().x + deltaX, this.getMidpoint().y + deltaY);
+			if (!this.overlapsAt(dest.x, dest.y, world.solids))
+			{
+				FlxVelocity.moveTowardsPoint(this, dest, RUN_DISTANCE);
+				succesfullTarget = true;
+			}
+		}
+
+		animation.play("onFire");
+
+		handleFacing();
 	}
 
 	public function onCollisionWithEnemy(): Void
@@ -97,16 +177,27 @@ class EnemyFireNPC extends Enemy
 		brain.transition(statusIdle, "idle");
 		new FlxTimer(AttackIdleTime/2, function(_t:FlxTimer){
 			brain.transition(statusOnFire, "onFire");
-			roamTimer.start(1.0, doFireRoam, 0);
 		});
+	}
+
+	public function onCollisionPlayerEnemy(player: Player, enemy: Enemy): Void
+	{
+		player.onCollisionWithEnemy(enemy);
+		enemy.onCollisionWithPlayer();
 	}
 
 	public override function onCollisionWithPlayer(): Void
 	{
 		brain.transition(statusIdle, "idle");
+		isStunned = false;
 		new FlxTimer(AttackIdleTime, function(_t:FlxTimer){
-			brain.transition(statusRoam);
+			brain.transition(statusOnFire, "onFire");
 		});
+	}
+
+	public function onCollisionWithPUNCHO(punchMask: FlxObject, enemy: FlxObject)
+	{
+		onPunched(punchMask);
 	}
 
 	public override function onPunched(punchMask: FlxObject) : Bool
@@ -114,6 +205,7 @@ class EnemyFireNPC extends Enemy
 		if (isStunned)
 			return false;
 
+		velocity.set();
 		receiveDamage(getPlayer().atk);
 
 		if (punchMask.getMidpoint().x < getMidpoint().x)
@@ -123,12 +215,7 @@ class EnemyFireNPC extends Enemy
 
 		if (hp > 0)
 		{
-			/*if (punchMask.getMidpoint().x > getMidpoint().x)
-					velocity.x = -StunKnockbackSpeed;
-				else
-					velocity.x = StunKnockbackSpeed;*/
-
-			brain.transition(statusStunned);
+			brain.transition(statusStunned, "stunned");
 			isStunned = true;
 		}
 		return true;
@@ -136,6 +223,13 @@ class EnemyFireNPC extends Enemy
 
 	public override function statusStunned(): Void
 	{
+
+		if (onFire)
+		{
+			FlxG.collide(this, world.solids, changeWay);
+			FlxG.collide(getPlayer(), this, onCollisionPlayerEnemy);
+			FlxG.overlap(getPlayer().punchMask, this, onCollisionWithPUNCHO);
+		}
 		if (timer == null)
 		{
 			timer = new FlxTimer(StunnedTime, onStunnedEnd);
@@ -147,12 +241,15 @@ class EnemyFireNPC extends Enemy
 		velocity.set();
 
 		animation.play("stunned");
+
 	}
 
 	public override function onStunnedEnd(_t : FlxTimer): Void
 	{
 		isStunned = false;
-		brain.transition(statusFetch, "fetch");
+		if (!onFire)
+			brain.transition(statusFetch, "fetch");
+
 		timer = null;
 	}
 
@@ -173,7 +270,6 @@ class EnemyFireNPC extends Enemy
 
 		handleFacing();
 	}
-
 
 	private function doFireRoam(timer: FlxTimer): Void
 	{
