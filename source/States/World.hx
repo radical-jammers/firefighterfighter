@@ -26,6 +26,7 @@ class World extends GameState
 
 	public var enemies: FlxGroup;
 	public var solids: FlxGroup;
+	public var items: FlxGroup;
 
 	public var teleports : FlxGroup;
 
@@ -59,8 +60,11 @@ class World extends GameState
 		entities = new FlxTypedGroup<Entity>();
 		solids = new FlxGroup();
 		enemies = new FlxGroup();
+		items = new FlxGroup();
 		teleports = new FlxGroup();
 		effects = new FlxGroup();
+
+		items.add(new ItemBottle(FlxG.width / 2, FlxG.height / 2, this));
 
 		currentHeat = 0;
 		originalHeat = 0;
@@ -138,6 +142,8 @@ class World extends GameState
 
 			FlxG.collide(player, enemies, onCollisionPlayerEnemy);
 
+			FlxG.collide(player, items, onCollisionPlayerItem);
+
 			handleDebugRoutines();
 
 			super.update();
@@ -167,6 +173,11 @@ class World extends GameState
 	{
 		player.onCollisionWithEnemy(enemy);
 		enemy.onCollisionWithPlayer();
+	}
+
+	public function onCollisionPlayerItem(player: Player, item: Item): Void
+	{
+		player.onCollisionWithItem(item);
 	}
 
 	public function onPlayerTeleportCollision(teleport : Teleport, player : Player) : Void
