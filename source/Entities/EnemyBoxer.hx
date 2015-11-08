@@ -14,7 +14,6 @@ class EnemyBoxer extends Enemy
 
     public var punchMask : FlxObject;
     public var attacking: Bool;
-    public var currentAttack: Int;
 
     public function new(x: Float, y: Float, world: World)
     {
@@ -25,21 +24,20 @@ class EnemyBoxer extends Enemy
         immovable = true;
         attacking = false;
         isStunned = false;
-        currentAttack = 0;
         facing = FlxObject.RIGHT;
 
         brain.transition(statusIdle, "idle");
         timer = new FlxTimer();
         timer.start(2.0, doFlip, 0);
 
-        loadGraphic("assets/images/fighter-walk-sheet.png", true, 32, 24);
-        setSize(8, 16);
+        loadGraphic("assets/images/boxer-sheet.png", true, 32, 32);
+        setSize(8, 24);
         offset.set(12, 4);
 
-        animation.add("idle", [0]);
-        animation.add("attack-0", [2, 2], 8, false);
-		animation.add("attack-1", [3, 3], 8, false);
-		animation.add("stunned", [4]);
+        animation.add("idle", [0, 1, 2, 1], 8, false);
+        animation.add("attack", [12, 11, 10, 9, 8, 9, 10, 11, 12], 12, false);
+        animation.add("turn", [3, 4, 5, 6, 7], 12, false);
+		animation.add("stunned", [5]);
 
         animation.play("idle");
 
@@ -56,6 +54,9 @@ class EnemyBoxer extends Enemy
             brain.transition(statusAlert, "alert");
             animation.play("idle");
         }
+
+        if (animation.finished)
+            animation.play("idle");
     }
 
     public function statusAlert(): Void
@@ -75,7 +76,7 @@ class EnemyBoxer extends Enemy
         }
     }
 
-    public function statusStunned(): Void
+    public override function statusStunned(): Void
 	{
 		isStunned = true;
 	}
@@ -84,12 +85,13 @@ class EnemyBoxer extends Enemy
     {
         if (facing == FlxObject.LEFT) {
             facing = FlxObject.RIGHT;
-            flipX = false;
+            flipX = true;
         }
         else {
             facing = FlxObject.LEFT;
-            flipX = true;
+            flipX = false;
         }
+        animation.play("turn");
     }
 
     private function performAttack(): Void
@@ -97,8 +99,7 @@ class EnemyBoxer extends Enemy
         if (!attacking)
         {
             attacking = true;
-            animation.play("attack-" + currentAttack);
-            currentAttack = (currentAttack + 1) % 2;
+            animation.play("attack");
             positionPunchMask();
         }
         else
@@ -129,7 +130,7 @@ class EnemyBoxer extends Enemy
 				punchMask.x = getMidpoint().x + 8;
 		}
 
-		punchMask.y = y + 4;
+		punchMask.y = y + 6;
 		punchMask.update();
     }
 
@@ -159,12 +160,12 @@ class EnemyBoxer extends Enemy
 		receiveDamage(getPlayer().atk);
 
 		if (punchMask.getMidpoint().x < getMidpoint().x) {
-            flipX = true;
+            flipX = false;
             facing = FlxObject.LEFT;
         }
 		else
         {
-            flipX = false;
+            flipX = true;
             facing = FlxObject.RIGHT;
         }
 

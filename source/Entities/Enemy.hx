@@ -104,6 +104,10 @@ class Enemy extends Entity
 			complete: function(tween: FlxTween) {
 				world.enemies.remove(this);
 				world.removeHeat(this);
+
+				if (timer != null)
+					timer.cancel();
+					
                 destroy();
 			}
 		});
