@@ -75,7 +75,7 @@ class EnemyBoxer extends Enemy
         }
     }
 
-    public function statusStunned(): Void
+    override public function statusStunned(): Void
 	{
 		isStunned = true;
 	}
