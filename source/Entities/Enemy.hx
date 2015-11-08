@@ -4,9 +4,12 @@ import flixel.FlxObject;
 import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
+import flixel.util.FlxRandom;
 
 class Enemy extends Entity
 {
+	public static inline var LOOT_CHANCE: Float = 0.05;
+
 	public var hp: Int;
 	public var atk: Int;
 	public var heat: Int;
@@ -104,10 +107,11 @@ class Enemy extends Entity
 			complete: function(tween: FlxTween) {
 				world.enemies.remove(this);
 				world.removeHeat(this);
+				dropLoot();
 
 				if (timer != null)
 					timer.cancel();
-					
+
                 destroy();
 			}
 		});
@@ -118,4 +122,13 @@ class Enemy extends Entity
         trace("Enemy destroy");
         super.destroy();
     }
+
+	public function dropLoot(): Void
+	{
+		var lootChance: Float = 1 - (Player.MAX_HP_VALUE - GameStatus.currentHp) * LOOT_CHANCE;
+		if (FlxRandom.float() >= lootChance)
+		{
+			world.items.add(new ItemBottle(getMidpoint().x, getMidpoint().y, world));
+		}
+	}
 }

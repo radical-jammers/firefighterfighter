@@ -63,8 +63,6 @@ class World extends GameState
 		teleports = new FlxGroup();
 		effects = new FlxGroup();
 
-		items.add(new ItemBottle(FlxG.width / 2, FlxG.height / 2, this));
-
 		currentHeat = 0;
 		originalHeat = 0;
 
