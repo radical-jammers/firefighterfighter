@@ -9,7 +9,7 @@ class GameController
 		switch (stageNumber)
 		{
 			case 1:
-				return "s1end";
+				return "s1s1";
 			default:
 				throw "FuCK yOU biAtch";
 		}
@@ -37,9 +37,9 @@ class GameController
 
 	public static function NextStage() 
 	{
-		// GameStatus.currentStage++;
-		// StartStage(GameStatus.currentStage);
-		RestartStage();
+		GameStatus.currentStage++;
+		StartStage(GameStatus.currentStage);
+		// RestartStage();
 	}
 
 	public static function RestartStage()
