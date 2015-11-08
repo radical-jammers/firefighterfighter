@@ -95,7 +95,7 @@ class EnemySpreadingFire extends Enemy
 
         if (hp > 0)
         {
-            brain.transition(stunned);
+            brain.transition(statusStunned);
             isStunned = true;
         }
         return true;

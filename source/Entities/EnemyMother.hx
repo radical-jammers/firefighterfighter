@@ -6,14 +6,13 @@ import flixel.util.FlxPoint;
 import flixel.FlxG;
 import flixel.FlxObject;
 
-class EnemyWalker extends Enemy
+class EnemyMother extends Enemy
 {
 	public static inline var ATTACK_VALUE: Int = 1;
 	public static inline var HP_VALUE: Int = 20;
 
-	private static inline var AttackIdleTime : Float = 1;
-	private static inline var STEP_DISTANCE: Int = 8;
-	private static inline var WARN_DISTANCE: Int = 32;
+	private static inline var JumpIdleTime : Float = 1;
+	private static inline var STEP_DISTANCE: Int = 24;
 	private static inline var StunKnockbackSpeed : Int = 30;
 
 	private var status: Int;
@@ -25,8 +24,8 @@ class EnemyWalker extends Enemy
 
 		loadGraphic("assets/images/walker-sheet.png", true, 24, 24);
 
+		animation.add("idle", [0, 1, 2, 3, 3, 2, 1, 0], 6);
 		animation.add("walk", [0, 1, 2, 3, 3, 2, 1, 0], 6);
-		animation.add("charge", [0, 1, 2, 3, 3, 2, 1, 0], 8);
 		animation.add("stunned", [4, 5], 4);
 
 		animation.play("walk");
@@ -39,37 +38,18 @@ class EnemyWalker extends Enemy
 
 		brain.transition(statusRoam, "roam");
 		roamTimer = new FlxTimer();
-		roamTimer.start(1.0, doRoam, 0);
+		roamTimer.start(2.0, doRoam, 0);
 	}
 
 	public function statusIdle() : Void
 	{
-		// lalala
-		animation.play("walk");
+		animation.play("idle");
 		velocity.set();
 	}
 
 	public function statusRoam(): Void
 	{
-		if (playerIsNear())
-		{
-			roamTimer.cancel();
-			brain.transition(statusFetch, "fetch");
-		}
-	}
-
-	public function statusFetch(): Void
-	{
-		if (!playerIsNear())
-		{
-			roamTimer.start(1.0, doRoam, 0);
-			brain.transition(statusRoam, "roam");
-		} else
-		{
-			FlxVelocity.moveTowardsPoint(this, getPlayer().getMidpoint(), STEP_DISTANCE * 2);
-			animation.play("charge");
-			handleFacing();
-		}
+		animation.play("walk");
 	}
 
 	override public function update(): Void
@@ -80,8 +60,8 @@ class EnemyWalker extends Enemy
 	public override function onCollisionWithPlayer(): Void
 	{
 		brain.transition(statusIdle, "idle");
-		new FlxTimer(AttackIdleTime, function(_t:FlxTimer){
-			brain.transition(statusRoam);
+		new FlxTimer(JumpIdleTime, function(_t:FlxTimer){
+			brain.transition(statusRoam, "roam");
 		});
 	}
 
@@ -99,18 +79,13 @@ class EnemyWalker extends Enemy
 
 		if (hp > 0)
 		{
-			/*if (punchMask.getMidpoint().x > getMidpoint().x)
-					velocity.x = -StunKnockbackSpeed;
-				else
-					velocity.x = StunKnockbackSpeed;*/
-
 			brain.transition(statusStunned);
 			isStunned = true;
 		}
 		return true;
 	}
 
-	public override function statusStunned(): Void
+	override public function statusStunned(): Void
 	{
 		if (timer == null)
 		{
@@ -128,36 +103,50 @@ class EnemyWalker extends Enemy
 	public override function onStunnedEnd(_t : FlxTimer): Void
 	{
 		isStunned = false;
-		brain.transition(statusFetch, "fetch");
+		brain.transition(statusRoam, "roam");
 		timer = null;
 	}
 
 	private function doRoam(timer: FlxTimer): Void
 	{
-		if (Math.random() > 0.5) {
-			var angle: Float = Math.random() * 2 * Math.PI;
-			var deltaX: Float = STEP_DISTANCE * Math.cos(angle);
-			var deltaY: Float = STEP_DISTANCE * Math.sin(angle);
-			var dest: FlxPoint = new FlxPoint(this.getMidpoint().x + deltaX, this.getMidpoint().y + deltaY);
-			FlxVelocity.moveTowardsPoint(this, dest, STEP_DISTANCE);
-		} else {
-			velocity.x = 0;
+		trace("doRoam");
+		var dir : Float = Math.random();
+
+		if ( dir < 0.25 )
+		{
+			velocity.x = -STEP_DISTANCE;
 			velocity.y = 0;
+			facing = FlxObject.LEFT;
+			flipX = true;
+		} else if ( dir > 0.25 && dir < 0.5) 
+		{
+			velocity.x = STEP_DISTANCE;
+			velocity.y = 0;
+			facing = FlxObject.RIGHT;
+			flipX = false;
+		} else if ( dir > 0.5 && dir < 0.75) 
+		{
+			velocity.x = 0;
+			velocity.y = -STEP_DISTANCE;
+		} else if ( dir > 0.75) 
+		{
+			velocity.x = 0;
+			velocity.y = STEP_DISTANCE;
 		}
 
-		animation.play("walk");
+		brain.transition(statusRoam, "roam");
 
-		handleFacing();
+		new FlxTimer(JumpIdleTime, function(_t:FlxTimer){
+			brain.transition(statusIdle, "idle");
+		});
 	}
 
-	private function handleFacing()
-	{
-		flipX = (velocity.x < 0);
-	}
+	override public function onDefeat(): Void
+    {
 
-	private function playerIsNear(): Bool
-	{
-		var playerPos: FlxPoint = getPlayer().getMidpoint();
-		return Math.abs(x - playerPos.x) <= WARN_DISTANCE && Math.abs(y - playerPos.y) <= WARN_DISTANCE;
-	}
+    	roamTimer.cancel();
+    	//Aqui creamos más 
+        super.onDefeat();
+    }
+
 }

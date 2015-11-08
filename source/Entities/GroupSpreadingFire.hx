@@ -53,7 +53,7 @@ class GroupSpreadingFire extends Enemy
 			if (spreadingFire != null)
 			{
 				xPos = spreadingFire.getMidpoint().x - (spreadingFire.get_width()/2);
-				yPos = spreadingFire.getMidpoint().y - (spreadingFire.get_width()/2);
+				yPos = spreadingFire.getMidpoint().y - (spreadingFire.get_height()/2);
 
 				if ( dir < 0.25) 
 				{
