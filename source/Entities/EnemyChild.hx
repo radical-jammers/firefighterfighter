@@ -6,39 +6,38 @@ import flixel.util.FlxPoint;
 import flixel.FlxG;
 import flixel.FlxObject;
 
-class EnemyMother extends Enemy
+class EnemyChild extends Enemy
 {
 	public static inline var ATTACK_VALUE: Int = 1;
 	public static inline var HP_VALUE: Int = 5;
 
-	private static inline var JumpIdleTime : Float = 1;
-	private static inline var STEP_DISTANCE: Int = 8;
+	private static inline var JumpingTime : Float = 0.65;
+	private static inline var STEP_DISTANCE: Int = 16;
 	private static inline var StunKnockbackSpeed : Int = 30;
 
 	private var status: Int;
 	private var roamTimer: FlxTimer;
 
-	public function new(x: Float, y: Float, world: World)
+	public function new(x: Float, y: Float, graph : String, world: World)
 	{
 		super(x, y, world);
 
-		loadGraphic("assets/images/walker-sheet.png", true, 8, 8);
+		loadGraphic(graph, true, 12, 32);
 
-		animation.add("idle", [0, 1, 2, 3, 3, 2, 1, 0], 6);
-		animation.add("walk", [0, 1, 2, 3, 3, 2, 1, 0], 6);
+		animation.add("idle", [0, 1, 2, 2, 1, 0], 5);
+		animation.add("walk", [3, 3, 0, 4, 5, 6, 7, 7, 6, 5, 4, 0, 3, 3], 18, false);
 		animation.add("stunned", [4, 5], 4);
 
 		animation.play("walk");
 
-		setSize(8, 8);
-		offset.set(0, 0);
+		setSize(8, 16);
+		offset.set(2, 16);
 
 		hp = HP_VALUE;
 		atk = ATTACK_VALUE;
 
-		brain.transition(statusRoam, "roam");
+		brain.transition(statusStunned, "stunned");
 		roamTimer = new FlxTimer();
-		roamTimer.start(2.0, doRoam, 0);
 	}
 
 	public function statusIdle() : Void
@@ -49,7 +48,7 @@ class EnemyMother extends Enemy
 
 	public function statusRoam(): Void
 	{
-		animation.play("walk");
+
 	}
 
 	override public function update(): Void
@@ -60,7 +59,7 @@ class EnemyMother extends Enemy
 	public override function onCollisionWithPlayer(): Void
 	{
 		brain.transition(statusIdle, "idle");
-		new FlxTimer(JumpIdleTime, function(_t:FlxTimer){
+		new FlxTimer(JumpingTime, function(_t:FlxTimer){
 			brain.transition(statusRoam, "roam");
 		});
 	}
@@ -103,40 +102,41 @@ class EnemyMother extends Enemy
 	public override function onStunnedEnd(_t : FlxTimer): Void
 	{
 		isStunned = false;
+		roamTimer.start(1.0, doRoam, 0);
 		brain.transition(statusRoam, "roam");
 		timer = null;
 	}
 
 	private function doRoam(timer: FlxTimer): Void
 	{
-		trace("doRoam");
 		var dir : Float = Math.random();
 
 		if ( dir < 0.25 )
 		{
-			velocity.x = -STEP_DISTANCE;
+			velocity.x = -STEP_DISTANCE/JumpingTime;
 			velocity.y = 0;
 			facing = FlxObject.LEFT;
 			flipX = true;
 		} else if ( dir > 0.25 && dir < 0.5) 
 		{
-			velocity.x = STEP_DISTANCE;
+			velocity.x = STEP_DISTANCE/JumpingTime;
 			velocity.y = 0;
 			facing = FlxObject.RIGHT;
 			flipX = false;
 		} else if ( dir > 0.5 && dir < 0.75) 
 		{
 			velocity.x = 0;
-			velocity.y = -STEP_DISTANCE;
+			velocity.y = -STEP_DISTANCE/JumpingTime;
 		} else if ( dir > 0.75) 
 		{
 			velocity.x = 0;
-			velocity.y = STEP_DISTANCE;
+			velocity.y = STEP_DISTANCE/JumpingTime;
 		}
 
+		animation.play("walk", true);
 		brain.transition(statusRoam, "roam");
 
-		new FlxTimer(JumpIdleTime, function(_t:FlxTimer){
+		new FlxTimer(JumpingTime, function(_t:FlxTimer){
 			brain.transition(statusIdle, "idle");
 		});
 	}
@@ -144,8 +144,6 @@ class EnemyMother extends Enemy
 	override public function onDefeat(): Void
     {
     	roamTimer.cancel();
-    	
-    	
         super.onDefeat();
     }
 
