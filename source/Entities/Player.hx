@@ -200,7 +200,7 @@ class Player extends Entity
 			var dir : Int = FlxObject.RIGHT;
 			if (enemy.getMidpoint().x > getMidpoint().x)
 			{
-				dir = FlxObject.RIGHT;
+				dir = FlxObject.LEFT;
 			}
 
 			applyKnockback(dir);
