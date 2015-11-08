@@ -94,7 +94,6 @@ class GroupSpreadingFire extends Enemy
 						nreplications ++;
 					}
 				}
-
 			}
 			iter ++;
 		}
