@@ -17,6 +17,8 @@ class GameOver extends GameState
     {
         super.create();
 
+        FlxG.camera.bgColor = GameConstants.DARK_BG_COLOR;
+
         GameStatus.reset();
 
         add(PixelText.New(FlxG.width / 2 - 36, FlxG.height / 2 - 24, "Game Over"));

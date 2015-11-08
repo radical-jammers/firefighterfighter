@@ -25,7 +25,7 @@ class World extends GameState
 	public var hostage : Hostage;
 
 	public var enemies: FlxGroup;
-		public var collidableEnemies: FlxGroup;
+	public var collidableEnemies: FlxGroup;
 	public var solids: FlxGroup;
 	public var items: FlxGroup;
 
@@ -55,6 +55,8 @@ class World extends GameState
 	override public function create():Void
 	{
 		super.create();
+
+		FlxG.camera.bgColor = 0xFF000000;
 
 		// Prepare the groups
 		hostage = null;
@@ -185,7 +187,7 @@ class World extends GameState
 	public function IsItCoolEnough() : Bool
 	{
 		heatLevel = originalHeat == 0 ? 0 : Std.int(100 * currentHeat / originalHeat);
-		return (heatLevel <= HEAT_THRESHOLD); 
+		return (heatLevel <= HEAT_THRESHOLD);
 	}
 
 	public function onCollisionPlayerEnemy(player: Player, enemy: Enemy): Void
