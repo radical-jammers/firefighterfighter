@@ -6,6 +6,7 @@ import flixel.FlxState;
 import flixel.text.FlxText;
 import text.PixelText;
 import flixel.util.FlxTimer;
+import flixel.FlxCamera;
 
 class PreStage extends GameState
 {
@@ -27,11 +28,13 @@ class PreStage extends GameState
     {
         super.create();
 
+        FlxG.camera.bgColor = GameConstants.DARK_BG_COLOR;
+
         add(PixelText.New(FlxG.width / 2 - 48, 2 * FlxG.height / 3, "Stage " + stageNumber + " Start"));
         add(PixelText.New(FlxG.width / 2 - 4, FlxG.height / 2, "x"));
 
         playerPic = new FlxSprite(FlxG.width / 2 - 32, FlxG.height / 2 - 12);
-        remainingLives = new FlxSprite(FlxG.width / 2 + 8, FlxG.height / 2 - 4);
+        remainingLives = new FlxSprite(FlxG.width / 2 + 8, FlxG.height / 2 - 5);
 
         playerPic.loadGraphic("assets/images/fighter-walk-sheet.png", false, 32, 24);
 

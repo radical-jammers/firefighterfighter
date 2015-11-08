@@ -36,6 +36,7 @@ class MenuState extends GameState
 
 		var fixedSM : flixel.system.scaleModes.PixelPerfectScaleMode = new PixelPerfectScaleMode();
 		FlxG.scaleMode = fixedSM;
+		FlxG.camera.bgColor = GameConstants.DARK_BG_COLOR;
 
 		// GameController.init();
 	}
