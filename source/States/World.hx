@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxBasic;
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.FlxCamera;
@@ -21,10 +22,12 @@ class World extends GameState
 {
 	public var level : TiledLevel;
 	public var player : Player;
+	public var hostage : Hostage;
 
 	public var enemies: FlxGroup;
 		public var collidableEnemies: FlxGroup;
 	public var solids: FlxGroup;
+	public var items: FlxGroup;
 
 	public var teleports : FlxGroup;
 
@@ -53,14 +56,17 @@ class World extends GameState
 		super.create();
 
 		// Prepare the groups
+		hostage = null;
+
 		entities = new FlxTypedGroup<Entity>();
 		solids = new FlxGroup();
 		enemies = new FlxGroup();
 		collidableEnemies = new FlxGroup();
+		items = new FlxGroup();
 		teleports = new FlxGroup();
 		effects = new FlxGroup();
 
-		enemies.add(new EnemyBoxer(FlxG.width / 2, FlxG.height / 2, this));
+		items.add(new ItemBottle(FlxG.width / 2, FlxG.height / 2, this));
 
 		currentHeat = 0;
 		originalHeat = 0;
@@ -79,6 +85,7 @@ class World extends GameState
 
 		// Add the effect list
 		add(effects);
+		effects.update();
 
 		// Add the overlay tiles
 		add(level.overlayTiles);
@@ -139,6 +146,8 @@ class World extends GameState
 
 			FlxG.collide(player, enemies, onCollisionPlayerEnemy);
 
+			FlxG.collide(player, items, onCollisionPlayerItem);
+
 			handleDebugRoutines();
 
 			super.update();
@@ -147,12 +156,13 @@ class World extends GameState
 		}
 
 		// Checks if the scene has been cleared
-		heatLevel = originalHeat == 0 ? 0 : Std.int(100 * currentHeat / originalHeat);
-		if (heatLevel <= HEAT_THRESHOLD)
+		if (IsItCoolEnough())
 		{
 			hud.coolEnough = true;
-			stageTimer.cancel();
-			fadeTimer.cancel();
+			if (stageTimer != null)
+				stageTimer.cancel();
+			if (fadeTimer != null)
+				fadeTimer.cancel();
 			FlxG.camera.fill(0x00FFFFFF, false);
 		}
 	}
@@ -162,10 +172,21 @@ class World extends GameState
 		collidableEnemy.onCollisionWithEnemy();
 	}
 
+	public function IsItCoolEnough() : Bool
+	{
+		heatLevel = originalHeat == 0 ? 0 : Std.int(100 * currentHeat / originalHeat);
+		return (heatLevel <= HEAT_THRESHOLD); 
+	}
+
 	public function onCollisionPlayerEnemy(player: Player, enemy: Enemy): Void
 	{
 		player.onCollisionWithEnemy(enemy);
 		enemy.onCollisionWithPlayer();
+	}
+
+	public function onCollisionPlayerItem(player: Player, item: Item): Void
+	{
+		player.onCollisionWithItem(item);
 	}
 
 	public function onPlayerTeleportCollision(teleport : Teleport, player : Player) : Void
@@ -174,14 +195,21 @@ class World extends GameState
 
 		if (target != null)
 		{
-			teleporting = true;
+			if (IsItCoolEnough()) {
+				teleporting = true;
 
-			if (fadeTimer != null)
-				fadeTimer.cancel();
+				if (fadeTimer != null)
+					fadeTimer.cancel();
 
-			FlxG.camera.fade(0xFF000000, 0.75, function gogogo() {
-				GameController.Teleport(target);
-			}, true);
+				FlxG.camera.fade(0xFF000000, 0.75, function gogogo() {
+					GameController.Teleport(target);
+				}, true);
+			} else {
+				hud.notifyExitForbidden();
+				FlxObject.separate(player, teleport);
+				var dir : Int = (player.getMidpoint().x < teleport.getMidpoint().x ? FlxObject.LEFT : FlxObject.RIGHT);
+				player.applyKnockback(dir);
+			}
 		}
 	}
 
@@ -252,25 +280,20 @@ class World extends GameState
 			GameStatus.currentHp++;
 		}
 
+		if (FlxG.keys.justPressed.F)
+			hud.notifyExitForbidden();
+
+		if (FlxG.keys.justPressed.N)
+		{
+			var tport : Teleport = cast(teleports.members[0], Teleport);
+			if (tport != null)
+			{
+				onPlayerTeleportCollision(tport, player);
+			}
+		}
+
 		if (FlxG.mouse.justPressed)
 		{
-			if (_explosion == null)
-			{
-				_explosion = new flixel.effects.particles.FlxEmitterExt();
-				_explosion.width = 16;
-				_explosion.height = 16;
-				_explosion.setRotation(0, 0);
-				_explosion.setMotion(-45, 15, 200);
-				_explosion.makeParticles("assets/images/fire-particles.png", 60, 0, true, 0);
-				_explosion.setAlpha(1, 1, 0, 0);
-				_explosion.setScale(1, 2, 0, 0.25);
-				add(_explosion);
-			}
-
-			_explosion.x = mousePos.x;
-			_explosion.y = mousePos.y;
-			_explosion.start(false, 2, 0.1, 100);
-			_explosion.update();
 		}
 	}
 	var _explosion : flixel.effects.particles.FlxEmitterExt = null;

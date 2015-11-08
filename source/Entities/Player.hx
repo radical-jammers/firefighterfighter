@@ -15,6 +15,7 @@ class Player extends Entity
 	public var XSPEED : Int = 60;
 	public var YSPEED : Int = 60;
 	private static inline var ATTACK_VALUE = 5;
+	private static inline var MAX_HP_VALUE = 5;
 	public var StunKnockbackSpeed : Int = 50;
 	public var StunnedTime : Float = 0.3;
 	public var KnockbackTime : Float = 0.15;
@@ -194,18 +195,28 @@ class Player extends Entity
 	{
 		if (!stunned && !invulnerable)
 		{
-			trace("HALP! I'm being hit!");
+			receiveDamage(enemy.atk);
+
+			var dir : Int = FlxObject.RIGHT;
 			if (enemy.getMidpoint().x > getMidpoint().x)
-					velocity.x = -StunKnockbackSpeed;
-				else
-					velocity.x = StunKnockbackSpeed;
+			{
+				dir = FlxObject.RIGHT;
+			}
+
+			applyKnockback(dir);
+		}
+	}
+
+	public function applyKnockback(dir : Int) {
+			if (dir == FlxObject.LEFT)
+				velocity.x = -StunKnockbackSpeed;
+			else
+				velocity.x = StunKnockbackSpeed;
 
 			attacking = false;
 			punchMask.kill();
 			stunned = true;
 			invulnerable = true;
-
-			receiveDamage(enemy.atk);
 
 			new FlxTimer(StunnedTime, function onStunEnd(_t:FlxTimer) {
 				stunned = false;
@@ -219,12 +230,21 @@ class Player extends Entity
 			new FlxTimer(InvulnerabilityTime, function onInvulnerableEnd(_t:FlxTimer) {
 				invulnerable = false;
 			});
-		}
+	}
+
+	public function onCollisionWithItem(item: Item): Void
+	{
+		item.onCollect(this);
 	}
 
 	public function receiveDamage(damage: Int): Void
 	{
 		GameStatus.currentHp -= damage;
+	}
+
+	public function recoverHp(hpToRecover: Int): Void
+	{
+		GameStatus.currentHp = Std.int(Math.min(MAX_HP_VALUE, GameStatus.currentHp + hpToRecover));
 	}
 
 	public function onDefeat(): Void
@@ -235,6 +255,7 @@ class Player extends Entity
 		}, 0.15, {
 			complete: function(tween: FlxTween) {
 				GameStatus.lives--;
+				GameStatus.currentHp = MAX_HP_VALUE;
 				GameController.RestartStage();
 			}
 		});

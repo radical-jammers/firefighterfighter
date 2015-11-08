@@ -13,6 +13,7 @@ import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 import flixel.FlxSprite;
 import flixel.util.FlxPoint;
+import flixel.util.FlxRect;
 
 class TiledLevel extends TiledMap
 {
@@ -112,12 +113,23 @@ class TiledLevel extends TiledMap
 
 		switch (o.type.toLowerCase())
 		{
-
-			case "start":
-				// addPlayer(x, y, world);
-
 			case "player":
 				world.player = new Player(x, y, world);
+
+			case "hostage":
+				var graphic : String = o.custom.get("graphic");
+				var size : FlxPoint = new FlxPoint();
+				size.set(Std.parseInt(o.custom.get("width")), Std.parseInt(o.custom.get("height")));
+				
+				var mask : FlxRect = null;
+				if (o.custom.contains("mask"))
+				{
+					var maskStr : Array<String> = o.custom.get("mask").split(",");
+					mask = new FlxRect(Std.parseInt(maskStr[0]), Std.parseInt(maskStr[1]), Std.parseInt(maskStr[2]), Std.parseInt(maskStr[3]));
+				}
+
+				var hostage = new Hostage(x, y, world, graphic, size, mask);
+				world.hostage = hostage;
 
 			/** Elements **/
 			case "solid":

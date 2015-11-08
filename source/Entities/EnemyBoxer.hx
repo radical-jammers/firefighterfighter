@@ -11,6 +11,7 @@ class EnemyBoxer extends Enemy
     public static inline var HP_VALUE = 20;
     public static inline var SIGHT_DISTANCE = 32;
     public static inline var REACH_DISTANCE = 24;
+    public static inline var TURN_FREQ = 2.0;
 
     public var punchMask : FlxObject;
     public var attacking: Bool;
@@ -24,17 +25,17 @@ class EnemyBoxer extends Enemy
         immovable = true;
         attacking = false;
         isStunned = false;
-        facing = FlxObject.RIGHT;
+        facing = FlxObject.LEFT;
 
         brain.transition(statusIdle, "idle");
         timer = new FlxTimer();
-        timer.start(2.0, doFlip, 0);
+        timer.start(TURN_FREQ, doFlip);
 
         loadGraphic("assets/images/boxer-sheet.png", true, 32, 32);
-        setSize(8, 24);
+        setSize(8, 20);
         offset.set(12, 4);
 
-        animation.add("idle", [0, 1, 2, 1], 8, false);
+        animation.add("idle", [0, 1, 2, 1], 8, true);
         animation.add("attack", [12, 11, 10, 9, 8, 9, 10, 11, 12], 12, false);
         animation.add("turn", [3, 4, 5, 6, 7], 12, false);
 		animation.add("stunned", [5]);
@@ -52,11 +53,11 @@ class EnemyBoxer extends Enemy
         {
             timer.cancel();
             brain.transition(statusAlert, "alert");
-            animation.play("idle");
         }
-
-        if (animation.finished)
-            animation.play("idle");
+        else if (timer.finished)
+        {
+            timer.start(TURN_FREQ, doFlip);
+        }
     }
 
     public function statusAlert(): Void
@@ -65,13 +66,34 @@ class EnemyBoxer extends Enemy
         {
             attacking = false;
             brain.transition(statusIdle, "idle");
-            timer.start(2.0, doFlip, 0);
+            timer.start(TURN_FREQ, doFlip);
             animation.play("idle");
-        } else if (playerIsReachable() && !isStunned)
+        }
+        else if (playerIsReachable() && !isStunned)
         {
             performAttack();
-        } else if (!playerIsReachable()) {
+        }
+        else if (!playerIsReachable()) {
             attacking = false;
+            animation.play("idle");
+        }
+    }
+
+    public function statusTurn(): Void
+    {
+        if (animation.finished) {
+            if (facing == FlxObject.LEFT)
+            {
+                facing = FlxObject.RIGHT;
+                flipX = true;
+            }
+            else
+            {
+                facing = FlxObject.LEFT;
+                flipX = false;
+            }
+
+            brain.transition(statusIdle, "idle");
             animation.play("idle");
         }
     }
@@ -83,15 +105,13 @@ class EnemyBoxer extends Enemy
 
     public function doFlip(timer: FlxTimer): Void
     {
-        if (facing == FlxObject.LEFT) {
-            facing = FlxObject.RIGHT;
-            flipX = true;
-        }
-        else {
-            facing = FlxObject.LEFT;
-            flipX = false;
-        }
-        animation.play("turn");
+        trace("doFlip");
+
+        if (facing == FlxObject.LEFT)
+            animation.play("turn");
+        else
+            animation.play("turn");
+        brain.transition(statusTurn, "turn");
     }
 
     private function performAttack(): Void
@@ -130,7 +150,7 @@ class EnemyBoxer extends Enemy
 				punchMask.x = getMidpoint().x + 8;
 		}
 
-		punchMask.y = y + 6;
+		punchMask.y = y + 8;
 		punchMask.update();
     }
 
@@ -177,7 +197,6 @@ class EnemyBoxer extends Enemy
             timer.start(StunnedTime, function onStunnedEnd(stunnedTimer: FlxTimer) {
                 isStunned = false;
                 brain.transition(statusIdle, "idle");
-                timer.start(2.0, doFlip, 0);
                 animation.play("idle");
             });
 

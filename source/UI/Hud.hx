@@ -5,6 +5,8 @@ import flixel.FlxSprite;
 import flixel.FlxG;
 import flixel.util.FlxColor;
 import flixel.util.FlxPoint;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
 
 class Hud extends FlxTypedGroup<FlxSprite> {
     public var world: World;
@@ -23,6 +25,8 @@ class Hud extends FlxTypedGroup<FlxSprite> {
     private var bottlesP2: Array<FlxSprite>;
     private var emptyBottlesP1: Array<FlxSprite>;
     private var emptyBottlesP2: Array<FlxSprite>;
+
+    private var exitForbiddenTween : FlxTween;
 
     public function new(world: World)
     {
@@ -102,6 +106,21 @@ class Hud extends FlxTypedGroup<FlxSprite> {
         add(firstFigure);
         add(lastFigure);
         add(heat);
+    }
+
+    public function notifyExitForbidden()
+    {
+        FlxG.camera.flash(0xFFFF5151, 0.6);
+
+        if (exitForbiddenTween == null || exitForbiddenTween.finished)
+            exitForbiddenTween = FlxTween.tween(heat.scale, { x: 0.8, y : 2 }, 0.5, { type : FlxTween.PINGPONG, ease: FlxEase.backInOut, complete: function(_t:FlxTween) {
+                trace("Tween end: " + exitForbiddenTween.executions);
+                if (exitForbiddenTween.executions >= 2) {
+                    exitForbiddenTween.cancel();
+                    exitForbiddenTween = null;
+                    heat.scale.set(1, 1);
+                }
+            }});
     }
 
     public override function draw(): Void
