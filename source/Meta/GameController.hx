@@ -37,8 +37,9 @@ class GameController
 
 	public static function NextStage() 
 	{
-		GameStatus.currentStage++;
-		StartStage(GameStatus.currentStage);
+		// GameStatus.currentStage++;
+		// StartStage(GameStatus.currentStage);
+		RestartStage();
 	}
 
 	public static function RestartStage()

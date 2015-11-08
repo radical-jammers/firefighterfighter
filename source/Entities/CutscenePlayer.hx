@@ -14,11 +14,11 @@ class CutscenePlayer extends Entity
 	public static inline var JumpHeight : Float = 24;
 	public static inline var JumpDuration : Float = 0.35;
 
-	public static inline var RunAcceleration : Float = 400;
+	public static inline var RunAcceleration : Float = 900;
 
-	public static inline var ExitRunSpeed : Float = 20;
-	public static inline var ExitJumpDuration : Float = 1.5;
-	public static inline var ExitFadeDuration : Float = 1.5;
+	public static inline var ExitRunSpeed : Float = 180;
+	public static inline var ExitJumpDuration : Float = 0.7;
+	public static inline var ExitFadeDuration : Float = 0.5;
 
 	public var hostage : Hostage;
 
@@ -104,6 +104,7 @@ class CutscenePlayer extends Entity
 				});
 			case "run":
 			case "exit":
+				FlxG.timeScale = 0.4;
 				FlxG.camera.followLerp = 14;
 
 				FlxG.camera.fade(0xFF000000, ExitFadeDuration, endCutscene);
@@ -142,6 +143,7 @@ class CutscenePlayer extends Entity
 
 	public function endCutscene()
 	{
+		FlxG.timeScale = 1;
 		GameController.NextStage();
 	}
 
