@@ -46,7 +46,7 @@ class Enemy extends Entity
     }
 
     // Override me!
-    public function stunned()
+    public function statusStunned()
     {
     	if (timer == null)
     	{
@@ -79,7 +79,7 @@ class Enemy extends Entity
     	if (isStunned)
     		return false;
 
-    	brain.transition(stunned);
+    	brain.transition(statusStunned);
     	return true;
     }
 
