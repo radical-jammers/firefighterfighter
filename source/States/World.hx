@@ -27,6 +27,8 @@ class World extends GameState
 
 	public var teleports : FlxGroup;
 
+	public var effects : FlxGroup;
+
 	public var entities : FlxTypedGroup<Entity>;
 	public var hud: Hud;
 
@@ -54,6 +56,8 @@ class World extends GameState
 		solids = new FlxGroup();
 		enemies = new FlxGroup();
 		teleports = new FlxGroup();
+		effects = new FlxGroup();
+
 		currentHeat = 0;
 		originalHeat = 0;
 
@@ -68,6 +72,9 @@ class World extends GameState
 
 		// Add the entities list
 		add(entities);
+
+		// Add the effect list
+		add(effects);
 
 		// Add the overlay tiles
 		add(level.overlayTiles);
