@@ -4,7 +4,7 @@ import flixel.FlxG;
 
 class GameController
 {
-	public static function GetStageFirstMap(stageNumber : Int) : String 
+	public static function GetStageFirstMap(stageNumber : Int) : String
 	{
 		switch (stageNumber)
 		{
@@ -37,7 +37,12 @@ class GameController
 		FlxG.switchState(new PreStage(stageNumber, mapName));
 	}
 
-	public static function NextStage() 
+	public static function PostStageScreen(stageNumber: Int): Void
+	{
+		FlxG.switchState(new PostStage(stageNumber));
+	}
+
+	public static function NextStage()
 	{
 		GameStatus.currentStage++;
 		StartStage(GameStatus.currentStage);

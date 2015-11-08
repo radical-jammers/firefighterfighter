@@ -130,7 +130,7 @@ class CutscenePlayer extends Entity
 		animation.play("run");
 		acceleration.x = RunAcceleration;
 
-		if (x > exitThreshold) 
+		if (x > exitThreshold)
 		{
 			brain.transition(exit, "exit");
 		}
@@ -144,7 +144,8 @@ class CutscenePlayer extends Entity
 	public function endCutscene()
 	{
 		FlxG.timeScale = 1;
-		GameController.NextStage();
+		//GameController.NextStage();
+		GameController.PostStageScreen(GameStatus.currentStage);
 	}
 
 	override public function positionShadow()
