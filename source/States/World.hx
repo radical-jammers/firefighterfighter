@@ -21,6 +21,7 @@ class World extends GameState
 {
 	public var level : TiledLevel;
 	public var player : Player;
+	public var hostage : Hostage;
 
 	public var enemies: FlxGroup;
 	public var solids: FlxGroup;
@@ -52,6 +53,8 @@ class World extends GameState
 		super.create();
 
 		// Prepare the groups
+		hostage = null;
+
 		entities = new FlxTypedGroup<Entity>();
 		solids = new FlxGroup();
 		enemies = new FlxGroup();
@@ -147,8 +150,10 @@ class World extends GameState
 		if (heatLevel <= HEAT_THRESHOLD)
 		{
 			hud.coolEnough = true;
-			stageTimer.cancel();
-			fadeTimer.cancel();
+			if (stageTimer != null)
+				stageTimer.cancel();
+			if (fadeTimer != null)
+				fadeTimer.cancel();
 			FlxG.camera.fill(0x00FFFFFF, false);
 		}
 	}
@@ -243,25 +248,17 @@ class World extends GameState
 			GameStatus.currentHp++;
 		}
 
+		if (FlxG.keys.justPressed.N)
+		{
+			var tport : Teleport = cast(teleports.members[0], Teleport);
+			if (tport != null)
+			{
+				onPlayerTeleportCollision(tport, player);
+			}
+		}
+
 		if (FlxG.mouse.justPressed)
 		{
-			if (_explosion == null)
-			{
-				_explosion = new flixel.effects.particles.FlxEmitterExt();
-				_explosion.width = 16;
-				_explosion.height = 16;
-				_explosion.setRotation(0, 0);
-				_explosion.setMotion(-45, 15, 200);
-				_explosion.makeParticles("assets/images/fire-particles.png", 60, 0, true, 0);
-				_explosion.setAlpha(1, 1, 0, 0);
-				_explosion.setScale(1, 2, 0, 0.25);
-				add(_explosion);
-			}
-
-			_explosion.x = mousePos.x;
-			_explosion.y = mousePos.y;
-			_explosion.start(false, 2, 0.1, 100);
-			_explosion.update();
 		}
 	}
 	var _explosion : flixel.effects.particles.FlxEmitterExt = null;
