@@ -14,4 +14,9 @@ class Teleport extends Entity
 
 		target = Target;
 	}
+
+	override public function draw()
+	{
+		// haha no~
+	}
 }
