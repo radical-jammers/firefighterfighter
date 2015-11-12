@@ -16,14 +16,18 @@ class Item extends Entity
 
     public function onCollect(player: Player): Void
     {
-        collected = true;
-        FlxTween.tween(this.scale, {
-			x: 0,
-			y: 1.5
-		}, 0.15, {
-			complete: function(tween: FlxTween) {
-                destroy();
-			}
-		});
+		if (!collected) 
+		{
+			solid = false;
+			collected = true;		
+			FlxTween.tween(this.scale, {
+				x: 0,
+				y: 1.5
+			}, 0.15, {
+				complete: function(tween: FlxTween) {
+					destroy();
+				}
+			});
+		}
     }
 }

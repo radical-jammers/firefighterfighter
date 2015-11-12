@@ -49,6 +49,18 @@ class EnemyFireNPC extends Enemy
 		roamTimer = new FlxTimer();
 		roamTimer.start(1.0, doRoam, 0);
 	}
+	
+	override public function destroy()
+	{	
+		if (roamTimer != null)
+		{
+			roamTimer.cancel();
+			roamTimer.destroy();
+			roamTimer = null;
+		}
+		
+		super.destroy();
+	}
 
 	public function statusIdle() : Void
 	{
