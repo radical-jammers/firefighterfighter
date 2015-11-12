@@ -108,6 +108,7 @@ class EnemyWalker extends Enemy
 			brain.transition(statusStunned);
 			isStunned = true;
 		}
+		
 		return true;
 	}
 

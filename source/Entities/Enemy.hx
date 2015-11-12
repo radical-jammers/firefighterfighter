@@ -82,6 +82,7 @@ class Enemy extends Entity
     	if (isStunned)
     		return false;
 
+        isStunned = true;
     	brain.transition(statusStunned);
     	return true;
     }
@@ -100,6 +101,7 @@ class Enemy extends Entity
 
 	public function onDefeat(): Void
 	{
+        isStunned = true;
 		FlxTween.tween(this.scale, {
 			x: 0,
 			y: 1.5

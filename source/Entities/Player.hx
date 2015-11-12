@@ -89,6 +89,8 @@ class Player extends Entity
 						animation.play("attack-" + currentAttack);
 						currentAttack = (currentAttack + 1) % 2;
 
+						FlxG.sound.play(Reg.getRandomSfx(Reg.sfxPunches));
+
 						positionPunchMask();
 					}
 				}
@@ -187,7 +189,7 @@ class Player extends Entity
 		var success : Bool = enemy.onPunched(punch);
 		if (success)
 		{
-			// ?
+			FlxG.sound.play(Reg.getRandomSfx(Reg.sfxHits));
 		}
 	}
 
