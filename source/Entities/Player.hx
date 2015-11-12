@@ -205,6 +205,8 @@ class Player extends Entity
 				dir = FlxObject.LEFT;
 			}
 
+			FlxG.sound.play(Reg.getSfx(Reg.sfxFireHit));
+
 			applyKnockback(dir);
 		}
 	}

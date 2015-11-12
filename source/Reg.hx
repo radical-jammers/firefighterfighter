@@ -4,9 +4,10 @@ import flixel.util.FlxRandom;
 
 class Reg
 {
-	public static var sfxPunches : Array<String> = ["Punch.wav", "Punch2.wav", "Punch3.wav", "Punch4.wav"];
-	public static var sfxHits	: Array<String> = ["Hit.wav", "Hit2.wav", "Hit3.wav", "Hit4.wav"];
+	public static 		 var sfxPunches : Array<String> = ["Punch.wav", "Punch2.wav", "Punch3.wav", "Punch4.wav"];
+	public static 		 var sfxHits	: Array<String> = ["Hit.wav", "Hit2.wav", "Hit3.wav", "Hit4.wav"];
 	public static inline var sfxFire	: String = "Fire.wav";
+	public static inline var sfxFireHit : String = "FireHit.wav";
 
 	public static inline function getRandomSfx(array : Array<String>) : String
 	{

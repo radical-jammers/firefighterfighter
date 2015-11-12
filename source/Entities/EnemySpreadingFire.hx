@@ -98,6 +98,7 @@ class EnemySpreadingFire extends Enemy
             brain.transition(statusStunned);
             isStunned = true;
         }
+        
         return true;
     }
 
