@@ -30,6 +30,7 @@ class Player extends Entity
 
 	var timer : FlxTimer;
 	public var punchMask : FlxObject;
+	public var punched : Bool;
 
 	public var atk: Int;
 
@@ -60,6 +61,8 @@ class Player extends Entity
 		punchMask.immovable = true;
 		punchMask.kill();
 
+		punched = false;
+
 		timer = new FlxTimer();
 
 		atk = ATTACK_VALUE;
@@ -89,19 +92,26 @@ class Player extends Entity
 						animation.play("attack-" + currentAttack);
 						currentAttack = (currentAttack + 1) % 2;
 
-						FlxG.sound.play(Reg.getRandomSfx(Reg.sfxPunches));
+						FlxG.sound.play(Reg.getRandomSfx(Reg.sfxPunches), 0.35);
 
 						positionPunchMask();
+
+						punched = false;
 					}
 				}
 				else
 				{
+					// After one successfull punch frame, don't hit anymore
+					if (punched)
+						punchMask.kill();
+
+					// When the animation has finished, return to idle
 					if (animation.finished)
 					{
 						attacking = false;
 						punchMask.kill();
 					}
-					else
+					else // Punch the shit out of those bastards
 					{
 						FlxG.overlap(punchMask, world.enemies, onPunched);
 					}
@@ -190,6 +200,7 @@ class Player extends Entity
 		if (success)
 		{
 			FlxG.sound.play(Reg.getRandomSfx(Reg.sfxHits));
+			punched = true;
 		}
 	}
 
@@ -266,7 +277,7 @@ class Player extends Entity
 				else
 				{
 					GameStatus.currentHp = MAX_HP_VALUE;
-					GameController.RestartStage();
+					GameController.RestartScene();
 				}
 			}
 		});

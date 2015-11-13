@@ -24,9 +24,9 @@ class EnemyMother extends Enemy
 
 		loadGraphic("assets/images/splitter-sheet.png", true, 24, 32);
 
-		animation.add("idle", [0, 1, 2, 3, 3, 2, 1, 0], 5);
+		animation.add("idle", [0, 1, 2, 3, 3, 2, 1, 0], 10);
 		animation.add("walk", [4, 4, 0, 5, 6, 7, 8, 9, 9, 8, 7, 6, 5, 0, 4, 4], 22, false);
-		animation.add("stunned", [10, 11], 2);
+		animation.add("stunned", [10, 11], 8);
 
 		animation.play("idle");
 
@@ -59,6 +59,9 @@ class EnemyMother extends Enemy
 
 	public override function onCollisionWithPlayer(): Void
 	{
+		if (isStunned)
+			return;
+		
 		brain.transition(statusIdle, "idle");
 		new FlxTimer(JumpingTime, function(_t:FlxTimer){
 			brain.transition(statusRoam, "roam");
