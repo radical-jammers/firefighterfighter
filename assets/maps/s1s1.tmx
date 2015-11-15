@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="15" tilewidth="8" tileheight="8" nextobjectid="25">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="15" tilewidth="8" tileheight="8" nextobjectid="26">
  <tileset firstgid="1" name="tileset" tilewidth="8" tileheight="8" tilecount="2048">
   <image source="../tilesets/tileset.png" trans="ff00ff" width="256" height="512"/>
  </tileset>
@@ -35,7 +35,7 @@
   </object>
   <object id="8" name="Walker" type="walker" x="200" y="104" width="16" height="16"/>
   <object id="9" name="wall" type="solid" x="0" y="118" width="240" height="8"/>
-  <object id="10" name="firefx" type="firefx" x="48" y="56" width="8" height="8"/>
+  <object id="10" name="firefx" type="firefx" x="45" y="58" width="8" height="8"/>
   <object id="11" name="firefx" type="firefx" x="32" y="112" width="8" height="8"/>
   <object id="12" name="firefx" type="firefx" x="208" y="16" width="8" height="8"/>
   <object id="13" name="firefx" type="firefx" x="104" y="72" width="16" height="16"/>
@@ -50,5 +50,6 @@
   <object id="22" name="obstacle" type="solid" x="8" y="104" width="16" height="16"/>
   <object id="23" name="obstacle" type="solid" x="184" y="48" width="16" height="16"/>
   <object id="24" name="wall" type="solid" x="240" y="80" width="8" height="40"/>
+  <object id="25" name="obstacle" type="solid" x="43" y="56" width="12" height="12"/>
  </objectgroup>
 </map>
