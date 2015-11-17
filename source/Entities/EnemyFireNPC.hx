@@ -29,17 +29,28 @@ class EnemyFireNPC extends Enemy
 	{
 		super(x, y, world);
 
-		loadGraphic("assets/images/walker-sheet.png", true, 24, 24);
+		/*if (Math.random() > 0.5) {
+			var angle: Float = Math.random() * 2 * Math.PI;
+			var deltaX: Float = STEP_DISTANCE * Math.cos(angle);
+			var deltaY: Float = STEP_DISTANCE * Math.sin(angle);
+			var dest: FlxPoint = new FlxPoint(this.getMidpoint().x + deltaX, this.getMidpoint().y + deltaY);
+			FlxVelocity.moveTowardsPoint(this, dest, STEP_DISTANCE);
+		} else {
+			velocity.x = 0;
+			velocity.y = 0;
+		}*/
+		((Math.random() > 0.5) ? loadGraphic("assets/images/firenpc-a-sheet.png", true, 24, 24) : loadGraphic("assets/images/firenpc-b-sheet.png", true, 24, 24));
 
-		animation.add("walk", [0, 1, 2, 3, 3, 2, 1, 0], 6);
-		animation.add("run", [0, 1, 2, 3, 3, 2, 1, 0], 8);
-		animation.add("onFire", [0, 1, 2, 3, 3, 2, 1, 0], 14);
-		animation.add("stunned", [4, 5], 4);
+		//loadGraphic("assets/images/walker-sheet.png", true, 24, 24);
+
+		animation.add("walk", [0, 1, 1, 0], 6);
+		animation.add("run", [0, 1, 1, 0], 8);
+		animation.add("stunned", [2, 3], 4);
 
 		animation.play("walk");
 
-		setSize(12, 8);
-		offset.set(6, 14);
+		setSize(12, 20);
+		offset.set(6, 4);
 
 		hp = HP_VALUE;
 		atk = ATTACK_VALUE;
@@ -64,7 +75,8 @@ class EnemyFireNPC extends Enemy
 
 	public function statusIdle() : Void
 	{
-		animation.play("walk");
+		if (!onFire)
+			animation.play("walk");
 		velocity.set();
 	}
 
@@ -101,45 +113,25 @@ class EnemyFireNPC extends Enemy
 
 	public function changeWay(itsMe : EnemyFireNPC, solid : Entity)
 	{
-		trace("colide!!!!!!!!!");
-		trace("solid.x: " + solid.x);
-		trace("solid.width: " + solid.width);
-		trace("this.x: " + this.x);
-		trace("this.width: " + this.width);
-		trace("solid.y: " + solid.y);
-		trace("solid.height: " + solid.height);
-		trace("this.y: " + this.y);
-		trace("this.height: " + this.height);
+
 		if ((solid.x + solid.width) <= this.x) //At my left!
 		{
-			trace(this.velocity);
 			this.velocity.set(-velocityX, velocityY);
-			trace(this.velocity);
-			trace("At my left!");
 		}
 
 		if (solid.x <= (this.x + this.width)) //At my right!
 		{
-			trace(this.velocity);
 			this.velocity.set(-velocityX, velocityY);
-			trace(this.velocity);
-			trace("At my right!");
 		}
 
 		if ((solid.y + solid.height) <= this.y) //At my top!
 		{
-			trace(this.velocity);
 			this.velocity.set(velocityX, -velocityY);
-			trace(this.velocity);
-			trace("At my top!");
 		}
 
 		if (solid.y >= (this.y + this.height)) //At my bottom!
 		{
-			trace(this.velocity);
 			this.velocity.set(velocityX, -velocityY);
-			trace(this.velocity);
-			trace("At my bottom!");
 		}
 	}
 
@@ -155,6 +147,13 @@ class EnemyFireNPC extends Enemy
     	if (nextState == "onFire")
     	{
     		onFire = true;
+
+    		animation.destroyAnimations();
+    		loadGraphic("assets/images/fire-npc-sheet.png", true, 24, 24);
+    		setSize(12, 18);
+			offset.set(6, 6);
+    		animation.add("onFire", [0, 1, 1, 0], 14);
+			animation.add("stunned", [2, 3], 4);
     		setOnFire();
     	}
     }
@@ -259,7 +258,9 @@ class EnemyFireNPC extends Enemy
 	public override function onStunnedEnd(_t : FlxTimer): Void
 	{
 		isStunned = false;
-		if (!onFire)
+		if (onFire)
+			brain.transition(statusOnFire, "onFire");
+		else
 			brain.transition(statusFetch, "fetch");
 
 		timer = null;

@@ -29,6 +29,8 @@ class MenuState extends GameState
 	{
 		super.create();
 
+		FlxG.sound.volume = 1;
+
 		/*var zoom  = FlxG.camera.zoom;
 		FlxG.cameras.reset(new FlxCamera(Std.int((FlxG.width / 2 - 80) * zoom), 0, 160, 160, 0));*/
 

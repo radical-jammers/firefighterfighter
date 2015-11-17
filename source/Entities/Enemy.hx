@@ -10,6 +10,8 @@ class Enemy extends Entity
 {
 	public static inline var LOOT_CHANCE: Float = 0.05;
 
+    public var invincible : Bool;
+
 	public var hp: Int;
 	public var atk: Int;
 	public var heat: Int;
@@ -33,6 +35,8 @@ class Enemy extends Entity
 
         isStunned = false;
 		heat = 1;
+
+        invincible = false;
     }
 
     public function getPlayer(): Player
@@ -48,6 +52,15 @@ class Enemy extends Entity
     	super.update();
     }
 
+    override public function draw()
+    {
+        if (invincible)
+            color = 0xFFABABAB;
+        else
+            color = 0xFFFFFFFF;
+        super.draw();
+    }
+
     // Override me!
     public function statusStunned()
     {
@@ -58,6 +71,8 @@ class Enemy extends Entity
 
     	isStunned = true;
     	velocity.set();
+
+        invincible = true;
     }
 
     public function onStunnedEnd(_t : FlxTimer)
@@ -66,6 +81,8 @@ class Enemy extends Entity
     	isStunned = false;
     	brain.transition(null);
     	timer = null;
+
+        invincible = false;
     }
 
     public function onStateChange(nextState : String)
@@ -79,9 +96,11 @@ class Enemy extends Entity
     public function onPunched(punchMask : FlxObject) : Bool
     {
     	// Do override!
-    	if (isStunned)
+    	if (invincible || isStunned)
     		return false;
 
+        isStunned = true;
+        invincible = true;
     	brain.transition(statusStunned);
     	return true;
     }
@@ -100,6 +119,7 @@ class Enemy extends Entity
 
 	public function onDefeat(): Void
 	{
+        isStunned = true;
 		FlxTween.tween(this.scale, {
 			x: 0,
 			y: 1.5

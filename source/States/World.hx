@@ -100,6 +100,9 @@ class World extends GameState
 		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight + 16);
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN);
 
+		// Compute an update frame to position shadows and such
+		entities.update();
+
 		// Setup stage timer
 		stageTimer = new FlxTimer(FlxMath.SQUARE_ROOT_OF_TWO*13/7, function(timer: FlxTimer) {
 			remainingTime--;
@@ -227,7 +230,6 @@ class World extends GameState
 
 	public function onPlayerHostageCollision(player : Player, hostage : Hostage)
 	{
-		trace("Cutscene!");
 		cutsceneing = true;
 
 		cutscenePlayer = new CutscenePlayer(player.x, player.y, this, hostage);
@@ -286,7 +288,15 @@ class World extends GameState
 
 	public function removeHeat(enemy: Enemy): Void
 	{
+		var wasAlreadyCoolEnough : Bool = IsItCoolEnough();
+		
 		currentHeat -= enemy.heat;
+		
+		// If we have just made it cool enough, notify
+		if (!wasAlreadyCoolEnough && IsItCoolEnough())
+		{
+			FlxG.camera.flash(0xFF5050FF, 0.65);
+		}
 	}
 
 	function handleDebugRoutines()
@@ -321,7 +331,7 @@ class World extends GameState
 			var tport : Teleport = cast(teleports.members[0], Teleport);
 			if (tport != null)
 			{
-				onPlayerTeleportCollision(tport, player);
+				GameController.Teleport(tport.target);
 			}
 		}
 
