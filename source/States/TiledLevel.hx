@@ -68,9 +68,11 @@ class TiledLevel extends TiledMap
 			tilemap.widthInTiles = width;
 			tilemap.heightInTiles = height;
 			tilemap.loadMap(tileLayer.tileArray, processedPath, tileset.tileWidth, tileset.tileHeight, 0, 1, 1, 1);
-
+			
+			#if debug
 			tilemap.ignoreDrawDebug = true;
-
+			#end
+			
 			if (tileLayer.properties.contains("overlay"))
 			{
 				overlayTiles.add(tilemap);
