@@ -3,12 +3,6 @@ package;
 import flash.display.BitmapData;
 
 import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.ui.FlxVirtualPad;
-import flixel.ui.FlxButton;
-
-@:bitmap("assets/images/ui/virtualpad/x.png")
-private class GraphicX extends BitmapData {}
 
 class GamePad
 {	
@@ -22,30 +16,22 @@ class GamePad
 	
 	public static function handlePadState() : Void
 	{
-		previousPadState = currentPadState;
+		/*previousPadState = currentPadState;
 		
 		currentPadState = new Map<Int, Bool>();
 		
-		var metapad : MetaGamePad = MetaGamePad.Current;
+		var metapad : MetaGamePad = MetaGamePad.Current;*/
 		
-		/*currentPadState.set(Left, 
-			virtualPad.buttonLeft.status == FlxButton.PRESSED || FlxG.keys.anyPressed(["LEFT"]));
-		currentPadState.set(Right, 
-			virtualPad.buttonRight.status == FlxButton.PRESSED || FlxG.keys.anyPressed(["RIGHT"]));
-		currentPadState.set(Up, 
-			virtualPad.buttonUp.status == FlxButton.PRESSED || FlxG.keys.anyPressed(["UP"]));
-		currentPadState.set(Down, 
-			virtualPad.buttonDown.status == FlxButton.PRESSED || FlxG.keys.anyPressed(["DOWN"]));
+		/*currentPadState.set(Left, FlxG.keys.anyPressed(["LEFT"]));
+		currentPadState.set(Right, FlxG.keys.anyPressed(["RIGHT"]));
+		currentPadState.set(Up, FlxG.keys.anyPressed(["UP"]));
+		currentPadState.set(Down, FlxG.keys.anyPressed(["DOWN"]));
 			
-		currentPadState.set(A, 
-			virtualPad.buttonA.status == FlxButton.PRESSED || FlxG.keys.anyPressed(["A", "Z"]));
-		currentPadState.set(B, 
-			virtualPad.buttonB.status == FlxButton.PRESSED || FlxG.keys.anyPressed(["S", "X"]));
+		currentPadState.set(A, FlxG.keys.anyPressed(["A", "Z"]));
+		currentPadState.set(B, FlxG.keys.anyPressed(["S", "X"]));
 		
-		currentPadState.set(Start, 
-			virtualPad.buttonStart.status == FlxButton.PRESSED || FlxG.keys.anyPressed(["ENTER"]));
-		currentPadState.set(Select, 
-			virtualPad.buttonSelect.status == FlxButton.PRESSED || FlxG.keys.anyPressed(["SPACE"]));*/
+		currentPadState.set(Start, FlxG.keys.anyPressed(["ENTER"]));
+		currentPadState.set(Select, FlxG.keys.anyPressed(["SPACE"]));*/
 	}
 	
 	public static function checkButton(button : Int) : Bool

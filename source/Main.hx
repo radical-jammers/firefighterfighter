@@ -73,6 +73,7 @@ class Main extends Sprite
 		addChild(gamepad = new MetaGamePad());
 	
 		addEventListener(Event.ENTER_FRAME, OnUpdate);
+		
 		#if (mobile || vpad)
 		addEventListener(TouchEvent.TOUCH_BEGIN, OnTouchBegin);
 		addEventListener(TouchEvent.TOUCH_MOVE, OnTouchMove);

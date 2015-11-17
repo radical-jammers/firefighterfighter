@@ -43,7 +43,13 @@ class MetaGamePad extends Sprite
 		var leftBtn  : GamePadButton = new GamePadButton(Left,  0, buttonHeight, buttonWidth, buttonHeight);
 		var rightBtn : GamePadButton = new GamePadButton(Right, buttonWidth, buttonHeight, buttonWidth, buttonHeight);
 		
-		buttons = [upBtn, downBtn, leftBtn, rightBtn];
+		var aBtn : GamePadButton = new GamePadButton(A, rightPanelX + buttonWidth, buttonHeight, buttonWidth, buttonHeight*2);
+		var bBtn : GamePadButton = new GamePadButton(B, rightPanelX, buttonHeight, buttonWidth, buttonHeight*2);
+		
+		var startBtn : GamePadButton = new GamePadButton(Start, rightPanelX + buttonWidth, 0, buttonWidth, buttonHeight/2);
+		var selectBtn : GamePadButton = new GamePadButton(Select, rightPanelX, 0, buttonWidth, buttonHeight/2);
+		
+		buttons = [upBtn, downBtn, leftBtn, rightBtn, aBtn, bBtn, startBtn, selectBtn];
 		
 		for (button in buttons)
 		{
@@ -92,11 +98,11 @@ class MetaGamePad extends Sprite
 		currentPadState.set(Up, 	currentPadState.get(Up) 	|| FlxG.keys.anyPressed(["UP"]));
 		currentPadState.set(Down, 	currentPadState.get(Down) 	|| FlxG.keys.anyPressed(["DOWN"]));
 			
-		currentPadState.set(A, FlxG.keys.anyPressed(["A", "Z"]));
-		currentPadState.set(B, FlxG.keys.anyPressed(["S", "X"]));
+		currentPadState.set(A,  	currentPadState.get(A) 		|| FlxG.keys.anyPressed(["A", "Z"]));
+		currentPadState.set(B,  	currentPadState.get(B) 		|| FlxG.keys.anyPressed(["S", "X"]));
 		
-		currentPadState.set(Start, FlxG.keys.anyPressed(["ENTER"]));
-		currentPadState.set(Select, FlxG.keys.anyPressed(["SPACE"]));
+		currentPadState.set(Start,  currentPadState.get(Start) 	|| FlxG.keys.anyPressed(["ENTER"]));
+		currentPadState.set(Select, currentPadState.get(Select) || FlxG.keys.anyPressed(["SPACE"]));
 	}
 	
 	private function initPadState() : Void
