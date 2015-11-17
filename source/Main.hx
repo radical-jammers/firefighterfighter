@@ -6,6 +6,7 @@ import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.Lib;
 
+import openfl.geom.Point;
 import openfl.events.TouchEvent;
 
 import flixel.FlxGame;
@@ -47,6 +48,7 @@ class Main extends Sprite
 		if (hasEventListener(Event.ADDED_TO_STAGE))
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
+			stage.addEventListener(Event.RESIZE, OnResize);
 		}
 
 		setupGame();
@@ -71,9 +73,18 @@ class Main extends Sprite
 		addChild(gamepad = new MetaGamePad());
 	
 		addEventListener(Event.ENTER_FRAME, OnUpdate);
+		#if (mobile || vpad)
 		addEventListener(TouchEvent.TOUCH_BEGIN, OnTouchBegin);
 		addEventListener(TouchEvent.TOUCH_MOVE, OnTouchMove);
 		addEventListener(TouchEvent.TOUCH_END, OnTouchEnd);
+		#end
+	}
+	
+	public function OnResize(event : Event)
+	{
+		removeChild(gamepad);
+		gamepad = new MetaGamePad();
+		addChild(gamepad);
 	}
 	
 	public function OnUpdate(event : Event) 
@@ -85,16 +96,16 @@ class Main extends Sprite
 	
 	public function OnTouchBegin(event : TouchEvent)
 	{
-		// trace("begin: " + event.touchPointID);
+		gamepad.touchPoints.set(event.touchPointID, new Point(event.stageX, event.stageY));
 	}
 	
 	public function OnTouchMove(event : TouchEvent)
 	{
-		// trace("moves: " + event.touchPointID);
+		gamepad.touchPoints.set(event.touchPointID, new Point(event.stageX, event.stageY));
 	}
 	
 	public function OnTouchEnd(event : TouchEvent)
 	{
-		// trace("endss: " + event.touchPointID);
+		gamepad.touchPoints.remove(event.touchPointID);
 	}
 }

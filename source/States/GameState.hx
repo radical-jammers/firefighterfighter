@@ -12,8 +12,8 @@ class GameState extends FlxState
 	override public function create()
 	{
 		// Register the Virtual Pad
-		GamePad.setupVirtualPad();
-		add(GamePad.virtualPad);
+		// GamePad.setupVirtualPad();
+		// add(GamePad.virtualPad);
 
 		super.create();
 	}

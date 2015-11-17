@@ -178,7 +178,7 @@ class TiledLevel extends TiledMap
 			/** Enemies **/
 
 			case "spread":
-				var delay : Int = null;
+				var delay : Int = -1;
 
 				if (o.custom.contains("delay"))
 					delay = Std.parseInt(o.custom.get("delay"));

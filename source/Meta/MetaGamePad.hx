@@ -14,11 +14,19 @@ class MetaGamePad extends Sprite
 	var previousPadState : Map<Int, Bool>;
 	
 	var buttons : Array<GamePadButton>;
-	public var touchPoints : Array<Point>;
+	public var touchPoints : Map<Int, Point>;
+	
+	private static var _current : MetaGamePad;
+	public static var Current(get, null) : MetaGamePad;
+	public static function get_Current() : MetaGamePad {
+		return _current;
+	}
 	
 	public function new()
 	{
 		super();
+		
+		_current = this;
 		
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
@@ -44,7 +52,7 @@ class MetaGamePad extends Sprite
 		
 		initPadState();
 		
-		touchPoints = new Array<Point>();
+		touchPoints = new Map<Int, Point>();
 	}
 	
 	public function checkButton(button : Int) : Bool
@@ -73,15 +81,16 @@ class MetaGamePad extends Sprite
 		
 		currentPadState = new Map<Int, Bool>();
 		
-		for (point in touchPoints)
+		for (button in buttons)
 		{
-			
+			button.pressed = false;
+			currentPadState.set(button.id, button.isPressed(touchPoints));
 		}
 		
-		currentPadState.set(Left, FlxG.keys.anyPressed(["LEFT"]));
-		currentPadState.set(Right, FlxG.keys.anyPressed(["RIGHT"]));
-		currentPadState.set(Up, FlxG.keys.anyPressed(["UP"]));
-		currentPadState.set(Down, FlxG.keys.anyPressed(["DOWN"]));
+		currentPadState.set(Left, 	currentPadState.get(Left) 	|| FlxG.keys.anyPressed(["LEFT"]));
+		currentPadState.set(Right, 	currentPadState.get(Right) 	|| FlxG.keys.anyPressed(["RIGHT"]));
+		currentPadState.set(Up, 	currentPadState.get(Up) 	|| FlxG.keys.anyPressed(["UP"]));
+		currentPadState.set(Down, 	currentPadState.get(Down) 	|| FlxG.keys.anyPressed(["DOWN"]));
 			
 		currentPadState.set(A, FlxG.keys.anyPressed(["A", "Z"]));
 		currentPadState.set(B, FlxG.keys.anyPressed(["S", "X"]));
