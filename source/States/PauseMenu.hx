@@ -18,6 +18,8 @@ class PauseMenu extends FlxSubState
 	var group : FlxSpriteGroup;
 	var text : FlxBitmapTextField;
 	var bg : FlxSprite;
+	
+	var ready : Bool;
 
 	public function new()
 	{
@@ -38,29 +40,29 @@ class PauseMenu extends FlxSubState
 
 		add(group);
 
-		FlxTween.tween(group, {y: 0}, 0.5, { ease: FlxEase.bounceOut });
-
-		FlxG.inputs.reset();
-		GamePad.resetInputs();
+		ready = false;
+		
+		FlxTween.tween(group, {y: 0}, 0.5, { ease: FlxEase.bounceOut, complete: function(_t:FlxTween){
+			ready = true;
+		}});
 	}
 
 	override public function close()
 	{
-		FlxG.inputs.reset();
-		GamePad.resetInputs();
-
 		super.close();
 	}
 
 	override public function update()
 	{
 		GamePad.handlePadState();
-
-		if (GamePad.justReleased(GamePad.Start))
+		if (ready) 
 		{
-			FlxTween.tween(group, {y: FlxG.height}, 0.5, { ease: FlxEase.bounceOut, complete: function(_t:FlxTween) {
-				close();
-			}});
+			if (GamePad.justReleased(GamePad.Start))
+			{
+				FlxTween.tween(group, {y: FlxG.height}, 0.5, { ease: FlxEase.bounceOut, complete: function(_t:FlxTween) {
+					close();
+				}});
+			}
 		}
 
 		super.update();
