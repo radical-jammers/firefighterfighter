@@ -38,6 +38,8 @@ class GamePadButton extends Sprite
 		
 		color = FlxColorUtil.getRandomColor(0x75, 0xFF, 0x00);
 		
+		#if (mobile || vpad)
+		
 		var spritePath : String = null;
 		switch (Id)
 		{
@@ -67,8 +69,11 @@ class GamePadButton extends Sprite
 			sprite = new Bitmap(bitmapData, true);	
 			adjustSpriteSize(sprite);
 			adjustSpritePosition(sprite);
+			
 			addChild(sprite);
 		}
+		
+		#end
 		
 		draw();
 	}

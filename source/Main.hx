@@ -70,7 +70,11 @@ class Main extends Sprite
 
 		addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
 		
-		addChild(gamepad = new MetaGamePad());
+		gamepad = new MetaGamePad();
+		
+		#if (mobile || vpad)
+		addChild(gamepad);
+		#end
 	
 		addEventListener(Event.ENTER_FRAME, OnUpdate);
 		
