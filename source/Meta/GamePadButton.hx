@@ -1,6 +1,8 @@
 package;
 
+import openfl.Assets;
 import openfl.display.Sprite;
+import openfl.display.Bitmap;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
 
@@ -10,6 +12,11 @@ class GamePadButton extends Sprite
 {
 	public var id : Int;
 	public var color : Int;
+	public var sprite : Bitmap;
+	public var originalX : Float;
+	public var originalY : Float;
+	public var originalWidth : Float;
+	public var originalHeight : Float;
 	
 	public var bounds : Rectangle;
 	
@@ -30,6 +37,38 @@ class GamePadButton extends Sprite
 		pressed = false;
 		
 		color = FlxColorUtil.getRandomColor(0x75, 0xFF, 0x00);
+		
+		var spritePath : String = null;
+		switch (Id)
+		{
+			case MetaGamePad.Up:
+				spritePath = "assets/images/UP.png";
+			case MetaGamePad.Down:
+				spritePath = "assets/images/DOWN.png";
+			case MetaGamePad.Left:
+				spritePath = "assets/images/LEFT.png";
+			case MetaGamePad.Right:
+				spritePath = "assets/images/RIGHT.png";
+			case MetaGamePad.A:
+				spritePath = "assets/images/A.png";
+			case MetaGamePad.B:
+				spritePath = "assets/images/B.png";
+			case MetaGamePad.Start:
+				spritePath = "assets/images/START.png";
+			case MetaGamePad.Select:
+				spritePath = "assets/images/SELECT.png";
+			default:
+				sprite = null;
+		}
+
+		if (spritePath != null)
+		{
+			var bitmapData = Assets.getBitmapData(spritePath);
+			sprite = new Bitmap(bitmapData, true);	
+			adjustSpriteSize(sprite);
+			adjustSpritePosition(sprite);
+			addChild(sprite);
+		}
 		
 		draw();
 	}
@@ -59,16 +98,62 @@ class GamePadButton extends Sprite
 		
 		if (pressed)
 		{
-			graphics.beginFill(color, 0.6);
+			if (sprite != null)
+			{
+				sprite.width = originalWidth * 1.2;
+				sprite.height = originalHeight * 0.8;
+				
+				sprite.x = originalX + originalWidth / 2 - sprite.width / 2;
+				sprite.y = originalY + originalHeight / 2 - sprite.height / 2 + sprite.height*0.15;
+			}
+			
+			/*graphics.beginFill(color, 0.6);
 			graphics.drawRect(0, 0, bounds.width, bounds.height);
-			graphics.endFill();
+			graphics.endFill();*/
 		}
 		else
 		{
-			graphics.beginFill(color, 0.3);
+			if (sprite != null)
+			{
+				sprite.width = originalWidth;
+				sprite.height = originalHeight;
+				
+				sprite.x = originalX;
+				sprite.y = originalY;
+			}
+			
+			/*graphics.beginFill(color, 0.3);
 			graphics.drawRect(0, 0, bounds.width, bounds.height);
-			graphics.endFill();
+			graphics.endFill();*/
 		}
 		#end
+	}
+	
+	function adjustSpriteSize(sprite : Bitmap)
+	{
+		if (bounds.width < bounds.height)
+		{
+			var ratio : Float = sprite.width / sprite.height;
+			sprite.width = bounds.width * 0.8;
+			sprite.height = bounds.width * 0.8 * ratio;
+		}
+		else
+		{
+			var ratio : Float = sprite.width / sprite.height;
+			sprite.width = bounds.height * 0.8 * ratio;
+			sprite.height = bounds.height * 0.8;
+		}
+		
+		originalWidth = sprite.width;
+		originalHeight = sprite.height;
+	}
+	
+	function adjustSpritePosition(sprite : Bitmap)
+	{
+		sprite.x = bounds.width / 2 - sprite.width / 2;
+		sprite.y = bounds.height / 2 - sprite.height / 2;
+		
+		originalX = sprite.x;
+		originalY = sprite.y;
 	}
 }
