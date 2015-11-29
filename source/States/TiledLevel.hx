@@ -178,12 +178,16 @@ class TiledLevel extends TiledMap
 			/** Enemies **/
 
 			case "spread":
-				var delay : Int = -1;
+				var delay : Float = -1;
+				var fire : GroupSpreadingFire = null;
 
 				if (o.custom.contains("delay"))
-					delay = Std.parseInt(o.custom.get("delay"));
+					delay = Std.parseFloat(o.custom.get("delay"));
+				if (delay != -1)
+					fire = new GroupSpreadingFire(x, y, world, delay);
+				else
+					fire = new GroupSpreadingFire(x, y, world);
 
-				var fire : GroupSpreadingFire = new GroupSpreadingFire(x, y, world, delay);
 				world.addEnemy(fire);
 			case "walker":
 				var walker : EnemyWalker = new EnemyWalker(x, y, world);

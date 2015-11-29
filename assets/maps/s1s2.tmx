@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="22" tilewidth="8" tileheight="8" nextobjectid="46">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="22" tilewidth="8" tileheight="8" nextobjectid="47">
  <tileset firstgid="1" name="tileset" tilewidth="8" tileheight="8" tilecount="2048">
   <image source="../tilesets/tileset.png" trans="ff00ff" width="256" height="512"/>
  </tileset>
@@ -52,12 +52,12 @@
   <object id="40" name="wall" type="solid" x="64" y="32" width="8" height="72"/>
   <object id="41" name="wall" type="solid" x="72" y="16" width="4" height="72"/>
   <object id="42" name="wall" type="solid" x="76" y="8" width="4" height="72"/>
-  <object id="43" name="NPC" type="NPC" x="160" y="80" width="16" height="16"/>
   <object id="44" name="wall" type="solid" x="392" y="128" width="8" height="56"/>
   <object id="45" name="Spread" type="spread" x="368" y="128" width="16" height="16">
    <properties>
     <property name="delay" value="5"/>
    </properties>
   </object>
+  <object id="46" name="NPC" type="NPC" x="160" y="80" width="16" height="16"/>
  </objectgroup>
 </map>

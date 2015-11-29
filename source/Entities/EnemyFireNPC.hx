@@ -29,19 +29,7 @@ class EnemyFireNPC extends Enemy
 	{
 		super(x, y, world);
 
-		/*if (Math.random() > 0.5) {
-			var angle: Float = Math.random() * 2 * Math.PI;
-			var deltaX: Float = STEP_DISTANCE * Math.cos(angle);
-			var deltaY: Float = STEP_DISTANCE * Math.sin(angle);
-			var dest: FlxPoint = new FlxPoint(this.getMidpoint().x + deltaX, this.getMidpoint().y + deltaY);
-			FlxVelocity.moveTowardsPoint(this, dest, STEP_DISTANCE);
-		} else {
-			velocity.x = 0;
-			velocity.y = 0;
-		}*/
 		((Math.random() > 0.5) ? loadGraphic("assets/images/firenpc-a-sheet.png", true, 24, 24) : loadGraphic("assets/images/firenpc-b-sheet.png", true, 24, 24));
-
-		//loadGraphic("assets/images/walker-sheet.png", true, 24, 24);
 
 		animation.add("walk", [0, 1, 1, 0], 6);
 		animation.add("run", [0, 1, 1, 0], 8);
@@ -111,9 +99,14 @@ class EnemyFireNPC extends Enemy
 		FlxG.overlap(getPlayer().punchMask, this, onCollisionWithPUNCHO);
 	}
 
-	public function changeWay(itsMe : EnemyFireNPC, solid : Entity)
+	public function changeWay(itsMe : EnemyFireNPC, solid : FlxObject)
 	{
-
+		trace("ChangeWay");
+		trace("solid" + solid);
+		trace("solid.x" + solid.x);
+		trace("solid.width" + solid.width);
+		trace("this.x" + this.x);
+		trace("velocityX" + velocityX);
 		if ((solid.x + solid.width) <= this.x) //At my left!
 		{
 			this.velocity.set(-velocityX, velocityY);
@@ -133,6 +126,7 @@ class EnemyFireNPC extends Enemy
 		{
 			this.velocity.set(velocityX, -velocityY);
 		}
+		trace("ChangeWayExit");
 	}
 
 	override public function update(): Void
@@ -161,6 +155,7 @@ class EnemyFireNPC extends Enemy
 	private function setOnFire(): Void
 	{
 		trace("setOnFire");
+		roamTimer.cancel();
 		//Nos eliminamos de la lista de enemigos y enemigos collidables para autogestionarnos nuestras colisiones
 		world.enemies.remove(this,true);
 		world.collidableEnemies.remove(this,true);
@@ -234,7 +229,7 @@ class EnemyFireNPC extends Enemy
 
 	public override function statusStunned(): Void
 	{
-
+		trace("stunned");
 		if (onFire)
 		{
 			FlxG.collide(this, world.solids, changeWay);
@@ -284,7 +279,7 @@ class EnemyFireNPC extends Enemy
 		handleFacing();
 	}
 
-	private function doFireRoam(timer: FlxTimer): Void
+	/*private function doFireRoam(timer: FlxTimer): Void
 	{
 		var succesfullTarget : Bool = false;
 		while (!succesfullTarget) {
@@ -302,7 +297,7 @@ class EnemyFireNPC extends Enemy
 		animation.play("onFire");
 
 		handleFacing();
-	}
+	}*/
 
 	private function handleFacing()
 	{
