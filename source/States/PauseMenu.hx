@@ -4,8 +4,8 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.text.FlxText;
-import flixel.text.FlxBitmapTextField;
-import flixel.util.FlxRandom;
+import flixel.text.FlxBitmapText;
+import flixel.math.FlxRandom;
 import flixel.group.FlxSpriteGroup;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -16,7 +16,7 @@ import text.PixelText;
 class PauseMenu extends FlxSubState
 {
 	var group : FlxSpriteGroup;
-	var text : FlxBitmapTextField;
+	var text : FlxBitmapText;
 	var bg : FlxSprite;
 	
 	var ready : Bool;
@@ -42,7 +42,7 @@ class PauseMenu extends FlxSubState
 
 		ready = false;
 		
-		FlxTween.tween(group, {y: 0}, 0.5, { ease: FlxEase.bounceOut, complete: function(_t:FlxTween){
+		FlxTween.tween(group, {y: 0}, 0.5, { ease: FlxEase.bounceOut, onComplete: function(_t:FlxTween){
 			ready = true;
 		}});
 	}
@@ -52,19 +52,19 @@ class PauseMenu extends FlxSubState
 		super.close();
 	}
 
-	override public function update()
+	override public function update(elapsed:Float)
 	{
 		GamePad.handlePadState();
 		if (ready) 
 		{
 			if (GamePad.justReleased(GamePad.Start))
 			{
-				FlxTween.tween(group, {y: FlxG.height}, 0.5, { ease: FlxEase.bounceOut, complete: function(_t:FlxTween) {
+				FlxTween.tween(group, {y: FlxG.height}, 0.5, { ease: FlxEase.bounceOut, onComplete: function(_t:FlxTween) {
 					close();
 				}});
 			}
 		}
 
-		super.update();
+		super.update(elapsed);
 	}
 }

@@ -9,11 +9,11 @@ import flixel.FlxCamera;
 import flixel.group.FlxGroup;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
-import flixel.util.FlxMath;
+import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
 import flixel.util.FlxSort;
-import flixel.util.FlxPoint;
 import flixel.group.FlxGroup;
-import flixel.group.FlxTypedGroup;
+// import flixel.group.FlxTypedGroup;
 import flixel.util.FlxTimer;
 
 import ui.Hud;
@@ -86,25 +86,25 @@ class World extends GameState
 
 		// Add the effect list
 		add(effects);
-		effects.update();
+		effects.update(0.0);
 
 		// Add the overlay tiles
 		add(level.overlayTiles);
 
 		// Prepare the HUD
 		hud = new Hud(this);
-		hud.update();
+		hud.update(0.0);
 		add(hud);
 
 		// Setup camera bounds, and follow player
-		FlxG.camera.setBounds(0, 0, level.fullWidth, level.fullHeight + 16);
-		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN);
+		FlxG.camera.setScrollBoundsRect(0, 0, level.fullWidth, level.fullHeight + 16);
+		FlxG.camera.follow(player, FlxCameraFollowStyle.TOPDOWN);
 
 		// Compute an update frame to position shadows and such
-		entities.update();
+		entities.update(0.0);
 
 		// Setup stage timer
-		stageTimer = new FlxTimer(FlxMath.SQUARE_ROOT_OF_TWO*13/7, function(timer: FlxTimer) {
+		stageTimer = new FlxTimer().start(FlxMath.SQUARE_ROOT_OF_TWO*13/7, function(timer: FlxTimer) {
 			remainingTime--;
 			if (remainingTime == 0)
 				player.onDefeat();
@@ -131,7 +131,7 @@ class World extends GameState
 		super.destroy();
 	}
 
-	override public function update():Void
+	override public function update(elapsed:Float):Void
 	{
 		if (!cutsceneing)
 		{
@@ -157,7 +157,7 @@ class World extends GameState
 
 			handleDebugRoutines();
 
-			super.update();
+			super.update(elapsed);
 
 			entities.sort(FlxSort.byY);
 
@@ -176,9 +176,9 @@ class World extends GameState
 		{
 			// On cutscenes, update just the cutscene player
 			if (cutscenePlayer != null)
-				cutscenePlayer.update();
+				cutscenePlayer.update(elapsed);
 
-			effects.update();
+			effects.update(elapsed);
 		}
 	}
 
@@ -252,14 +252,14 @@ class World extends GameState
 
 	public function fadeToRed()
 	{
-		fadeTimer = new FlxTimer(0.7, function(t:FlxTimer) {
+		fadeTimer = new FlxTimer().start(0.7, function(t:FlxTimer) {
 			FlxG.camera.fade(0x43FF5151, 3.5, false, fadeToClear, true);
 		});
 	}
 
 	public function fadeToClear()
 	{
-		fadeTimer = new FlxTimer(1.5, function(t:FlxTimer) {
+		fadeTimer = new FlxTimer().start(1.5, function(t:FlxTimer) {
 			FlxG.camera.fade(0x43FF5151, 3.5, true, fadeToRed, true);
 		});
 	}
@@ -339,5 +339,5 @@ class World extends GameState
 		{
 		}
 	}
-	var _explosion : flixel.effects.particles.FlxEmitterExt = null;
+	var _explosion : flixel.effects.particles.FlxEmitter = null;
 }

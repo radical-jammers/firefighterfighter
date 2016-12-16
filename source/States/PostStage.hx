@@ -1,18 +1,18 @@
 package;
 
 import text.PixelText;
-import flixel.text.FlxBitmapTextField;
+import flixel.text.FlxBitmapText;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.util.FlxRandom;
+import flixel.math.FlxRandom;
+import flixel.math.FlxVelocity;
+import flixel.math.FlxPoint;
 import flixel.util.FlxTimer;
-import flixel.util.FlxVelocity;
-import flixel.util.FlxPoint;
 import flixel.FlxCamera;
 
 class PostStage extends GameState
 {
-    private var scoreText: FlxBitmapTextField;
+    private var scoreText: FlxBitmapText;
     private var stageNumber: Int;
     private var score: Int;
     private var fakeScore1: Int;
@@ -30,13 +30,13 @@ class PostStage extends GameState
         score = 0;
         fakeScore1 = 3;
         fakeScore2 = 7;
-        scoreTime = 1.5 + FlxRandom.float();
+        scoreTime = 1.5 + new FlxRandom().float();
         finished = false;
     }
 
     public override function create(): Void
     {
-        new FlxTimer(scoreTime, function(timer: FlxTimer) {
+        new FlxTimer().start(scoreTime, function(timer: FlxTimer) {
             finished = true;
         });
 
@@ -61,7 +61,7 @@ class PostStage extends GameState
         add(pug);
     }
 
-    public override function update(): Void
+    public override function update(elapsed:Float): Void
     {
         FlxVelocity.moveTowardsPoint(player, new FlxPoint(FlxG.width + 24, FlxG.height / 2 + 12), 40);
         FlxVelocity.moveTowardsPoint(pug, new FlxPoint(FlxG.width + 24, FlxG.height / 2 - 6), 40);
@@ -79,6 +79,6 @@ class PostStage extends GameState
             GameController.StartStage(GameStatus.currentStage);
         }
 
-        super.update();
+        super.update(elapsed);
     }
 }

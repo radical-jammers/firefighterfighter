@@ -1,8 +1,9 @@
 package;
 
 import flixel.util.FlxTimer;
-import flixel.util.FlxVelocity;
-import flixel.util.FlxPoint;
+import flixel.math.FlxVelocity;
+import flixel.math.FlxPoint;
+import flixel.math.FlxRandom;
 import flixel.FlxG;
 import flixel.FlxObject;
 
@@ -73,15 +74,15 @@ class EnemyWalker extends Enemy
 		}
 	}
 
-	override public function update(): Void
+	override public function update(elapsed:Float): Void
 	{
-		super.update();
+		super.update(elapsed);
 	}
 
 	public override function onCollisionWithPlayer(): Void
 	{
 		brain.transition(statusIdle, "idle");
-		new FlxTimer(AttackIdleTime, function(_t:FlxTimer){
+		new FlxTimer().start(AttackIdleTime, function(_t:FlxTimer){
 			brain.transition(statusRoam);
 		});
 	}
@@ -116,7 +117,7 @@ class EnemyWalker extends Enemy
 	{
 		if (timer == null)
 		{
-			timer = new FlxTimer(StunnedTime, onStunnedEnd);
+			timer = new FlxTimer().start(StunnedTime, onStunnedEnd);
 		}
 
 		roamTimer.cancel();
@@ -136,8 +137,8 @@ class EnemyWalker extends Enemy
 
 	private function doRoam(timer: FlxTimer): Void
 	{
-		if (Math.random() > 0.5) {
-			var angle: Float = Math.random() * 2 * Math.PI;
+		if (new FlxRandom().float() > 0.5) {
+			var angle: Float = new FlxRandom().float() * 2 * Math.PI;
 			var deltaX: Float = STEP_DISTANCE * Math.cos(angle);
 			var deltaY: Float = STEP_DISTANCE * Math.sin(angle);
 			var dest: FlxPoint = new FlxPoint(this.getMidpoint().x + deltaX, this.getMidpoint().y + deltaY);

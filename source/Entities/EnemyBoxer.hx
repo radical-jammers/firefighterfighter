@@ -1,7 +1,7 @@
 package;
 
 import flixel.util.FlxTimer;
-import flixel.util.FlxPoint;
+import flixel.math.FlxPoint;
 import flixel.FlxObject;
 import flixel.FlxG;
 
@@ -151,7 +151,7 @@ class EnemyBoxer extends Enemy
 		}
 
 		punchMask.y = y + 8;
-		punchMask.update();
+		punchMask.update(0);
     }
 
     private function playerIsOnSight(): Bool

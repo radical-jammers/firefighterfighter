@@ -4,7 +4,7 @@ import flixel.FlxG;
 import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
-import flixel.util.FlxPoint;
+import flixel.math.FlxPoint;
 
 class CutscenePlayer extends Entity
 {
@@ -58,15 +58,15 @@ class CutscenePlayer extends Entity
 		brain.transition(idle, "idle1");
 	}
 
-	override public function update()
+	override public function update(elapsed:Float)
 	{
 		brain.update();
 
-		super.update();
+		super.update(elapsed);
 
 		hostage.x = x;
 		hostage.y = y - hostage.height - 4;
-		hostage.update();
+		hostage.update(elapsed);
 	}
 
 	override public function draw()
@@ -85,16 +85,16 @@ class CutscenePlayer extends Entity
 					brain.transition(jump, "jump1");
 				});
 			case "jump1":
-				FlxTween.linearPath(this, [new FlxPoint(x, y), new FlxPoint(x, y - JumpHeight), new FlxPoint(x, y)], JumpDuration, { /*ease: FlxEase.sineOut, */complete : function(t:FlxTween) {
+				FlxTween.linearPath(this, [new FlxPoint(x, y), new FlxPoint(x, y - JumpHeight), new FlxPoint(x, y)], JumpDuration, true, { /*ease: FlxEase.sineOut, */onComplete : function(t:FlxTween) {
 					animation.play("idle");
-					new FlxTimer(0.1, function(_t:FlxTimer) {
+					new FlxTimer().start(0.1, function(_t:FlxTimer) {
 						brain.transition(jump, "jump2");
 					});
 				}});
 			case "jump2":
-				FlxTween.linearPath(this, [new FlxPoint(x, y), new FlxPoint(x, y - JumpHeight), new FlxPoint(x, y)], JumpDuration, { /*ease: FlxEase.sineOut, */complete : function(t:FlxTween) {
+				FlxTween.linearPath(this, [new FlxPoint(x, y), new FlxPoint(x, y - JumpHeight), new FlxPoint(x, y)], JumpDuration, true, { /*ease: FlxEase.sineOut, */onComplete : function(t:FlxTween) {
 					animation.play("idle");
-					new FlxTimer(0.1, function(_t:FlxTimer) {
+					new FlxTimer().start(0.1, function(_t:FlxTimer) {
 						brain.transition(idle, "idle2");
 					});
 				}});
@@ -109,7 +109,7 @@ class CutscenePlayer extends Entity
 
 				FlxG.camera.fade(0xFF000000, ExitFadeDuration, endCutscene);
 
-				FlxTween.linearPath(this, [new FlxPoint(x, y), new FlxPoint(x + ExitRunSpeed * ExitJumpDuration / 2, y - JumpHeight), new FlxPoint(x + ExitRunSpeed * ExitJumpDuration, y)], ExitJumpDuration, { complete: function (t:FlxTween) {
+				FlxTween.linearPath(this, [new FlxPoint(x, y), new FlxPoint(x + ExitRunSpeed * ExitJumpDuration / 2, y - JumpHeight), new FlxPoint(x + ExitRunSpeed * ExitJumpDuration, y)], ExitJumpDuration, true, { onComplete: function (t:FlxTween) {
 					brain.transition(null); // ??
 				}});
 		}

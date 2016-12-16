@@ -1,6 +1,6 @@
 package;
 
-import flixel.util.FlxRandom;
+import flixel.math.FlxRandom;
 
 class Reg
 {
@@ -11,7 +11,7 @@ class Reg
 
 	public static inline function getRandomSfx(array : Array<String>) : String
 	{
-		return getSfx(FlxRandom.getObject(array));
+		return getSfx(new FlxRandom().getObject(array));
 	}
 
 	public static inline function getSfx(name : String) : String 

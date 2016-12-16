@@ -4,7 +4,7 @@ import flixel.FlxObject;
 import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
-import flixel.util.FlxRandom;
+import flixel.math.FlxRandom;
 
 class Enemy extends Entity
 {
@@ -44,12 +44,12 @@ class Enemy extends Entity
         return world.player;
     }
 
-    override public function update()
+    override public function update(elapsed:Float)
     {
     	if (brain != null)
     		brain.update();
 
-    	super.update();
+    	super.update(elapsed);
     }
 
     override public function draw()
@@ -66,7 +66,7 @@ class Enemy extends Entity
     {
     	if (timer == null)
     	{
-    		timer = new FlxTimer(StunnedTime, onStunnedEnd);
+    		timer = new FlxTimer().start(StunnedTime, onStunnedEnd);
     	}
 
     	isStunned = true;
@@ -124,7 +124,7 @@ class Enemy extends Entity
 			x: 0,
 			y: 1.5
 		}, 0.15, {
-			complete: function(tween: FlxTween) {
+			onComplete: function(tween: FlxTween) {
 				world.enemies.remove(this);
 				world.removeHeat(this);
 				dropLoot();
@@ -146,7 +146,7 @@ class Enemy extends Entity
 	public function dropLoot(): Void
 	{
 		var lootChance: Float = 1 - (Player.MAX_HP_VALUE - GameStatus.currentHp) * LOOT_CHANCE;
-		if (FlxRandom.float() >= lootChance)
+		if (new FlxRandom().float() >= lootChance)
 		{
 			world.items.add(new ItemBottle(getMidpoint().x, getMidpoint().y, world));
 		}

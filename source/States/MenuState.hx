@@ -57,9 +57,9 @@ class MenuState extends GameState
 	/**
 	 * Function that is called once every frame.
 	 */
-	override public function update():Void
+	override public function update(elapsed:Float):Void
 	{
-		super.update();
+		super.update(elapsed);
 
 		if (GamePad.justPressed(GamePad.Start) || GamePad.justPressed(GamePad.A))
 			handleSelectedOption();

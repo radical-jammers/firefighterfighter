@@ -155,7 +155,7 @@ class TiledTileSet
 		{
 			source = data;
 		}
-		else if (Std.is(data, ByteArray))
+		else if (Std.is(data, ByteArrayData))
 		{
 			source = new Fast(Xml.parse(data.toString()));
 			source = source.node.tileset;

@@ -1,9 +1,9 @@
 package;
 
 import flixel.util.FlxTimer;
-import flixel.util.FlxVelocity;
-import flixel.util.FlxPoint;
-import flixel.util.FlxRandom;
+import flixel.math.FlxVelocity;
+import flixel.math.FlxPoint;
+import flixel.math.FlxRandom;
 import flixel.FlxG;
 import flixel.FlxObject;
 
@@ -50,7 +50,7 @@ class EnemyChild extends Enemy
 
 	function getJumpDelay() : Float
 	{
-		return FlxRandom.floatRanged(JumpDelay, JumpDelay*2);
+		return new FlxRandom().float(JumpDelay, JumpDelay*2);
 	}
 
 	public function statusIdle() : Void
@@ -67,15 +67,15 @@ class EnemyChild extends Enemy
 
 	}
 
-	override public function update(): Void
+	override public function update(elapsed:Float): Void
 	{
-		super.update();
+		super.update(elapsed);
 	}
 
 	public override function onCollisionWithPlayer(): Void
 	{
 		brain.transition(statusIdle, "idle");
-		new FlxTimer(JumpingTime, function(_t:FlxTimer){
+		new FlxTimer().start(JumpingTime, function(_t:FlxTimer){
 			brain.transition(statusRoam, "roam");
 		});
 	}
@@ -104,7 +104,7 @@ class EnemyChild extends Enemy
 	{
 		if (timer == null)
 		{
-			timer = new FlxTimer(StunnedTime, onStunnedEnd);
+			timer = new FlxTimer().start(StunnedTime, onStunnedEnd);
 		}
 
 		roamTimer.cancel();
@@ -170,7 +170,7 @@ class EnemyChild extends Enemy
 		if (avoidPlayer)
 			invincible = true;
 
-		new FlxTimer(JumpingTime, function(_t:FlxTimer){
+		new FlxTimer().start(JumpingTime, function(_t:FlxTimer){
 			if (avoidPlayer)
 				invincible = false;
 			brain.transition(statusIdle, "idle");

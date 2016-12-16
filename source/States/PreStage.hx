@@ -47,7 +47,7 @@ class PreStage extends GameState
         add(playerPic);
         add(remainingLives);
 
-        preStageTimer = new FlxTimer(2.0, function(timer: FlxTimer) {
+        preStageTimer = new FlxTimer().start(2.0, function(timer: FlxTimer) {
             GameController.Teleport(stageName);
         });
     }

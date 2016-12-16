@@ -4,9 +4,10 @@ import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.util.FlxTimer;
-import flixel.util.FlxVelocity;
-import flixel.util.FlxPoint;
-import flixel.group.FlxTypedGroup;
+import flixel.math.FlxVelocity;
+import flixel.math.FlxPoint;
+import flixel.group.FlxGroup;
+import flixel.math.FlxRandom;
 
 class EnemyFireNPC extends Enemy
 {
@@ -29,7 +30,7 @@ class EnemyFireNPC extends Enemy
 	{
 		super(x, y, world);
 
-		((Math.random() > 0.5) ? loadGraphic("assets/images/firenpc-a-sheet.png", true, 24, 24) : loadGraphic("assets/images/firenpc-b-sheet.png", true, 24, 24));
+		((new FlxRandom().float() > 0.5) ? loadGraphic("assets/images/firenpc-a-sheet.png", true, 24, 24) : loadGraphic("assets/images/firenpc-b-sheet.png", true, 24, 24));
 
 		animation.add("walk", [0, 1, 1, 0], 6);
 		animation.add("run", [0, 1, 1, 0], 8);
@@ -129,11 +130,11 @@ class EnemyFireNPC extends Enemy
 		trace("ChangeWayExit");
 	}
 
-	override public function update(): Void
+	override public function update(elapsed:Float): Void
 	{
 		velocityX = velocity.x;
 		velocityY = velocity.y;
-		super.update();
+		super.update(elapsed);
 	}
 
 	override public function onStateChange(nextState : String)
@@ -162,7 +163,7 @@ class EnemyFireNPC extends Enemy
 
 		var succesfullTarget : Bool = false;
 		while (!succesfullTarget) {
-			var angle: Float = Math.random() * 2 * Math.PI;
+			var angle: Float = new FlxRandom().float() * 2 * Math.PI;
 			var deltaX: Float = RUN_DISTANCE * Math.cos(angle);
 			var deltaY: Float = RUN_DISTANCE * Math.sin(angle);
 			var dest: FlxPoint = new FlxPoint(this.getMidpoint().x + deltaX, this.getMidpoint().y + deltaY);
@@ -181,7 +182,7 @@ class EnemyFireNPC extends Enemy
 	public function onCollisionWithEnemy(): Void
 	{
 		brain.transition(statusIdle, "idle");
-		new FlxTimer(AttackIdleTime/2, function(_t:FlxTimer){
+		new FlxTimer().start(AttackIdleTime/2, function(_t:FlxTimer){
 			brain.transition(statusOnFire, "onFire");
 		});
 	}
@@ -196,7 +197,7 @@ class EnemyFireNPC extends Enemy
 	{
 		brain.transition(statusIdle, "idle");
 		isStunned = false;
-		new FlxTimer(AttackIdleTime, function(_t:FlxTimer){
+		new FlxTimer().start(AttackIdleTime, function(_t:FlxTimer){
 			brain.transition(statusOnFire, "onFire");
 		});
 	}
@@ -238,7 +239,7 @@ class EnemyFireNPC extends Enemy
 		}
 		if (timer == null)
 		{
-			timer = new FlxTimer(StunnedTime, onStunnedEnd);
+			timer = new FlxTimer().start(StunnedTime, onStunnedEnd);
 		}
 
 		roamTimer.cancel();
@@ -263,8 +264,8 @@ class EnemyFireNPC extends Enemy
 
 	private function doRoam(timer: FlxTimer): Void
 	{
-		if (Math.random() > 0.5) {
-			var angle: Float = Math.random() * 2 * Math.PI;
+		if (new FlxRandom().float() > 0.5) {
+			var angle: Float = new FlxRandom().float() * 2 * Math.PI;
 			var deltaX: Float = STEP_DISTANCE * Math.cos(angle);
 			var deltaY: Float = STEP_DISTANCE * Math.sin(angle);
 			var dest: FlxPoint = new FlxPoint(this.getMidpoint().x + deltaX, this.getMidpoint().y + deltaY);
@@ -283,7 +284,7 @@ class EnemyFireNPC extends Enemy
 	{
 		var succesfullTarget : Bool = false;
 		while (!succesfullTarget) {
-			var angle: Float = Math.random() * 2 * Math.PI;
+			var angle: Float = new FlxRandom().float() * 2 * Math.PI;
 			var deltaX: Float = RUN_DISTANCE * Math.cos(angle);
 			var deltaY: Float = RUN_DISTANCE * Math.sin(angle);
 			var dest: FlxPoint = new FlxPoint(this.getMidpoint().x + deltaX, this.getMidpoint().y + deltaY);

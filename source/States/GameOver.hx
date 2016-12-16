@@ -6,6 +6,7 @@ import flixel.FlxState;
 import flixel.text.FlxText;
 import text.PixelText;
 import flixel.util.FlxTimer;
+import flixel.effects.particles.FlxEmitter;
 
 class GameOver extends GameState
 {
@@ -44,12 +45,12 @@ class GameOver extends GameState
         addParticles(3 * FlxG.width / 4, FlxG.height - 16, FlxG.width / 4, 16);
     }
 
-    public override function update(): Void
+    public override function update(elapsed:Float): Void
     {
         if (!barking && sadPug.animation.finished && (timer == null || timer.finished))
         {
             if (timer == null)
-                timer = new FlxTimer(1.5, doBarkWoefully);
+                timer = new FlxTimer().start(1.5, doBarkWoefully);
             else
                 timer.start(1.5, doBarkWoefully);
             barking = true;
@@ -57,7 +58,7 @@ class GameOver extends GameState
         else if (sadPug.animation.finished)
             barking = false;
 
-        super.update();
+        super.update(elapsed);
 
         if (GamePad.justPressed(GamePad.Start) || GamePad.justPressed(GamePad.A))
     		GameController.ToTitleScreen();
@@ -71,18 +72,24 @@ class GameOver extends GameState
 
     private function addParticles(x: Float, y: Float, w: Float, h: Float): Void
     {
-        var particles: flixel.effects.particles.FlxEmitterExt = new flixel.effects.particles.FlxEmitterExt();
+        var angle = -45 * Math.PI / 180;
+        var particles: FlxEmitter = new FlxEmitter();
         particles.width = w;
         particles.height = h;
-        particles.setRotation(0, 0);
-        particles.setMotion(-45, 15, 180);
-        particles.makeParticles("assets/images/fire-particles.png", 6, 0, true, 0);
-        particles.setAlpha(1, 1, 0, 0);
-        particles.setScale(1, 2, 0, 0.25);
-
+        // particles.setRotation(0, 0);
+        // particles.setMotion(-45, 15, 180);
+        particles.launchAngle.set(angle, angle);
+        particles.velocity.set(15, 15);
+        particles.loadParticles("assets/images/fire-particles.png", 6, 0, true);
+        // particles.makeParticles("assets/images/fire-particles.png", 6, 0, true, 0);
+        particles.alpha.set(1, 1, 0, 0);
+        particles.scale.set(1, 2, 0, 0.25);
+        particles.lifespan.set(2);
+        
         particles.x = x;
         particles.y = y;
-        particles.start(false, 2, 0.1, 0);
+        //particles.start({Explode:false, Frequency:0.1, Quantity:0});
+        particles.start(false, 0.1, 0);
 
         add(particles);
     }

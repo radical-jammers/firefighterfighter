@@ -1,10 +1,10 @@
 package ui;
 
-import flixel.group.FlxTypedGroup;
+import flixel.group.FlxGroup;
 import flixel.FlxSprite;
 import flixel.FlxG;
 import flixel.util.FlxColor;
-import flixel.util.FlxPoint;
+import flixel.math.FlxPoint;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 
@@ -113,7 +113,7 @@ class Hud extends FlxTypedGroup<FlxSprite> {
         FlxG.camera.flash(0xFFFF5151, 0.6);
 
         if (exitForbiddenTween == null || exitForbiddenTween.finished)
-            exitForbiddenTween = FlxTween.tween(heat.scale, { x: 0.8, y : 2 }, 0.5, { type : FlxTween.PINGPONG, ease: FlxEase.backInOut, complete: function(_t:FlxTween) {
+            exitForbiddenTween = FlxTween.tween(heat.scale, { x: 0.8, y : 2 }, 0.5, { type : FlxTween.PINGPONG, ease: FlxEase.backInOut, onComplete: function(_t:FlxTween) {
                 trace("Tween end: " + exitForbiddenTween.executions);
                 if (exitForbiddenTween.executions >= 2) {
                     exitForbiddenTween.cancel();
@@ -128,7 +128,7 @@ class Hud extends FlxTypedGroup<FlxSprite> {
         super.draw();
     }
 
-    public override function update(): Void
+    public override function update(elapsed:Float): Void
     {
         var timeFigures = getRemainingTimeFigures();
         firstFigure.animation.frameIndex = Std.int(timeFigures.first);
@@ -156,12 +156,12 @@ class Hud extends FlxTypedGroup<FlxSprite> {
             lastFigure.visible = false;
         }
 
-        super.update();
+        super.update(elapsed);
     }
 
     private function getRemainingTimeFigures(): Dynamic
     {
-        var remainingTime: Int = world.remainingTime;
+        var remainingTime: Int = cast (world, World).remainingTime;
         return {
             first: remainingTime / 10,
             last: remainingTime % 10

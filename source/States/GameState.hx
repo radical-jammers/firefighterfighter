@@ -18,10 +18,10 @@ class GameState extends FlxState
 		super.create();
 	}
 	
-	override public function update()
+	override public function update(elapsed:Float)
 	{
 		GamePad.handlePadState();
 	
-		super.update();
+	  super.update(elapsed);
 	}
 }

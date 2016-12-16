@@ -68,7 +68,7 @@ class Player extends Entity
 		atk = ATTACK_VALUE;
 	}
 
-	override public function update() : Void
+	override public function update(elapsed:Float) : Void
 	{
 		if (GameStatus.currentHp >= 0)
 		{
@@ -138,7 +138,7 @@ class Player extends Entity
 		}
 
 
-		super.update();
+		super.update(elapsed);
 	}
 
 	function positionPunchMask()
@@ -155,7 +155,7 @@ class Player extends Entity
 
 		punchMask.y = y + 2;
 
-		punchMask.update();
+		punchMask.update(0);
 	}
 
 	function handleMovement()
@@ -233,16 +233,16 @@ class Player extends Entity
 			stunned = true;
 			invulnerable = true;
 
-			new FlxTimer(StunnedTime, function onStunEnd(_t:FlxTimer) {
+			new FlxTimer().start(StunnedTime, function onStunEnd(_t:FlxTimer) {
 				stunned = false;
 			});
 
-			new FlxTimer(KnockbackTime, function onKnockbackEnd(_t:FlxTimer) {
+			new FlxTimer().start(KnockbackTime, function onKnockbackEnd(_t:FlxTimer) {
 				velocity.set();
 			});
 
 			this.flicker(InvulnerabilityTime);
-			new FlxTimer(InvulnerabilityTime, function onInvulnerableEnd(_t:FlxTimer) {
+			new FlxTimer().start(InvulnerabilityTime, function onInvulnerableEnd(_t:FlxTimer) {
 				invulnerable = false;
 			});
 	}
@@ -268,7 +268,7 @@ class Player extends Entity
 			x: 0,
 			y: 1.5
 		}, 0.15, {
-			complete: function(tween: FlxTween) {
+			onComplete: function(tween: FlxTween) {
 				GameStatus.lives--;
 				if (GameStatus.lives < 0)
 				{

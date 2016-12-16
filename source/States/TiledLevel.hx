@@ -12,8 +12,8 @@ import utils.tiled.TiledImage;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 import flixel.FlxSprite;
-import flixel.util.FlxPoint;
-import flixel.util.FlxRect;
+import flixel.math.FlxPoint;
+import flixel.math.FlxRect;
 
 class TiledLevel extends TiledMap
 {
@@ -36,7 +36,7 @@ class TiledLevel extends TiledMap
 		backgroundTiles = new FlxGroup();
 		collidableTileLayers = new Array<FlxTilemap>();
 
-		FlxG.camera.setBounds(0, 0, fullWidth, fullHeight, true);
+		FlxG.camera.setScrollBoundsRect(0, 0, fullWidth, fullHeight, true);
 
 		/* Read config info */
 
@@ -65,9 +65,7 @@ class TiledLevel extends TiledMap
 			var processedPath = buildPath(tileset);
 
 			var tilemap : FlxTilemap = new FlxTilemap();
-			tilemap.widthInTiles = width;
-			tilemap.heightInTiles = height;
-			tilemap.loadMap(tileLayer.tileArray, processedPath, tileset.tileWidth, tileset.tileHeight, 0, 1, 1, 1);
+			tilemap.loadMapFromArray(tileLayer.tileArray, width, height, processedPath, tileset.tileWidth, tileset.tileHeight, OFF, 1, 1, 1);
 			
 			#if debug
 			tilemap.ignoreDrawDebug = true;
@@ -160,18 +158,20 @@ class TiledLevel extends TiledMap
 */
 			/** Effects **/
 			case "firefx":
-		        var particles : flixel.effects.particles.FlxEmitterExt = new flixel.effects.particles.FlxEmitterExt();
+            var angle = -45 * Math.PI / 180;
+		        var particles : flixel.effects.particles.FlxEmitter = new flixel.effects.particles.FlxEmitter();
 		        particles.width = o.width;
 		        particles.height = o.height;
-		        particles.setRotation(0, 0);
-		        particles.setMotion(-45, 15, 180);
-		        particles.makeParticles("assets/images/fire-particles.png", 6, 0, true, 0);
-		        particles.setAlpha(1, 1, 0, 0);
-		        particles.setScale(1, 2, 0, 0.25);
+		        particles.launchAngle.set(angle, angle);
+		        particles.speed.set(15,15);
+		        particles.loadParticles("assets/images/fire-particles.png", 6, 0, true);
+		        particles.alpha.set(1, 1, 0, 0);
+		        particles.scale.set(1, 2, 0, 0.25);
+            particles.lifespan.set(2);
 
 		        particles.x = x;
 		        particles.y = y;
-		        particles.start(false, 2, 0.1, 0);
+		        particles.start(false, 0.1, 0);
 
 		        world.effects.add(particles);
 

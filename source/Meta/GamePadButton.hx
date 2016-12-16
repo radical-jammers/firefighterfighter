@@ -5,8 +5,7 @@ import openfl.display.Sprite;
 import openfl.display.Bitmap;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
-
-import flixel.util.FlxColorUtil;
+import flixel.math.FlxRandom;
 
 class GamePadButton extends Sprite
 {
@@ -36,7 +35,7 @@ class GamePadButton extends Sprite
 		
 		pressed = false;
 		
-		color = FlxColorUtil.getRandomColor(0x75, 0xFF, 0x00);
+		color = new FlxRandom().color(0x75, 0xFF, 0x00);
 		
 		#if (mobile || vpad)
 		

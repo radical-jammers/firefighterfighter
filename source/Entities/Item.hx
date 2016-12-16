@@ -24,7 +24,7 @@ class Item extends Entity
 				x: 0,
 				y: 1.5
 			}, 0.15, {
-				complete: function(tween: FlxTween) {
+				onComplete: function(tween: FlxTween) {
 					destroy();
 				}
 			});

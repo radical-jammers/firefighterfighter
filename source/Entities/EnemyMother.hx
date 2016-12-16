@@ -1,8 +1,8 @@
 package;
 
 import flixel.util.FlxTimer;
-import flixel.util.FlxVelocity;
-import flixel.util.FlxPoint;
+import flixel.math.FlxVelocity;
+import flixel.math.FlxPoint;
 import flixel.FlxG;
 import flixel.FlxObject;
 
@@ -52,9 +52,9 @@ class EnemyMother extends Enemy
 		
 	}
 
-	override public function update(): Void
+	override public function update(elapsed:Float): Void
 	{
-		super.update();
+		super.update(elapsed);
 	}
 
 	public override function onCollisionWithPlayer(): Void
@@ -63,7 +63,7 @@ class EnemyMother extends Enemy
 			return;
 		
 		brain.transition(statusIdle, "idle");
-		new FlxTimer(JumpingTime, function(_t:FlxTimer){
+		new FlxTimer().start(JumpingTime, function(_t:FlxTimer){
 			brain.transition(statusRoam, "roam");
 		});
 	}
@@ -92,7 +92,7 @@ class EnemyMother extends Enemy
 	{
 		if (timer == null)
 		{
-			timer = new FlxTimer(StunnedTime, onStunnedEnd);
+			timer = new FlxTimer().start(StunnedTime, onStunnedEnd);
 		}
 
 		roamTimer.cancel();
@@ -140,7 +140,7 @@ class EnemyMother extends Enemy
 		animation.play("walk", true);
 		brain.transition(statusRoam, "roam");
 
-		new FlxTimer(JumpingTime, function(_t:FlxTimer){
+		new FlxTimer().start(JumpingTime, function(_t:FlxTimer){
 			brain.transition(statusIdle, "idle");
 		});
 	}

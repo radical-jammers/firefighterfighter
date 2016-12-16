@@ -1,8 +1,8 @@
 package;
 
 import flixel.util.FlxTimer;
-import flixel.util.FlxVelocity;
-import flixel.util.FlxPoint;
+import flixel.math.FlxVelocity;
+import flixel.math.FlxPoint;
 import flixel.tweens.FlxTween;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -15,7 +15,7 @@ class EnemySpreadingFire extends Enemy
     private var spreadTimer: FlxTimer;
     private var spreadFireFather : GroupSpreadingFire;
 
-    var particles : flixel.effects.particles.FlxEmitterExt;
+    var particles : flixel.effects.particles.FlxEmitter;
 
     public function new(x: Float, y: Float, world: World, spreadFireFather : GroupSpreadingFire)
     {
@@ -32,18 +32,20 @@ class EnemySpreadingFire extends Enemy
         setSize(12, 12);
         offset.set(2, 10);
 
-        particles = new flixel.effects.particles.FlxEmitterExt();
+        var angle = -45 * Math.PI / 180;
+        particles = new flixel.effects.particles.FlxEmitter();
         particles.width = 16;
         particles.height = 16;
-        particles.setRotation(0, 0);
-        particles.setMotion(-45, 15, 180);
-        particles.makeParticles("assets/images/fire-particles.png", 6, 0, true, 0);
-        particles.setAlpha(1, 1, 0, 0);
-        particles.setScale(1, 2, 0, 0.25);
+        particles.speed.set(15, 15);
+        particles.angle.set(angle, angle);
+        particles.loadParticles("assets/images/fire-particles.png", 6, 0, true);
+        particles.alpha.set(1, 1, 0, 0);
+        particles.scale.set(1, 2, 0, 0.25);
+        particles.lifespan.set(2);
 
         particles.x = x;
         particles.y = y;
-        particles.start(false, 2, 0.1, 0);
+        particles.start(false, 0.1, 0);
 
         hp = HP_VALUE;
         atk = ATTACK_VALUE;
@@ -52,7 +54,7 @@ class EnemySpreadingFire extends Enemy
             x: 1,
             y: 1
         }, 0.5, {
-            complete: function(tween: FlxTween) {
+            onComplete: function(tween: FlxTween) {
                 solid = true;
             }
         });
@@ -60,16 +62,16 @@ class EnemySpreadingFire extends Enemy
         FlxTween.tween(this, {
             y : this.y - 8
         }, 0.5, {
-            complete: function(tween: FlxTween) {
+            onComplete: function(tween: FlxTween) {
                 solid = true;
             }
         });
     }
 
-    override public function update(): Void
+    override public function update(elapsed:Float): Void
     {
-        particles.update();
-        super.update();
+        particles.update(elapsed);
+        super.update(elapsed);
     }
 
 

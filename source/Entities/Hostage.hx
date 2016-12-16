@@ -1,9 +1,9 @@
 package;
 
 import flixel.FlxObject;
-import flixel.util.FlxRect;
-import flixel.util.FlxPoint;
-import flixel.util.FlxRandom;
+import flixel.math.FlxRect;
+import flixel.math.FlxPoint;
+import flixel.math.FlxRandom;
 import flixel.util.FlxTimer;
 
 class Hostage extends Entity
@@ -35,11 +35,11 @@ class Hostage extends Entity
 		immovable = true;
 	}
 
-	override public function update()
+	override public function update(elapsed:Float)
 	{
 		brain.update();
 
-		super.update();
+		super.update(elapsed);
 	}
 
 	public function onStateChange(newState : String)
@@ -48,7 +48,7 @@ class Hostage extends Entity
 		{
 			case "idle":
 				animation.play("idle");
-				new FlxTimer(FlxRandom.floatRanged(MinIdleTime, MaxIdleTime), function (_t:FlxTimer) {
+				new FlxTimer().start(new FlxRandom().float(MinIdleTime, MaxIdleTime), function (_t:FlxTimer) {
 					brain.transition(anim, "anim");
 				});
 			case "anim":

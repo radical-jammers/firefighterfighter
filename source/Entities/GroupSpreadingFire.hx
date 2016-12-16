@@ -1,9 +1,9 @@
 package;
 
 import flixel.util.FlxTimer;
-import flixel.util.FlxVelocity;
-import flixel.util.FlxPoint;
-import flixel.group.FlxTypedGroup;
+import flixel.math.FlxVelocity;
+import flixel.math.FlxPoint;
+import flixel.group.FlxGroup;
 import flixel.FlxG;
 
 class GroupSpreadingFire extends Enemy
