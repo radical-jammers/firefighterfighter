@@ -36,7 +36,7 @@ class PreStage extends GameState
         playerPic = new FlxSprite(FlxG.width / 2 - 32, FlxG.height / 2 - 12);
         remainingLives = new FlxSprite(FlxG.width / 2 + 8, FlxG.height / 2 - 5);
 
-        playerPic.loadGraphic("assets/images/fighter-walk-sheet.png", false, 32, 24);
+        playerPic.loadGraphic("assets/images/fighter-walk-sheet.png", true, 32, 24);
 
         remainingLives.loadGraphic("assets/images/hud-timer.png", true, 8, 16);
         remainingLives.animation.add("lives", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
